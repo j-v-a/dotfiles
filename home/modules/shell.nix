@@ -23,8 +23,7 @@
       fish_add_path /opt/homebrew/bin
       fish_add_path /opt/homebrew/sbin
 
-      # direnv hook (single, clean — replaces 3x zsh hook)
-      direnv hook fish | source
+      # direnv hook is injected automatically by programs.direnv.enable — no manual source needed.
     '';
 
     # Aliases — ported from ~/.bash/aliases.sh and .zshrc

@@ -16,10 +16,21 @@
     end
 
     # ── nvm ────────────────────────────────────────────────────────────────
+    # nvm is managed by Homebrew (homebrew.nix). It is a bash script and has
+    # no native Fish integration. Two options:
+    #
+    #   Option A (current): use Homebrew's node formula directly and avoid nvm
+    #             in Fish — nvm.fish (jorgebucaran) is not in nixpkgs fishPlugins.
+    #
+    #   Option B: install nvm.fish via Fisher (imperative, outside Nix):
+    #             fisher install jorgebucaran/nvm.fish
+    #             Then set NVM_DIR and use `nvm use <version>` natively in Fish.
+    #
+    # Until nvm.fish is adopted, Node version switching in Fish requires
+    # opening a bash subshell or using `fnm` (faster, native Fish support,
+    # available in nixpkgs) as a drop-in alternative.
     if test -d $HOME/.nvm
       set -gx NVM_DIR $HOME/.nvm
-      # nvm is a bash script; source via bass or use nvm.fish plugin
-      # Using nvm.fish plugin approach — install once with: fisher install jorgebucaran/nvm.fish
     end
 
     # ── jenv ───────────────────────────────────────────────────────────────

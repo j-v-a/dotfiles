@@ -30,8 +30,13 @@
       merge.conflictstyle = "zdiff3";
       diff.colormoved     = "zebra";
 
-      # 1Password credential helper
-      credential.helper = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+      # 1Password git credential helper for GitHub HTTPS operations (gh CLI auth).
+      # op-ssh-sign is the SSH *signing* binary — it is NOT a credential helper.
+      # The correct helper is the op plugin that proxies gh auth git-credential.
+      "credential \"https://github.com/\"".helper = "!op plugin run -- gh auth git-credential";
+
+      # Rewrite git:// (unauthenticated, deprecated) to https:// everywhere.
+      "url \"https://\"".insteadOf = "git://";
 
       # git-lfs
       filter.lfs = {
@@ -40,9 +45,6 @@
         process  = "git-lfs filter-process";
         required = true;
       };
-
-      # Trust the wdcu repo (was in old ~/.gitconfig)
-      safe.directory = "/Users/jva082/Projects/wdcu";
     };
 
     ignores = [

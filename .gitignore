@@ -7,3 +7,7 @@ result-*
 
 .DS_Store
 *.local
+
+# sops age private keys — NEVER commit
+*.age
+keys.txt

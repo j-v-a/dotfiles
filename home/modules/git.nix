@@ -30,10 +30,10 @@
       merge.conflictstyle = "zdiff3";
       diff.colormoved     = "zebra";
 
-      # 1Password git credential helper for GitHub HTTPS operations (gh CLI auth).
-      # op-ssh-sign is the SSH *signing* binary — it is NOT a credential helper.
-      # The correct helper is the op plugin that proxies gh auth git-credential.
-      "credential \"https://github.com/\"".helper = "!op plugin run -- gh auth git-credential";
+      # GitHub credential helper: set per-device in the device-specific git.nix.
+      # - macOS (work-mac): uses 1Password — set in dotfiles-private/hosts/work-mac/git.nix
+      # - Linux (workstation): uses gh auth git-credential — set in home/linux.nix
+      # Leaving blank here avoids the helper running op on Linux where op is not installed.
 
       # Rewrite git:// (unauthenticated, deprecated) to https:// everywhere.
       "url \"https://\"".insteadOf = "git://";

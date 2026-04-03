@@ -1,0 +1,20 @@
+# .sops.yaml — sops-nix encryption rules
+#
+# Each NixOS device has an age key generated on first boot:
+#   age-keygen -o ~/.config/sops/age/keys.txt
+# Back up the private key to 1Password IMMEDIATELY after generation.
+# Then add the public key (age1...) to this file and re-encrypt secrets with:
+#   sops updatekeys secrets/<hostname>.yaml
+#
+# The Mac (work-mac) does not use sops-nix — secrets come from 1Password CLI.
+
+keys:
+  # personal-workstation
+  # Replace the placeholder with the real age public key after running age-keygen.
+  - &personal-workstation age1REPLACE_WITH_REAL_KEY_AFTER_RUNNING_AGE_KEYGEN
+
+creation_rules:
+  - path_regex: secrets/personal-workstation\.yaml$
+    key_groups:
+      - age:
+          - *personal-workstation

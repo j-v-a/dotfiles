@@ -18,10 +18,12 @@
       # Suppress the default greeting
       set -g fish_greeting
 
-      # Homebrew — must be on PATH for casks/formulae not managed by Nix.
-      # nix-darwin sets up Homebrew shellenv for bash/zsh but not fish.
-      fish_add_path /opt/homebrew/bin
-      fish_add_path /opt/homebrew/sbin
+      # Homebrew — macOS only. nix-darwin sets up Homebrew shellenv for bash/zsh but not fish.
+      # On Linux /opt/homebrew does not exist; test first to avoid errors.
+      if test -d /opt/homebrew/bin
+        fish_add_path /opt/homebrew/bin
+        fish_add_path /opt/homebrew/sbin
+      end
 
       # direnv hook is injected automatically by programs.direnv.enable — no manual source needed.
     '';

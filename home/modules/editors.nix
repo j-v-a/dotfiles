@@ -1,5 +1,5 @@
 # home/modules/editors.nix
-# Editor config — Neovim (Nix-pinned binary) + Zed (config symlinked).
+# Editor config — Neovim (Nix-pinned binary) + Zed (settings.json symlinked).
 # LazyVim manages Neovim plugins via lazy.nvim — not changed by Nix.
 { pkgs, ... }:
 
@@ -13,6 +13,8 @@
   #   rsync -av ~/dotfiles/config/nvim/ ~/.config/nvim/
   # Do NOT use xdg.configFile here — it would make lazy-lock.json a read-only symlink.
 
-  # Zed config symlinked from repo
-  # xdg.configFile."zed".source = ../config/zed;    # uncomment in Step 14
+  # Zed: symlink only settings.json — not the whole dir.
+  # ~/.config/zed/ contains runtime files (conversations/, prompts-library-db) that must
+  # remain writable. Symlinking the file individually keeps those writable alongside it.
+  xdg.configFile."zed/settings.json".source = ../../config/zed/settings.json;
 }

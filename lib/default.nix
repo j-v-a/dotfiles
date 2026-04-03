@@ -5,12 +5,10 @@
 {
   # Build a NixOS host configuration.
   # Used for personal-workstation, surface, home-server.
-  mkNixosHost = { inputs, nixos-hardware, sops-nix, hostname, system, nixpkgsChannel ? null, ... }:
-    let
-      pkgs-nixos = import (builtins.fetchTarball {
-        url = "https://github.com/NixOS/nixpkgs/archive/nixos-24.11.tar.gz";
-      }) { inherit system; config.allowUnfreePredicate = _: true; };
-    in
+  # NOTE: NixOS hosts should use nixos-24.11 nixpkgs. The private flake for each
+  # NixOS device should define its own nixpkgs input pointing to nixos-24.11 and
+  # pass it in via inputs. For now (Phase 1 placeholders) we accept inputs.nixpkgs.
+  mkNixosHost = { inputs, nixos-hardware, sops-nix, hostname, system, ... }:
     inputs.nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = { inherit inputs nixos-hardware sops-nix; };

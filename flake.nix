@@ -31,21 +31,18 @@
           inherit inputs nixos-hardware sops-nix;
           hostname = "personal-workstation";
           system = "x86_64-linux";
-          nixpkgsChannel = "github:NixOS/nixpkgs/nixos-24.11";
         };
 
         surface = lib.mkNixosHost {
           inherit inputs nixos-hardware sops-nix;
           hostname = "surface";
           system = "x86_64-linux";
-          nixpkgsChannel = "github:NixOS/nixpkgs/nixos-24.11";
         };
 
         home-server = lib.mkNixosHost {
           inherit inputs nixos-hardware sops-nix;
           hostname = "home-server";
           system = "x86_64-linux";
-          nixpkgsChannel = "github:NixOS/nixpkgs/nixos-24.11";
         };
       };
 

@@ -18,12 +18,16 @@
       # Suppress the default greeting
       set -g fish_greeting
 
+      # Homebrew — must be on PATH for casks/formulae not managed by Nix.
+      # nix-darwin sets up Homebrew shellenv for bash/zsh but not fish.
+      fish_add_path /opt/homebrew/bin
+      fish_add_path /opt/homebrew/sbin
+
       # direnv hook (single, clean — replaces 3x zsh hook)
       direnv hook fish | source
     '';
 
     # Aliases — ported from ~/.bash/aliases.sh and .zshrc
-    # Expand as migration progresses (Step 7)
     shellAliases = {
       ls  = "eza --icons";
       ll  = "eza -la --icons --git";
@@ -39,7 +43,6 @@
     enableFishIntegration = true;
     settings = {
       add_newline = true;
-      # Customise starship.toml here, or leave defaults — looks great out of the box
     };
   };
 
@@ -58,6 +61,6 @@
   # direnv — per-project env vars
   programs.direnv = {
     enable = true;
-    nix-direnv.enable = true;  # nix-direnv for fast nix shells
+    nix-direnv.enable = true;
   };
 }

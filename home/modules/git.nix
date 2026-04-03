@@ -17,8 +17,8 @@
       push.autoSetupRemote  = true;
 
       core = {
-        pager      = "delta";
-        autocrlf   = "input";
+        pager    = "delta";
+        autocrlf = "input";
       };
 
       interactive.diffFilter = "delta --color-only";
@@ -46,13 +46,21 @@
     };
 
     ignores = [
+      # macOS
       ".DS_Store"
+      # JetBrains IDEs
+      ".idea/"
+      # Node
+      "npm-debug.log"
+      "*.log"
+      # Nix / direnv
       ".direnv"
       ".envrc"
-      "*.local"
+      # Secrets
       ".env"
       ".env.*"
       "!.env.example"
+      "*.local"
     ];
   };
 }

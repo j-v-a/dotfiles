@@ -10,7 +10,9 @@
     if test -d $HOME/.pyenv
       set -gx PYENV_ROOT $HOME/.pyenv
       fish_add_path $PYENV_ROOT/bin
-      pyenv init - fish | source
+      if command -q pyenv
+        pyenv init - fish | source
+      end
     end
 
     # ── nvm ────────────────────────────────────────────────────────────────
@@ -24,7 +26,9 @@
     if test -d $HOME/.jenv
       set -gx JENV_ROOT $HOME/.jenv
       fish_add_path $JENV_ROOT/bin
-      jenv init - fish | source 2>/dev/null
+      if command -q jenv
+        jenv init - fish | source 2>/dev/null
+      end
     end
 
     # ── sdkman ─────────────────────────────────────────────────────────────

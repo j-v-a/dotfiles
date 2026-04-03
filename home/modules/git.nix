@@ -12,21 +12,37 @@
 
     extraConfig = {
       pull.rebase           = true;
+      fetch.prune           = true;
       init.defaultBranch    = "main";
       push.autoSetupRemote  = true;
 
-      # Better diffs with delta
-      core.pager            = "delta";
+      core = {
+        pager      = "delta";
+        autocrlf   = "input";
+      };
+
       interactive.diffFilter = "delta --color-only";
       delta = {
-        navigate    = true;
+        navigate     = true;
         side-by-side = true;
         line-numbers = true;
       };
-      merge.conflictstyle   = "zdiff3";
+      merge.conflictstyle = "zdiff3";
+      diff.colormoved     = "zebra";
 
-      # 1Password credential helper (already in use — keeping it)
+      # 1Password credential helper
       credential.helper = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+
+      # git-lfs
+      filter.lfs = {
+        clean    = "git-lfs clean -- %f";
+        smudge   = "git-lfs smudge -- %f";
+        process  = "git-lfs filter-process";
+        required = true;
+      };
+
+      # Trust the wdcu repo (was in old ~/.gitconfig)
+      safe.directory = "/Users/jva082/Projects/wdcu";
     };
 
     ignores = [

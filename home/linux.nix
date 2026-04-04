@@ -41,8 +41,9 @@
     nvtopPackages.nvidia  # GPU monitor
 
     # Fonts (needed for Hyprland + Waybar)
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.fira-code
+    # nixos-24.11 uses monolithic nerdfonts with an override selector;
+    # the split nerd-fonts.<name> packaging only landed in nixos-unstable/25.05.
+    (nerdfonts.override { fonts = [ "JetBrainsMono" "FiraCode" ]; })
     font-awesome     # waybar icons
   ];
 

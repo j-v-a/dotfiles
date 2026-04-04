@@ -2,6 +2,10 @@
 # Shared helper functions for building host configurations.
 { lib }:
 
+let
+  # Absolute path to the flake root — lib/ is one level below it.
+  root = ../.;
+in
 {
   # Build a NixOS host configuration.
   # Used for personal-workstation, surface, home-server.
@@ -23,7 +27,7 @@
           # Required for Fish/Starship to land on the system PATH correctly under NixOS.
           home-manager.useUserPackages = true;
         }
-        ./hosts/${hostname}/default.nix
+        "${root}/hosts/${hostname}/default.nix"
       ];
     };
 }

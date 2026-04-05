@@ -21,13 +21,21 @@
   # ── Locale / time ─────────────────────────────────────────────────────────────
   time.timeZone = "Europe/Amsterdam";
   i18n.defaultLocale = "en_GB.UTF-8";
-  i18n.supportedLocales = [ "en_GB.UTF-8/UTF-8" "nl_NL.UTF-8/UTF-8" "en_US.UTF-8/UTF-8" ];
+  i18n.supportedLocales = [
+    "en_GB.UTF-8/UTF-8"
+    "en_US.UTF-8/UTF-8"
+    "nl_NL.UTF-8/UTF-8"
+    "C.UTF-8/UTF-8"
+  ];
   i18n.extraLocaleSettings = {
-    LC_TIME     = "nl_NL.UTF-8";  # 24h clock, European date format
+    LC_TIME     = "nl_NL.UTF-8";
     LC_MONETARY = "nl_NL.UTF-8";
   };
-  # Explicitly include glibc locales so tools like rofi can set locale correctly.
-  environment.systemPackages = [ pkgs.glibcLocales ];
+  # glibcLocales must match supportedLocales to avoid empty archive.
+  i18n.glibcLocales = pkgs.glibcLocales.override {
+    allLocales = false;
+    locales = [ "en_GB.UTF-8/UTF-8" "en_US.UTF-8/UTF-8" "nl_NL.UTF-8/UTF-8" "C.UTF-8/UTF-8" ];
+  };
   console.keyMap = "us";
 
   # ── Bootloader ────────────────────────────────────────────────────────────────

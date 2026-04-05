@@ -27,9 +27,11 @@
       go
 
       # Shell utilities — Linux-only
+      # Note: GPU monitoring via nvidia-smi (provided by hardware.nvidia — no extra package needed).
+      # nvtop was considered but removed: all Nvidia nvtop variants pull in cuda-merged
+      # as a build-time dependency, which is unfree and not worth adding to the allowlist.
       pciutils         # lspci (GPU debugging)
       usbutils         # lsusb
-      nvtopPackages.full   # GPU monitor (all vendors; no CUDA dep unlike nvtopPackages.nvidia)
       age              # encryption tool for sops-nix secrets
 
       # Fonts (needed for Hyprland + Waybar)

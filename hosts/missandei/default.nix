@@ -1,4 +1,4 @@
-# hosts/personal-workstation/default.nix
+# hosts/missandei/default.nix
 # Personal NixOS workstation — Ryzen 9 5900X, Gigabyte Aorus B550, GTX 1060 (Pascal).
 #
 # GTX 1060 (Pascal) confirmed NOT on Nvidia legacy list → use nvidiaPackages.stable.
@@ -15,7 +15,7 @@
   ];
 
   # ── Networking ────────────────────────────────────────────────────────────────
-  networking.hostName = "personal-workstation";
+  networking.hostName = "missandei";
   networking.networkmanager.enable = true;
 
   # ── Locale / time ─────────────────────────────────────────────────────────────

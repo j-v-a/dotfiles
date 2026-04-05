@@ -31,10 +31,10 @@
       # NixOS configs — personal devices only.
       # work-mac lives in dotfiles-private and imports from here.
       nixosConfigurations = {
-        personal-workstation = lib.mkNixosHost {
+        missandei = lib.mkNixosHost {
           inherit inputs nixos-hardware sops-nix home-manager;
           nixpkgs = nixpkgs-linux;
-          hostname = "personal-workstation";
+          hostname = "missandei";
           system = "x86_64-linux";
         };
 

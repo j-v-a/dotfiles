@@ -9,12 +9,11 @@
 # The Mac (work-mac) does not use sops-nix — secrets come from 1Password CLI.
 
 keys:
-  # personal-workstation
-  # Replace the placeholder with the real age public key after running age-keygen.
-  - &personal-workstation age1r3sfcyrhuh56fxl05e6ln83gc7v543jm02hw4s7deezw0g9s2cwsjgl337
+  # missandei (personal workstation)
+  - &missandei age1r3sfcyrhuh56fxl05e6ln83gc7v543jm02hw4s7deezw0g9s2cwsjgl337
 
 creation_rules:
-  - path_regex: secrets/personal-workstation\.yaml$
+  - path_regex: secrets/missandei\.yaml$
     key_groups:
       - age:
-          - *personal-workstation
+          - *missandei

@@ -29,7 +29,7 @@
       # Shell utilities — Linux-only
       pciutils         # lspci (GPU debugging)
       usbutils         # lsusb
-      nvtopPackages.nvidia  # GPU monitor
+      nvtopPackages.full   # GPU monitor (all vendors; no CUDA dep unlike nvtopPackages.nvidia)
       age              # encryption tool for sops-nix secrets
 
       # Fonts (needed for Hyprland + Waybar)

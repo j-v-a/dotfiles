@@ -104,6 +104,18 @@
       settings.gui.address = "127.0.0.1:8384";  # loopback only — not LAN-exposed
     };
 
+    # ── Sudo ──────────────────────────────────────────────────────────────────────
+    # Allow jasper to run nixos-rebuild without a password so remote rebuilds
+    # (e.g. from the work-mac via SSH) don't require an interactive TTY.
+    security.sudo.extraRules = [
+      {
+        users   = [ "jasper" ];
+        commands = [
+          { command = "/run/current-system/sw/bin/nixos-rebuild"; options = [ "NOPASSWD" ]; }
+        ];
+      }
+    ];
+
     # ── Nix settings ──────────────────────────────────────────────────────────────
     nix.settings = {
       experimental-features = [ "nix-command" "flakes" ];

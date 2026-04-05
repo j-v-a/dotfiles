@@ -28,6 +28,8 @@
     };
 
     import-tree.url = "github:vic/import-tree";
+
+    catppuccin.url = "github:catppuccin/nix";
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } {

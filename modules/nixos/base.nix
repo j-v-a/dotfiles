@@ -65,6 +65,7 @@
     #   spotify              — from home/desktop-apps.nix (proprietary)
     #   zoom                 — from home/desktop-apps.nix (proprietary)
     #   slack                — from home/desktop-apps.nix (proprietary)
+    #   bitwig-studio        — from home/desktop-apps.nix (commercial DAW)
     #   idea-ultimate        — from home/desktop-apps.nix (JetBrains commercial)
     #   pycharm-professional — from home/desktop-apps.nix (JetBrains commercial)
     #   goland               — from home/desktop-apps.nix (JetBrains commercial)
@@ -91,6 +92,7 @@
         "spotify"
         "zoom"
         "slack"
+        "bitwig-studio"
         # JetBrains IDEs (home/desktop-apps.nix)
         "idea-ultimate"
         "pycharm-professional"

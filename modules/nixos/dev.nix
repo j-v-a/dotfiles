@@ -12,6 +12,8 @@
       kubectx
       kustomize
       argocd
+      fluxcd          # FluxCD CLI (flux)
+      kubent          # deprecated API checker
       terraform
       awscli2
       azure-cli

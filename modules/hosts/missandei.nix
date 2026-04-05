@@ -20,15 +20,19 @@
       features = [
         "base"              # NixOS: bootloader, locale, nix settings, SSH, docker, syncthing
         "nvidia"            # NixOS: GTX 1060 driver config
-        "hyprland"          # NixOS: system WM+SDDM+pipewire  /  HM: waybar, rofi, kitty, GTK
-        "dev"               # NixOS: kubectl, helm, terraform, etc.
+        "hyprland"          # NixOS: Hyprland WM + pipewire  /  HM: waybar, rofi, kitty, GTK
+        "gnome"             # NixOS: GNOME desktop + GDM (session picker for both GNOME and Hyprland)
+        "dev"               # NixOS: kubectl, helm, terraform, flux, kubent, etc.
         "gaming"            # NixOS: steam, lutris, gamemode
+        "virt"              # NixOS: libvirtd + SPICE for virt-manager
+        "wireshark"         # NixOS: packet capture permissions + wireshark group
+        "system-utils"      # NixOS: ananicy-cpp daemon + kdeconnect firewall ports
         "shell"             # HM: fish, starship, zoxide, fzf, direnv
-        "cli-tools"         # HM: fd, rg, bat, eza, gh, lazygit, etc.
+        "cli-tools"         # HM: fd, rg, bat, eza, lsd, gh, lazygit, imagemagick, etc.
         "git"               # HM: git config, delta, gh credential helper
         "editors"           # HM: neovim, zed
-        "linux-toolchains"  # HM: nodejs, python, jdk, rust, go, age, fonts
-        "desktop-apps"      # HM: GUI apps — browsers, IDEs, communication, media
+        "linux-toolchains"  # HM: nodejs, python, jdk, rust, go, gnused, age, fonts
+        "desktop-apps"      # HM: GUI apps — browsers, IDEs, communication, media, utils
       ];
       extraNixosModules = [
         # Hardware config is not a feature (never reused); import directly.

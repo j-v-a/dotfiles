@@ -10,11 +10,13 @@
       ripgrep
       bat
       eza
-      zoxide
+      lsd             # modern ls with icons and colours
 
       # Data / text processing
       jq
       yq-go
+      imagemagick     # image manipulation CLI
+      ast-grep        # structural code search
 
       # Git
       gh

@@ -30,6 +30,7 @@
       # Note: GPU monitoring via nvidia-smi (provided by hardware.nvidia — no extra package needed).
       # nvtop was considered but removed: all Nvidia nvtop variants pull in cuda-merged
       # as a build-time dependency, which is unfree and not worth adding to the allowlist.
+      gnused           # GNU sed (macOS uses BSD sed; ensures consistent sed behaviour)
       pciutils         # lspci (GPU debugging)
       usbutils         # lsusb
       age              # encryption tool for sops-nix secrets

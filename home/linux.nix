@@ -39,6 +39,7 @@
     pciutils         # lspci (GPU debugging)
     usbutils         # lsusb
     nvtopPackages.nvidia  # GPU monitor
+    age              # encryption tool for sops-nix secrets
 
     # Fonts (needed for Hyprland + Waybar)
     # nixos-24.11 uses monolithic nerdfonts with an override selector;

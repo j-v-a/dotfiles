@@ -71,7 +71,7 @@
         "$mod, M, exit"
         "$mod, E, exec, nautilus"
         "$mod, V, togglefloating"
-        "$mod, R, exec, env DISPLAY= rofi -modi drun -show drun"
+        "$mod, R, exec, env DISPLAY= WAYLAND_DISPLAY=wayland-1 rofi -modi drun -show drun"
         "$mod, P, pseudo"
         "$mod, J, togglesplit"
 

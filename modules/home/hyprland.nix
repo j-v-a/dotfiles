@@ -236,9 +236,10 @@
     ];
 
     # ── GTK theme (for GTK apps running under Hyprland) ──────────────────────────
+    # gtk.theme is set by catppuccin.nix when catppuccin is in the feature list.
+    # Only set icon/cursor here; avoid conflicting with catppuccin's theme.name.
     gtk = {
       enable = true;
-      theme.name       = "Adwaita-dark";
       iconTheme.name   = "Adwaita";
       cursorTheme.name = "Adwaita";
     };

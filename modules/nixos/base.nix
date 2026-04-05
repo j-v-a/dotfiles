@@ -4,7 +4,7 @@
 { ... }:
 
 {
-  flake.modules.nixos.base = { pkgs, ... }: {
+  flake.modules.nixos.base = { pkgs, lib, ... }: {
 
     # ── Bootloader ────────────────────────────────────────────────────────────────
     boot.loader.systemd-boot.enable    = true;
@@ -53,13 +53,15 @@
     # ── Unfree packages ───────────────────────────────────────────────────────────
     # Enumerate each unfree package explicitly rather than blanket-allowing all.
     # Add to this list when a new unfree package is introduced in any feature module.
+    # Uses lib.getName (strips version suffix) as recommended by nixpkgs.
     # Current unfree packages:
     #   nvidia*        — from nixos/nvidia.nix  (proprietary Nvidia drivers)
     #   steam*         — from nixos/gaming.nix  (Valve Steam client)
     #   proton-ge-bin  — from nixos/gaming.nix  (custom Proton build, binary dist)
+    #   cuda-merged    — from home/linux-toolchains.nix (nvtopPackages.nvidia dep)
     #   terraform      — from nixos/dev.nix      (BSL 1.1 since HashiCorp relicense)
     nixpkgs.config.allowUnfreePredicate = pkg:
-      builtins.elem (pkg.pname or "") [
+      builtins.elem (lib.getName pkg) [
         "nvidia-x11"
         "nvidia-settings"
         "nvidia-persistenced"
@@ -68,6 +70,7 @@
         "steam-run"
         "steam-unwrapped"
         "proton-ge-bin"
+        "cuda-merged"
         "terraform"
       ];
 

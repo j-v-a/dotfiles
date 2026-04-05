@@ -128,7 +128,8 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nixpkgs-linux": "nixpkgs-linux",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "wallpapers": "wallpapers"
       }
     },
     "sops-nix": {
@@ -148,6 +149,23 @@
       "original": {
         "owner": "Mic92",
         "repo": "sops-nix",
+        "type": "github"
+      }
+    },
+    "wallpapers": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1771538086,
+        "narHash": "sha256-yzDe0gwvRA2rUFFl4+Zs/iZnoQjf8BotmyRacgNPFQ4=",
+        "owner": "teowelton",
+        "repo": "Wallpapers",
+        "rev": "202dc99b6a6d85759e8dd52e7e2a0edacecdba21",
+        "type": "github"
+      },
+      "original": {
+        "owner": "teowelton",
+        "repo": "Wallpapers",
+        "rev": "202dc99b6a6d85759e8dd52e7e2a0edacecdba21",
         "type": "github"
       }
     }

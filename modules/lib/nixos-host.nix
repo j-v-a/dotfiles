@@ -47,6 +47,7 @@
           home-manager.extraSpecialArgs = {
             inherit username;
             homeDirectory = "/home/${username}";
+            inherit (inputs) wallpapers;
           };
 
           home-manager.users.${username}.imports = [

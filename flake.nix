@@ -30,6 +30,13 @@
     import-tree.url = "github:vic/import-tree";
 
     catppuccin.url = "github:catppuccin/nix/v1.2.1";
+
+    # Wallpaper collection — pinned to a specific commit for reproducibility.
+    # Update with: nix flake update wallpapers
+    wallpapers = {
+      url = "github:teowelton/Wallpapers/202dc99b6a6d85759e8dd52e7e2a0edacecdba21";
+      flake = false;
+    };
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } {

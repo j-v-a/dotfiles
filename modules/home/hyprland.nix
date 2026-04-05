@@ -12,7 +12,7 @@
 { ... }:
 
 {
-  flake.modules.homeManager.hyprland = { pkgs, homeDirectory, ... }: {
+  flake.modules.homeManager.hyprland = { pkgs, homeDirectory, wallpapers, ... }: {
     # ── Hyprland user config ───────────────────────────────────────────────────────
     wayland.windowManager.hyprland = {
       enable = true;
@@ -239,11 +239,16 @@
     ];
 
     # ── wpaperd (wallpaper daemon) ────────────────────────────────────────────────
-    # Wallpapers live in ~/Pictures/Wallpapers — populate manually (not managed by Nix).
-    # wpaperctl next/previous to cycle manually; wpaperd auto-cycles every 30 min.
+    # Base wallpapers come from the pinned teowelton/Wallpapers flake input (Nix store,
+    # read-only). Personal wallpapers go in ~/Pictures/Wallpapers (not managed by Nix).
+    # wpaperd uses [any] to match all outputs; path can only be one directory, so we
+    # point at the pinned store path. Drop personal wallpapers in the same dir by
+    # symlinking: ln -s ~/Pictures/Wallpapers/* <store-path>  — or just add a second
+    # wpaperd output section when you know your monitor name (hyprctl monitors).
+    # wpaperctl next/previous to cycle manually.
     xdg.configFile."wpaperd/config.toml".text = ''
       [any]
-      path = "${homeDirectory}/Pictures/Wallpapers"
+      path = "${wallpapers}"
       duration = "30m"
       sorting = "random"
 

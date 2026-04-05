@@ -12,7 +12,7 @@
 { ... }:
 
 {
-  flake.modules.homeManager.hyprland = { pkgs, ... }: {
+  flake.modules.homeManager.hyprland = { pkgs, homeDirectory, ... }: {
     # ── Hyprland user config ───────────────────────────────────────────────────────
     wayland.windowManager.hyprland = {
       enable = true;
@@ -36,8 +36,10 @@
 
         # waybar and dunst are started as systemd user services (see below) —
         # do NOT also launch them here or you get double instances.
+        # wpaperd is launched here since it has no systemd service integration.
         exec-once = [
           "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+          "wpaperd"
         ];
 
         input = {
@@ -233,7 +235,20 @@
       nautilus        # file manager (GTK)
       gnome-themes-extra  # themes for GTK apps running under Hyprland
       adwaita-icon-theme
+      wpaperd         # wallpaper daemon (Wayland, wlr-layer-shell)
     ];
+
+    # ── wpaperd (wallpaper daemon) ────────────────────────────────────────────────
+    # Wallpapers live in ~/Pictures/Wallpapers — populate manually (not managed by Nix).
+    # wpaperctl next/previous to cycle manually; wpaperd auto-cycles every 30 min.
+    xdg.configFile."wpaperd/config.toml".text = ''
+      [any]
+      path = "${homeDirectory}/Pictures/Wallpapers"
+      duration = "30m"
+      sorting = "random"
+
+      [any.transition.fade]
+    '';
 
     # ── GTK theme (for GTK apps running under Hyprland) ──────────────────────────
     # gtk.theme is set by catppuccin.nix when catppuccin is in the feature list.

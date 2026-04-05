@@ -1,7 +1,14 @@
 # modules/home/hyprland.nix
 # Hyprland user-level configuration — personal workstation only.
 # System-level Hyprland enablement is in modules/nixos/hyprland.nix.
-# This file manages: Hyprland config, waybar, rofi, desktop packages, GTK.
+# This file manages: Hyprland config, waybar, rofi, dunst, desktop packages, GTK.
+#
+# systemd integration note: hyprland.systemd.enable = true makes Hyprland register
+# itself as a systemd target (hyprland-session.target). Waybar and Dunst are then
+# started as systemd user services (programs.waybar.systemd / services.dunst) which
+# wait on that target. This is more reliable than exec-once and ensures the Hyprland
+# IPC socket is available before Waybar tries to connect to it (needed for
+# hyprland/workspaces module).
 { ... }:
 
 {
@@ -9,6 +16,10 @@
     # ── Hyprland user config ───────────────────────────────────────────────────────
     wayland.windowManager.hyprland = {
       enable = true;
+
+      # Register Hyprland as a systemd session target so that waybar, dunst, and
+      # other services can declare After=hyprland-session.target and start reliably.
+      systemd.enable = true;
 
       settings = {
         # Monitor — auto-detect; override once you know your display layout.
@@ -23,10 +34,10 @@
           "WLR_NO_HARDWARE_CURSORS,1"  # fixes invisible cursor on Nvidia+Wayland
         ];
 
+        # waybar and dunst are started as systemd user services (see below) —
+        # do NOT also launch them here or you get double instances.
         exec-once = [
           "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-          "waybar"   # status bar
-          "dunst"    # notification daemon
         ];
 
         input = {
@@ -69,7 +80,7 @@
           "$mod, M, exit"
           "$mod, E, exec, nautilus"
           "$mod, V, togglefloating"
-          "$mod, R, exec, env DISPLAY= WAYLAND_DISPLAY=wayland-1 rofi -modi drun -show drun"
+          "$mod, R, exec, rofi -modi drun -show drun"
           "$mod, P, pseudo"
           "$mod, J, togglesplit"
 
@@ -118,6 +129,12 @@
     # ── Waybar ────────────────────────────────────────────────────────────────────
     programs.waybar = {
       enable = true;
+
+      # Start waybar as a systemd user service after hyprland-session.target.
+      # This ensures the Hyprland IPC socket exists before waybar connects to it,
+      # which is required for the hyprland/workspaces module to function.
+      systemd.enable = true;
+
       settings = [{
         layer    = "top";
         position = "top";
@@ -141,6 +158,62 @@
           on-click     = "pavucontrol";
         };
       }];
+
+      # Minimal CSS — sets the font to a Nerd Font so all icons render correctly.
+      # Without this, Waybar falls back to the system sans-serif font which has no
+      # Nerd Font glyphs, causing all icons to be invisible (not even boxes).
+      # catppuccin/nix will replace this style block entirely when theming is applied.
+      style = ''
+        * {
+          font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", monospace;
+          font-size: 13px;
+        }
+
+        window#waybar {
+          background-color: rgba(30, 30, 46, 0.9);
+          color: #cdd6f4;
+          border-bottom: 2px solid rgba(137, 180, 250, 0.5);
+        }
+
+        .modules-left, .modules-center, .modules-right {
+          padding: 0 8px;
+        }
+
+        #workspaces button {
+          padding: 0 6px;
+          color: #6c7086;
+        }
+
+        #workspaces button.active {
+          color: #cdd6f4;
+          border-bottom: 2px solid #89b4fa;
+        }
+
+        #clock, #cpu, #memory, #temperature, #pulseaudio, #network, #battery, #tray {
+          padding: 0 8px;
+          color: #cdd6f4;
+        }
+      '';
+    };
+
+    # ── Dunst (notification daemon) ───────────────────────────────────────────────
+    # Use the home-manager service rather than launching dunst via exec-once.
+    # The service registers on org.freedesktop.Notifications via D-Bus, which is
+    # required for applications to deliver notifications. A raw exec-once binary
+    # may not register correctly in all session configurations.
+    services.dunst = {
+      enable = true;
+      settings = {
+        global = {
+          font            = "JetBrainsMono Nerd Font 11";
+          corner_radius   = 8;
+          frame_width     = 2;
+          frame_color     = "#89b4fa";
+          background      = "#1e1e2e";
+          foreground      = "#cdd6f4";
+          timeout         = 5;
+        };
+      };
     };
 
     # ── Rofi (launcher) ───────────────────────────────────────────────────────────
@@ -153,8 +226,7 @@
     # ── Desktop packages ──────────────────────────────────────────────────────────
     home.packages = with pkgs; [
       kitty           # terminal
-      dunst           # notification daemon
-      libnotify       # notify-send CLI
+      libnotify       # notify-send CLI (dunst itself is managed by services.dunst above)
       grimblast       # screenshot (wlr-screencopy + slurp)
       wl-clipboard    # wl-copy / wl-paste
       pavucontrol     # PulseAudio/PipeWire GUI volume control

@@ -143,21 +143,18 @@
         modules-right  = [ "cpu" "memory" "temperature" "pulseaudio" "network" "battery" "tray" ];
         # Waybar clock format: {} is the time placeholder; strftime codes go inside.
         # Without {}, the format string is treated as a literal template.
-        # Icons use explicit Unicode escapes — literal glyphs get stripped by Nix's JSON serializer.
-        # Codepoints: \uf017=clock \uf4bc=cpu \uf538=memory \uf1eb=wifi \uf796=ethernet
-        #             \uf026=vol-mute \uf027=vol-low \uf028=vol-high \uf028=vol-max
-        clock   = { format = "\uf017 {:%a %d %b  %H:%M}"; tooltip = false; };
-        cpu     = { format = "\uf4bc {usage}%"; interval = 5; };
-        memory  = { format = "\uf538 {percentage}%"; interval = 5; };
+        clock   = { format = " {:%a %d %b  %H:%M}"; tooltip = false; };
+        cpu     = { format = " {usage}%"; interval = 5; };
+        memory  = { format = " {percentage}%"; interval = 5; };
         network = {
-          format-wifi         = "\uf1eb {essid}";
-          format-ethernet     = "\uf796 {ifname}";
+          format-wifi         = " {essid}";
+          format-ethernet     = " {ifname}";
           format-disconnected = "⚠ Disconnected";
         };
         pulseaudio = {
           format       = "{icon} {volume}%";
-          format-muted = "\uf026 muted";
-          format-icons = { default = [ "\uf026" "\uf027" "\uf028" ]; };
+          format-muted = " muted";
+          format-icons = { default = [ "" "" "" ]; };
           on-click     = "pavucontrol";
         };
       }];

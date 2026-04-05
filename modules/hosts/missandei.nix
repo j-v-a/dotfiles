@@ -28,6 +28,7 @@
         "git"               # HM: git config, delta, gh credential helper
         "editors"           # HM: neovim, zed
         "linux-toolchains"  # HM: nodejs, python, jdk, rust, go, age, fonts
+        "desktop-apps"      # HM: GUI apps — browsers, IDEs, communication, media
       ];
       extraNixosModules = [
         # Hardware config is not a feature (never reused); import directly.

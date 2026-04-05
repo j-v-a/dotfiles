@@ -55,21 +55,48 @@
     # Add to this list when a new unfree package is introduced in any feature module.
     # Uses lib.getName (strips version suffix) as recommended by nixpkgs.
     # Current unfree packages:
-    #   nvidia*        — from nixos/nvidia.nix  (proprietary Nvidia drivers)
-    #   steam*         — from nixos/gaming.nix  (Valve Steam client)
-    #   proton-ge-bin  — from nixos/gaming.nix  (custom Proton build, binary dist)
-    #   terraform      — from nixos/dev.nix      (BSL 1.1 since HashiCorp relicense)
+    #   nvidia*              — from nixos/nvidia.nix      (proprietary Nvidia drivers)
+    #   steam*               — from nixos/gaming.nix      (Valve Steam client)
+    #   proton-ge-bin        — from nixos/gaming.nix      (custom Proton build, binary dist)
+    #   terraform            — from nixos/dev.nix          (BSL 1.1 since HashiCorp relicense)
+    #   vscode               — from home/desktop-apps.nix (Microsoft license)
+    #   obsidian             — from home/desktop-apps.nix (proprietary)
+    #   discord              — from home/desktop-apps.nix (proprietary)
+    #   spotify              — from home/desktop-apps.nix (proprietary)
+    #   zoom                 — from home/desktop-apps.nix (proprietary)
+    #   slack                — from home/desktop-apps.nix (proprietary)
+    #   idea-ultimate        — from home/desktop-apps.nix (JetBrains commercial)
+    #   pycharm-professional — from home/desktop-apps.nix (JetBrains commercial)
+    #   goland               — from home/desktop-apps.nix (JetBrains commercial)
+    #   webstorm             — from home/desktop-apps.nix (JetBrains commercial)
+    #   datagrip             — from home/desktop-apps.nix (JetBrains commercial)
     nixpkgs.config.allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [
+        # Nvidia drivers
         "nvidia-x11"
         "nvidia-settings"
         "nvidia-persistenced"
+        # Steam + Proton
         "steam"
         "steam-original"
         "steam-run"
         "steam-unwrapped"
         "proton-ge-bin"
+        # Dev tools
         "terraform"
+        # Desktop apps (home/desktop-apps.nix)
+        "vscode"
+        "obsidian"
+        "discord"
+        "spotify"
+        "zoom"
+        "slack"
+        # JetBrains IDEs (home/desktop-apps.nix)
+        "idea-ultimate"
+        "pycharm-professional"
+        "goland"
+        "webstorm"
+        "datagrip"
       ];
 
     # ── SSH ───────────────────────────────────────────────────────────────────────

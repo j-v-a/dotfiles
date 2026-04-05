@@ -124,7 +124,9 @@
         modules-left   = [ "hyprland/workspaces" ];
         modules-center = [ "clock" ];
         modules-right  = [ "cpu" "memory" "temperature" "pulseaudio" "network" "battery" "tray" ];
-        clock   = { format = "%a %d %b  %H:%M"; tooltip = false; };
+        # Waybar clock format: {} is the time placeholder; strftime codes go inside.
+        # Without {}, the format string is treated as a literal template.
+        clock   = { format = "{:%a %d %b  %H:%M}"; tooltip = false; };
         cpu     = { format = " {usage}%"; interval = 5; };
         memory  = { format = " {percentage}%"; interval = 5; };
         network = {

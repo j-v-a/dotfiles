@@ -26,9 +26,11 @@
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/9227b185-09af-4d50-b2da-c1eaf5a1ad55";
+    [ { device = "/dev/disk/by-partuuid/06968460-c056-4951-a111-96c01fe4e2bd";
         # Encrypt swap with a random key on every boot.
         # This prevents sensitive in-memory data from persisting on disk unencrypted.
+        # Must use by-partuuid (partition table UUID) not by-uuid (filesystem UUID),
+        # because randomEncryption erases the filesystem UUID on every boot.
         randomEncryption.enable = true;
       }
     ];

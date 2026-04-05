@@ -26,6 +26,9 @@
     LC_TIME     = "nl_NL.UTF-8";  # 24h clock, European date format
     LC_MONETARY = "nl_NL.UTF-8";
   };
+  # Explicitly include glibc locales so tools like rofi can set locale correctly.
+  environment.systemPackages = [ pkgs.glibcLocales ];
+  environment.variables.LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";
   console.keyMap = "us";
 
   # ── Bootloader ────────────────────────────────────────────────────────────────

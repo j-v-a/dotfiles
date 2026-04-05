@@ -70,7 +70,7 @@
         "$mod, M, exit"
         "$mod, E, exec, nautilus"
         "$mod, V, togglefloating"
-        "$mod, R, exec, rofi -show drun"
+        "$mod, R, exec, rofi -modi drun -show drun"
         "$mod, P, pseudo"
         "$mod, J, togglesplit"
 

@@ -37,7 +37,9 @@
     catppuccin.hyprland.enable = true;
 
     # ── GTK apps ──────────────────────────────────────────────────────────────────
-    catppuccin.gtk.enable = true;
+    # catppuccin.gtk is NOT enabled: the upstream GTK port has been archived.
+    # See https://github.com/catppuccin/gtk/issues/262
+    # gtk.theme is set directly by the catppuccin module via gtk.theme.name.
 
     # ── Kitty terminal ────────────────────────────────────────────────────────────
     # kitty is installed as a package but not configured via programs.kitty.

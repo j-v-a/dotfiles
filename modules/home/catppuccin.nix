@@ -1,6 +1,6 @@
 # modules/home/catppuccin.nix
 # Catppuccin Mocha theming for the Hyprland desktop stack.
-# Uses catppuccin/nix (github:catppuccin/nix/release-25.05) home-manager module,
+# Uses catppuccin/nix (github:catppuccin/nix/v1.2.1) home-manager module,
 # which is injected into every HM configuration by modules/_lib/nixos-host.nix.
 #
 # catppuccin.waybar mode: "prependImport" (default) — prepends a catppuccin

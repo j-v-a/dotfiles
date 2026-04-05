@@ -29,7 +29,7 @@
 
     import-tree.url = "github:vic/import-tree";
 
-    catppuccin.url = "github:catppuccin/nix/release-25.05";
+    catppuccin.url = "github:catppuccin/nix/v1.2.1";
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } {

@@ -1,5 +1,5 @@
 {
-  description = "j-v-a dotfiles — NixOS + nix-darwin + home-manager";
+  description = "j-v-a dotfiles — NixOS + nix-darwin + home-manager (dendritic)";
 
   inputs = {
     # macOS: nixpkgs-24.11-darwin (not nixos-24.11 — wrong channel for Darwin)
@@ -11,7 +11,7 @@
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
       # home-manager follows the Darwin nixpkgs for the Mac build in dotfiles-private.
-      # NixOS builds pass nixpkgs-linux explicitly via specialArgs.
+      # NixOS builds pass nixpkgs-linux explicitly via the flake-parts module.
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -21,51 +21,22 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
+    import-tree.url = "github:vic/import-tree";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-linux, home-manager, nixos-hardware, sops-nix, ... } @ inputs:
-    let
-      lib = import ./lib { inherit (nixpkgs) lib; };
-    in
-    {
-      # NixOS configs — personal devices only.
-      # work-mac lives in dotfiles-private and imports from here.
-      nixosConfigurations = {
-        missandei = lib.mkNixosHost {
-          inherit inputs nixos-hardware sops-nix home-manager;
-          nixpkgs = nixpkgs-linux;
-          hostname = "missandei";
-          system = "x86_64-linux";
-        };
-
-        surface = lib.mkNixosHost {
-          inherit inputs nixos-hardware sops-nix home-manager;
-          nixpkgs = nixpkgs-linux;
-          hostname = "surface";
-          system = "x86_64-linux";
-        };
-
-        home-server = lib.mkNixosHost {
-          inherit inputs nixos-hardware sops-nix home-manager;
-          nixpkgs = nixpkgs-linux;
-          hostname = "home-server";
-          system = "x86_64-linux";
-        };
-      };
-
-      # Exported home-manager modules — used by dotfiles-private for work-mac.
-      homeManagerModules = {
-        common = import ./home/common.nix;
-        darwin = import ./home/darwin.nix;
-        linux  = import ./home/linux.nix;
-      };
-
-      # Exported NixOS modules — used by dotfiles-private and NixOS hosts.
-      nixosModules = {
-        dev      = import ./modules/dev;
-        desktop  = import ./modules/desktop;
-        gaming   = import ./modules/gaming;
-        homelab  = import ./modules/homelab;
-      };
-    };
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+    imports = [
+      inputs.flake-parts.flakeModules.modules
+      (inputs.import-tree ./modules)
+    ];
+    # This flake only produces NixOS configs — no perSystem outputs.
+    # Set to the union of all host systems so flake-parts doesn't complain.
+    systems = [ "x86_64-linux" "aarch64-linux" ];
+  };
 }

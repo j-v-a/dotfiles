@@ -34,6 +34,7 @@
         "linux-toolchains"  # HM: nodejs, python, jdk, rust, go, gnused, age, fonts
         "desktop-apps"      # HM: GUI apps — browsers, IDEs, communication, media, utils
         "catppuccin"        # HM: Catppuccin Mocha theme for waybar/dunst/rofi/hyprland/gtk/kitty/cli
+        "ai-tools"          # HM: OpenCode AppImage (Linux); Mac uses Homebrew cask
       ];
       extraNixosModules = [
         # Hardware config is not a feature (never reused); import directly.

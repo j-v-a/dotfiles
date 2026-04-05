@@ -66,6 +66,7 @@
     #   zoom                 — from home/desktop-apps.nix (proprietary)
     #   slack                — from home/desktop-apps.nix (proprietary)
     #   bitwig-studio        — from home/desktop-apps.nix (commercial DAW)
+    #   vcv-rack             — from home/desktop-apps.nix (cc-by-nc-40 + unfreeRedistributable bundled assets)
     #   idea-ultimate        — from home/desktop-apps.nix (JetBrains commercial)
     #   pycharm-professional — from home/desktop-apps.nix (JetBrains commercial)
     #   goland               — from home/desktop-apps.nix (JetBrains commercial)
@@ -93,6 +94,7 @@
         "zoom"
         "slack"
         "bitwig-studio"
+        "vcv-rack"
         # JetBrains IDEs (home/desktop-apps.nix)
         "idea-ultimate"
         "pycharm-professional"

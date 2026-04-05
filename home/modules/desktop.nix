@@ -26,6 +26,7 @@
       ];
 
       exec-once = [
+        "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "waybar"                     # status bar
         "dunst"                      # notification daemon
       ];
@@ -70,7 +71,7 @@
         "$mod, M, exit"
         "$mod, E, exec, nautilus"
         "$mod, V, togglefloating"
-        "$mod, R, exec, rofi -modi drun -show drun"
+        "$mod, R, exec, env DISPLAY= rofi -modi drun -show drun"
         "$mod, P, pseudo"
         "$mod, J, togglesplit"
 

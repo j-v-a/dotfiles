@@ -3,13 +3,13 @@
 { ... }:
 
 {
-  flake.modules.nixos.system-utils = { ... }: {
+  flake.modules.nixos.system-utils = { pkgs, ... }: {
     # Ananicy-cpp — process priority daemon.
     # Applies CPU/IO nice levels to improve UI responsiveness under load
     # (e.g. prevents compile jobs from starving the compositor).
     services.ananicy = {
       enable  = true;
-      package = pkgs: pkgs.ananicy-cpp;   # use the C++ rewrite (faster, lower overhead)
+      package = pkgs.ananicy-cpp;   # use the C++ rewrite (faster, lower overhead)
     };
 
     # KDE Connect — phone/desktop integration (file transfer, notifications, clipboard).

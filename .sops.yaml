@@ -11,7 +11,7 @@
 keys:
   # personal-workstation
   # Replace the placeholder with the real age public key after running age-keygen.
-  - &personal-workstation age1REPLACE_WITH_REAL_KEY_AFTER_RUNNING_AGE_KEYGEN
+  - &personal-workstation age1r3sfcyrhuh56fxl05e6ln83gc7v543jm02hw4s7deezw0g9s2cwsjgl337
 
 creation_rules:
   - path_regex: secrets/personal-workstation\.yaml$

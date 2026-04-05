@@ -32,12 +32,14 @@
         diff.colormoved     = "zebra";
 
         # GitHub credential helper: set per-device in device-specific config.
-        # - macOS (work-mac): uses 1Password — set in dotfiles-private/hosts/work-mac/git.nix
+        # - macOS (work-mac): uses 1Password — set in dotfiles-private/modules/home/work-git.nix
         # - Linux (workstation): uses gh auth git-credential — set in linux-toolchains.nix
         # Leaving blank here avoids running op on Linux where op is not installed.
 
         # Rewrite git:// (unauthenticated, deprecated) to https:// everywhere.
-        "url \"https://\"".insteadOf = "git://";
+        # git interprets [url "https://"] { insteadOf = "git://"; } as:
+        # any URL beginning with git:// is rewritten to begin with https://
+        "url \"https://\""."insteadOf" = "git://";
 
         # git-lfs
         filter.lfs = {

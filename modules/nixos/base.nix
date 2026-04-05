@@ -13,6 +13,13 @@
     # ── Networking ────────────────────────────────────────────────────────────────
     networking.networkmanager.enable = true;
 
+    # ── Firewall ──────────────────────────────────────────────────────────────────
+    # NixOS enables the firewall by default; be explicit so it survives audits.
+    networking.firewall = {
+      enable          = true;
+      allowedTCPPorts = [ 22 ];   # SSH — add more ports in host-specific modules
+    };
+
     # ── Locale / time ─────────────────────────────────────────────────────────────
     time.timeZone = "Europe/Amsterdam";
     i18n.defaultLocale = "en_US.UTF-8";
@@ -33,14 +40,36 @@
       description  = "Jasper van Ameijden";
       extraGroups  = [ "wheel" "networkmanager" "video" "audio" "docker" "gamemode" ];
       shell        = pkgs.fish;
+      # Declarative authorized keys — survive reinstall.
+      # id_ed25519_personalgh from work-mac (jvanameijden@gmail.com)
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE3qjIsujENfi9C3vnIU29x82lRZ3n3y2rjIkwLDRN64 jvanameijden@gmail.com"
+      ];
     };
 
     # Enable Fish system-wide so it is a valid login shell.
     programs.fish.enable = true;
 
     # ── Unfree packages ───────────────────────────────────────────────────────────
-    # Set before any unfree packages (Nvidia, Steam, etc.) are imported.
-    nixpkgs.config.allowUnfreePredicate = _: true;
+    # Enumerate each unfree package explicitly rather than blanket-allowing all.
+    # Add to this list when a new unfree package is introduced in any feature module.
+    # Current unfree packages:
+    #   nvidia*        — from nixos/nvidia.nix  (proprietary Nvidia drivers)
+    #   steam*         — from nixos/gaming.nix  (Valve Steam client)
+    #   proton-ge-bin  — from nixos/gaming.nix  (custom Proton build, binary dist)
+    #   terraform      — from nixos/dev.nix      (BSL 1.1 since HashiCorp relicense)
+    nixpkgs.config.allowUnfreePredicate = pkg:
+      builtins.elem (pkg.pname or "") [
+        "nvidia-x11"
+        "nvidia-settings"
+        "nvidia-persistenced"
+        "steam"
+        "steam-original"
+        "steam-run"
+        "steam-unwrapped"
+        "proton-ge-bin"
+        "terraform"
+      ];
 
     # ── SSH ───────────────────────────────────────────────────────────────────────
     services.openssh = {
@@ -52,6 +81,11 @@
     };
 
     # ── Docker ────────────────────────────────────────────────────────────────────
+    # WARNING: membership of the `docker` group is root-equivalent.
+    # Any process running as jasper can escape to root via `docker run --privileged`.
+    # Rootless Docker would eliminate this, but requires richer config and breaks
+    # some compose workflows. Accept the risk for a single-user personal workstation;
+    # revisit if the machine ever serves multiple users or faces a stronger threat model.
     virtualisation.docker = {
       enable = true;
       daemon.settings.features.containerd-snapshotter = true;
@@ -60,17 +94,20 @@
     # ── Syncthing ─────────────────────────────────────────────────────────────────
     # Runs as user jasper; web UI at http://localhost:8384
     # Device pairing is done manually in the web UI after first boot.
+    # NOTE: Set a GUI password in the web UI on first boot — Nix cannot manage
+    # the hashed password declaratively without storing secrets in the Nix store.
     services.syncthing = {
       enable    = true;
       user      = "jasper";
       dataDir   = "/home/jasper";
       configDir = "/home/jasper/.config/syncthing";
+      settings.gui.address = "127.0.0.1:8384";  # loopback only — not LAN-exposed
     };
 
     # ── Nix settings ──────────────────────────────────────────────────────────────
     nix.settings = {
       experimental-features = [ "nix-command" "flakes" ];
-      trusted-users         = [ "root" "jasper" ];
+      trusted-users         = [ "jasper" ];  # root is always trusted implicitly
       auto-optimise-store   = true;  # Linux supports this (unlike Darwin)
     };
 

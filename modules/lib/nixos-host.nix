@@ -42,6 +42,13 @@
           # Required for Fish/Starship to land on the system PATH correctly under NixOS.
           home-manager.useUserPackages  = true;
 
+          # Pass username + homeDirectory to every HM module so feature modules
+          # can reference them without hardcoding a specific user.
+          home-manager.extraSpecialArgs = {
+            inherit username;
+            homeDirectory = "/home/${username}";
+          };
+
           home-manager.users.${username}.imports = [
             ({ osConfig, ... }: { home.stateVersion = osConfig.system.stateVersion; })
           ] ++ hmModules;

@@ -26,7 +26,11 @@
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/9227b185-09af-4d50-b2da-c1eaf5a1ad55"; }
+    [ { device = "/dev/disk/by-uuid/9227b185-09af-4d50-b2da-c1eaf5a1ad55";
+        # Encrypt swap with a random key on every boot.
+        # This prevents sensitive in-memory data from persisting on disk unencrypted.
+        randomEncryption.enable = true;
+      }
     ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

@@ -5,7 +5,7 @@
 { ... }:
 
 {
-  flake.modules.homeManager.linux-toolchains = { pkgs, ... }: {
+  flake.modules.homeManager.linux-toolchains = { pkgs, username, homeDirectory, ... }: {
     home.packages = with pkgs; [
       # Node.js
       nodejs_22
@@ -50,7 +50,7 @@
     # SSH agent — use ssh-agent on Linux (1Password SSH agent not available on Linux).
     services.ssh-agent.enable = true;
 
-    home.username    = "jasper";
-    home.homeDirectory = "/home/jasper";
+    home.username    = username;
+    home.homeDirectory = homeDirectory;
   };
 }

@@ -21,6 +21,7 @@
   # ── Locale / time ─────────────────────────────────────────────────────────────
   time.timeZone = "Europe/Amsterdam";
   i18n.defaultLocale = "en_GB.UTF-8";
+  i18n.supportedLocales = [ "en_GB.UTF-8/UTF-8" "nl_NL.UTF-8/UTF-8" "en_US.UTF-8/UTF-8" ];
   i18n.extraLocaleSettings = {
     LC_TIME     = "nl_NL.UTF-8";  # 24h clock, European date format
     LC_MONETARY = "nl_NL.UTF-8";

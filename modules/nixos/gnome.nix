@@ -21,9 +21,7 @@
     };
 
     # Disable SDDM — GDM and SDDM conflict; only one display manager can be active.
-    # services.displayManager.sddm is the 24.11 path for the new unified DM option.
-    services.displayManager.sddm.enable        = false;
-    services.xserver.displayManager.sddm.enable = false;
+    services.displayManager.sddm.enable = false;
 
     # GNOME keyring — unlocks on GDM login; used by apps for credential storage
     services.gnome.gnome-keyring.enable = true;

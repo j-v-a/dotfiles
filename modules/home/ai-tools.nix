@@ -18,6 +18,8 @@
       pname   = "opencode";
       version = opencode-version;
       src     = opencode-src;
+      extraPkgs = pkgs: [ pkgs.wayland ];
+      extraArgs = "--ozone-platform=wayland --enable-features=WaylandWindowDecorations";
     };
   in
   lib.mkIf pkgs.stdenv.isLinux {

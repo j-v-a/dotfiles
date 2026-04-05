@@ -13,13 +13,17 @@
     services.xserver.desktopManager.gnome.enable = true;
 
     # GDM display manager — replaces SDDM as the session picker
-    services.displayManager.gdm = {
-      enable        = true;
-      wayland       = true;
+    # In NixOS 24.11, GDM lives under services.xserver.displayManager.gdm
+    # (not services.displayManager.gdm which does not exist).
+    services.xserver.displayManager.gdm = {
+      enable  = true;
+      wayland = true;
     };
 
-    # Disable SDDM — GDM and SDDM conflict; only one display manager can be active
-    services.displayManager.sddm.enable = false;
+    # Disable SDDM — GDM and SDDM conflict; only one display manager can be active.
+    # services.displayManager.sddm is the 24.11 path for the new unified DM option.
+    services.displayManager.sddm.enable        = false;
+    services.xserver.displayManager.sddm.enable = false;
 
     # GNOME keyring — unlocks on GDM login; used by apps for credential storage
     services.gnome.gnome-keyring.enable = true;

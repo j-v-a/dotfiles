@@ -35,11 +35,23 @@
       usbutils         # lsusb
       age              # encryption tool for sops-nix secrets
 
-      # Fonts (needed for Hyprland + Waybar)
+      # Fonts (needed for Hyprland + Waybar + KDE/GNOME apps)
       # nixos-24.11 uses monolithic nerdfonts with an override selector;
       # the split nerd-fonts.<name> packaging only landed in nixos-unstable/25.05.
-      (nerdfonts.override { fonts = [ "JetBrainsMono" "FiraCode" ]; })
-      font-awesome     # waybar icons
+      (nerdfonts.override { fonts = [
+        "JetBrainsMono"      # primary coding font (terminals, editors)
+        "FiraCode"           # ligature coding font (on Mac via Homebrew cask)
+        "Hack"               # widely-used terminal/editor fallback
+        "CascadiaCode"       # VSCode default; ligature support
+        "Mononoki"           # clean monospace for terminals
+        "IBMPlexMono"        # IBM Plex Mono with Nerd Font patches
+        "Iosevka"            # narrow coding font, popular in dev tooling
+        "NerdFontsSymbolsOnly" # symbol-only fallback — ensures icons work in any terminal font
+      ]; })
+      font-awesome          # waybar icons (solid/brands/regular sets)
+      noto-fonts            # broad Unicode coverage: Latin, Greek, Cyrillic
+      noto-fonts-cjk-sans   # CJK (Chinese/Japanese/Korean) glyphs
+      noto-fonts-emoji      # colour emoji (needed by browsers, GNOME, KDE apps)
     ];
 
     # Git credential helper — Linux uses gh CLI auth directly.

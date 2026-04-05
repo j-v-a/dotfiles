@@ -165,7 +165,7 @@
       # catppuccin/nix will replace this style block entirely when theming is applied.
       style = ''
         * {
-          font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", monospace;
+          font-family: "JetBrainsMono Nerd Font Mono", "JetBrainsMono Nerd Font", "Font Awesome 6 Free", monospace;
           font-size: 13px;
         }
 
@@ -205,7 +205,7 @@
       enable = true;
       settings = {
         global = {
-          font            = "JetBrainsMono Nerd Font 11";
+          font            = "JetBrainsMono Nerd Font Mono 11";
           corner_radius   = 8;
           frame_width     = 2;
           frame_color     = "#89b4fa";

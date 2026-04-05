@@ -58,7 +58,6 @@
     #   nvidia*        — from nixos/nvidia.nix  (proprietary Nvidia drivers)
     #   steam*         — from nixos/gaming.nix  (Valve Steam client)
     #   proton-ge-bin  — from nixos/gaming.nix  (custom Proton build, binary dist)
-    #   cuda-merged    — from home/linux-toolchains.nix (nvtopPackages.nvidia dep)
     #   terraform      — from nixos/dev.nix      (BSL 1.1 since HashiCorp relicense)
     nixpkgs.config.allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [
@@ -70,7 +69,6 @@
         "steam-run"
         "steam-unwrapped"
         "proton-ge-bin"
-        "cuda-merged"
         "terraform"
       ];
 

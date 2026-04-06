@@ -32,6 +32,21 @@
           "GBM_BACKEND,nvidia-drm"
           "__GLX_VENDOR_LIBRARY_NAME,nvidia"
           "WLR_NO_HARDWARE_CURSORS,1"  # fixes invisible cursor on Nvidia+Wayland
+
+          # Wayland-native flags for common toolkits
+          # Electron (VSCode, Obsidian, Discord, Slack, etc.)
+          "NIXOS_OZONE_WL,1"
+          # Qt apps (KDE apps, etc.)
+          "QT_QPA_PLATFORM,wayland"
+          "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+          # Firefox / Thunderbird
+          "MOZ_ENABLE_WAYLAND,1"
+          # Java/JVM apps (e.g. JetBrains IDEs via _JAVA_AWT_WM_NONREPARENTING workaround)
+          "_JAVA_AWT_WM_NONREPARENTING,1"
+          # SDL2 apps
+          "SDL_VIDEODRIVER,wayland"
+          # Clutter (GNOME apps)
+          "CLUTTER_BACKEND,wayland"
         ];
 
         # waybar and dunst are started as systemd user services (see below) —

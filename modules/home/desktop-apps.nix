@@ -51,6 +51,7 @@
       celeste                      # cloud sync GUI (rclone-based)
       komikku                      # manga reader (GNOME)
       alpaca                       # local LLM frontend (Ollama GUI)
+      qalculate-gtk                # powerful calculator (GUI + qalc CLI)
 
       # ── File Management / System ───────────────────────────────────────────────
       kdePackages.dolphin          # file manager (KDE)

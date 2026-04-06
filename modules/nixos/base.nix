@@ -13,6 +13,13 @@
     # ── Networking ────────────────────────────────────────────────────────────────
     networking.networkmanager.enable = true;
 
+    # ── Bluetooth ─────────────────────────────────────────────────────────────────
+    hardware.bluetooth = {
+      enable      = true;
+      powerOnBoot = true;   # auto-power adapter on startup
+    };
+    services.blueman.enable = true;  # blueman-applet + blueberry backend
+
     # ── Firewall ──────────────────────────────────────────────────────────────────
     # NixOS enables the firewall by default; be explicit so it survives audits.
     networking.firewall = {

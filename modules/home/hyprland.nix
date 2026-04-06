@@ -236,6 +236,7 @@
       gnome-themes-extra  # themes for GTK apps running under Hyprland
       adwaita-icon-theme
       wpaperd         # wallpaper daemon (Wayland, wlr-layer-shell)
+      blueberry       # GTK bluetooth manager (backend: blueman service in nixos/base.nix)
     ];
 
     # ── wpaperd (wallpaper daemon) ────────────────────────────────────────────────

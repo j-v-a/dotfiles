@@ -17,7 +17,10 @@
   flake.modules.homeManager.desktop-apps = { pkgs, ... }: {
     home.packages = with pkgs; [
       # ── Browsers ──────────────────────────────────────────────────────────────
-      brave                        # privacy-focused Chromium browser
+      # Use commandLineArgs to inject --password-store=basic via wrapGAppsHook.
+      # brave-flags.conf is NOT read by the nixpkgs Brave wrapper (Arch-specific patch);
+      # the correct mechanism is the commandLineArgs package parameter.
+      (brave.override { commandLineArgs = "--password-store=basic"; })
 
       # ── Password / Identity ───────────────────────────────────────────────────
       proton-pass                  # Proton password manager + identity
@@ -107,13 +110,6 @@
       # ── Web apps (native Electron) ────────────────────────────────────────────
       youtube-music                # YouTube Music native Electron app
     ];
-
-    # ── Brave flags ───────────────────────────────────────────────────────────────
-    # Use plaintext password store — no keyring/KDE wallet prompt.
-    # Safe because Proton Pass handles all actual secrets; Brave stores nothing sensitive.
-    home.file.".config/brave-flags.conf".text = ''
-      --password-store=basic
-    '';
 
     # ── Web apps (PWA-style via Brave --app) ──────────────────────────────────────
     # Sites without native Linux apps; opened in Brave app mode (no browser chrome).

@@ -44,7 +44,14 @@
       enable               = true;
       enableFishIntegration = true;
       settings = {
-        format = "$username$hostname$directory$git_branch$git_state$git_status$cmd_duration$line_break$python$character";
+        format = "$os$username$hostname$directory$git_branch$git_state$git_status$cmd_duration$line_break$python$character";
+
+        os = {
+          disabled = false;
+          format   = "[$symbol]($style) ";
+          style    = "blue";
+          symbols  = { NixOS = ""; };
+        };
 
         directory.style = "blue";
 

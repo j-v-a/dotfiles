@@ -15,6 +15,9 @@
       xwayland.enable = true;
     };
 
+    programs.hyprlock.enable  = true;
+    services.hypridle.enable  = true;
+
     # XDG portal for Wayland (needed for screen sharing, file pickers, etc.)
     # xdg-desktop-portal-gtk is added by gnome.nix when GNOME coexists.
     xdg.portal = {

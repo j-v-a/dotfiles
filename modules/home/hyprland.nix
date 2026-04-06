@@ -41,6 +41,7 @@
           "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
           "wpaperd"
           "blueman-applet"
+          "hypridle"
         ];
 
         input = {
@@ -81,6 +82,7 @@
           "$mod, Return, exec, kitty"
           "$mod, Q, killactive"
           "$mod, M, exit"
+          "$mod, L, exec, hyprlock"
           "$mod, E, exec, nautilus"
           "$mod, V, togglefloating"
           "$mod, R, exec, rofi -modi drun -show drun"
@@ -256,6 +258,73 @@
 
       [any.transition.fade]
     '';
+
+    # ── Hypridle (idle daemon) ────────────────────────────────────────────────────
+    services.hypridle = {
+      enable = true;
+      settings = {
+        general = {
+          lock_cmd        = "pidof hyprlock || hyprlock";  # don't spawn multiple hyprlock
+          before_sleep_cmd = "loginctl lock-session";
+          after_sleep_cmd  = "hyprctl dispatch dpms on";
+        };
+        listener = [
+          {
+            timeout  = 300;  # 5 min: lock screen
+            on-timeout = "loginctl lock-session";
+          }
+          {
+            timeout  = 360;  # 6 min: turn off displays
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume  = "hyprctl dispatch dpms on";
+          }
+        ];
+      };
+    };
+
+    # ── Hyprlock (screen locker) ──────────────────────────────────────────────────
+    programs.hyprlock = {
+      enable = true;
+      settings = {
+        general = {
+          disable_loading_bar = true;
+          hide_cursor         = true;
+        };
+        background = [{
+          monitor = "";
+          path    = "screenshot";
+          blur_passes = 3;
+          blur_size   = 8;
+        }];
+        input-field = [{
+          monitor  = "";
+          size     = "300, 50";
+          position = "0, -80";
+          halign   = "center";
+          valign   = "center";
+          fade_on_empty = false;
+          placeholder_text = "";
+          check_color  = "rgb(cba6f7)";
+          fail_color   = "rgb(f38ba8)";
+          font_color   = "rgb(cdd6f4)";
+          inner_color  = "rgb(313244)";
+          outer_color  = "rgb(6c7086)";
+          outline_thickness = 2;
+          shadow_passes = 2;
+        }];
+        label = [{
+          monitor  = "";
+          text     = "$TIME";
+          position = "0, 160";
+          halign   = "center";
+          valign   = "center";
+          font_size   = 64;
+          font_family = "JetBrainsMono Nerd Font Mono";
+          color = "rgb(cdd6f4)";
+          shadow_passes = 2;
+        }];
+      };
+    };
 
     # ── GTK theme (for GTK apps running under Hyprland) ──────────────────────────
     # gtk.theme is set by catppuccin.nix when catppuccin is in the feature list.

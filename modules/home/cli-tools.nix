@@ -32,6 +32,7 @@
       btop            # interactive process/resource monitor
       fastfetch       # system info fetcher
       ffmpeg          # video/audio processing
+      unimatrix       # matrix rain terminal screensaver
 
       # Misc utilities
       tree

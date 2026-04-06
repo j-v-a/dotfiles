@@ -103,6 +103,9 @@
 
       # ── VPN ───────────────────────────────────────────────────────────────────
       protonvpn-gui                # ProtonVPN client
+
+      # ── Web apps (native Electron) ────────────────────────────────────────────
+      youtube-music                # YouTube Music native Electron app
     ];
 
     # ── Brave flags ───────────────────────────────────────────────────────────────
@@ -111,5 +114,46 @@
     home.file.".config/brave-flags.conf".text = ''
       --password-store=basic
     '';
+
+    # ── Web apps (PWA-style via Brave --app) ──────────────────────────────────────
+    # Sites without native Linux apps; opened in Brave app mode (no browser chrome).
+    xdg.desktopEntries = {
+      raindrop = {
+        name       = "Raindrop.io";
+        exec       = "brave --app=https://app.raindrop.io";
+        comment    = "Bookmark manager";
+        categories = [ "Utility" ];
+      };
+      workflowy = {
+        name       = "WorkFlowy";
+        exec       = "brave --app=https://workflowy.com";
+        comment    = "Outliner and note-taking";
+        categories = [ "Utility" "Office" ];
+      };
+      hardcover = {
+        name       = "Hardcover";
+        exec       = "brave --app=https://hardcover.app";
+        comment    = "Book tracker";
+        categories = [ "Utility" ];
+      };
+      protonmail = {
+        name       = "Proton Mail";
+        exec       = "brave --app=https://mail.proton.me";
+        comment    = "Encrypted email";
+        categories = [ "Network" "Email" ];
+      };
+      protoncalendar = {
+        name       = "Proton Calendar";
+        exec       = "brave --app=https://calendar.proton.me";
+        comment    = "Encrypted calendar";
+        categories = [ "Utility" "Calendar" ];
+      };
+      protondrive = {
+        name       = "Proton Drive";
+        exec       = "brave --app=https://drive.proton.me";
+        comment    = "Encrypted cloud storage";
+        categories = [ "Utility" "FileManager" ];
+      };
+    };
   };
 }

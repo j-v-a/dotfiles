@@ -19,6 +19,9 @@
       # ── Browsers ──────────────────────────────────────────────────────────────
       brave                        # privacy-focused Chromium browser
 
+      # ── Password / Identity ───────────────────────────────────────────────────
+      proton-pass                  # Proton password manager + identity
+
       # ── Communication ─────────────────────────────────────────────────────────
       discord                      # voice/text/video chat (unfree)
       zoom-us                      # video conferencing (unfree)
@@ -100,5 +103,12 @@
       # ── VPN ───────────────────────────────────────────────────────────────────
       protonvpn-gui                # ProtonVPN client
     ];
+
+    # ── Brave flags ───────────────────────────────────────────────────────────────
+    # Use plaintext password store — no keyring/KDE wallet prompt.
+    # Safe because Proton Pass handles all actual secrets; Brave stores nothing sensitive.
+    home.file.".config/brave-flags.conf".text = ''
+      --password-store=basic
+    '';
   };
 }

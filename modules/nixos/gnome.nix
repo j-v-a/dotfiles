@@ -26,6 +26,10 @@
     # GNOME keyring — unlocks on GDM login; used by apps for credential storage
     services.gnome.gnome-keyring.enable = true;
 
+    # PAM integration — auto-unlocks the keyring on GDM login so apps
+    # (Brave, Chrome, etc.) don't prompt for the keyring password.
+    security.pam.services.gdm.enableGnomeKeyring = true;
+
     # XDG portal for GNOME apps (file pickers, screen sharing, etc.)
     # xdg-desktop-portal-hyprland is added by hyprland.nix; we add the GTK/GNOME portal here.
     xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];

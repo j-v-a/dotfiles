@@ -83,6 +83,7 @@
           "$mod, Q, killactive"
           "$mod, M, exit"
           "$mod, L, exec, hyprlock"
+          "$mod SHIFT, E, exec, wlogout"
           "$mod, E, exec, nautilus"
           "$mod, V, togglefloating"
           "$mod, R, exec, rofi -modi drun -show drun"
@@ -145,22 +146,37 @@
         position = "top";
         modules-left   = [ "hyprland/workspaces" ];
         modules-center = [ "clock" ];
-        modules-right  = [ "cpu" "memory" "temperature" "pulseaudio" "network" "battery" "tray" ];
+        modules-right  = [ "idle_inhibitor" "cpu" "memory" "temperature" "pulseaudio" "network" "battery" "tray" "custom/power" ];
         # Waybar clock format: {} is the time placeholder; strftime codes go inside.
         # Without {}, the format string is treated as a literal template.
-        clock   = { format = " {:%a %d %b  %H:%M}"; tooltip = false; };
-        cpu     = { format = " {usage}%"; interval = 5; };
-        memory  = { format = " {percentage}%"; interval = 5; };
+        clock   = { format = " {:%a %d %b  %H:%M}"; tooltip = false; };
+        cpu     = { format = " {usage}%"; interval = 5; };
+        memory  = { format = " {percentage}%"; interval = 5; };
         network = {
-          format-wifi         = " {essid}";
-          format-ethernet     = " {ifname}";
+          format-wifi         = " {essid}";
+          format-ethernet     = " {ifname}";
           format-disconnected = "⚠ Disconnected";
         };
         pulseaudio = {
           format       = "{icon} {volume}%";
-          format-muted = " muted";
-          format-icons = { default = [ "" "" "" ]; };
+          format-muted = " muted";
+          format-icons = { default = [ "" "" "" ]; };
           on-click     = "pavucontrol";
+        };
+        idle_inhibitor = {
+          format = "{icon}";
+          format-icons = {
+            activated   = "";
+            deactivated = "";
+          };
+          tooltip = true;
+          tooltip-format-activated   = "Idle inhibitor ON — screen won't lock";
+          tooltip-format-deactivated = "Idle inhibitor OFF";
+        };
+        "custom/power" = {
+          format   = "";
+          tooltip  = false;
+          on-click = "wlogout";
         };
       }];
 
@@ -194,9 +210,19 @@
           border-bottom: 2px solid #89b4fa;
         }
 
-        #clock, #cpu, #memory, #temperature, #pulseaudio, #network, #battery, #tray {
+        #clock, #cpu, #memory, #temperature, #pulseaudio, #network, #battery, #tray, #idle-inhibitor, #custom-power {
           padding: 0 8px;
           color: #cdd6f4;
+        }
+
+        #idle-inhibitor.activated {
+          color: #a6e3a1;
+        }
+
+        #custom-power {
+          color: #f38ba8;
+          padding: 0 12px;
+          font-size: 16px;
         }
       '';
     };
@@ -221,6 +247,21 @@
       };
     };
 
+    # ── Kitty (terminal) ──────────────────────────────────────────────────────────
+    programs.kitty = {
+      enable = true;
+      font = {
+        name = "JetBrainsMono Nerd Font Mono";
+        size = 12;
+      };
+      settings = {
+        cursor_shape       = "beam";
+        scrollback_lines   = 10000;
+        enable_audio_bell  = false;
+        window_padding_width = 8;
+      };
+    };
+
     # ── Rofi (launcher) ───────────────────────────────────────────────────────────
     # theme is set by catppuccin.nix when catppuccin is in the feature list.
     programs.rofi = {
@@ -230,16 +271,17 @@
 
     # ── Desktop packages ──────────────────────────────────────────────────────────
     home.packages = with pkgs; [
-      kitty           # terminal
       libnotify       # notify-send CLI (dunst itself is managed by services.dunst above)
       grimblast       # screenshot (wlr-screencopy + slurp)
       wl-clipboard    # wl-copy / wl-paste
       pavucontrol     # PulseAudio/PipeWire GUI volume control
       nautilus        # file manager (GTK)
-      gnome-themes-extra  # themes for GTK apps running under Hyprland
-      adwaita-icon-theme
+      gnome-themes-extra       # themes for GTK apps running under Hyprland
+      papirus-icon-theme       # icon theme (replaces Adwaita)
+      catppuccin-cursors.mochaDark  # cursor theme matching Catppuccin Mocha
       wpaperd         # wallpaper daemon (Wayland, wlr-layer-shell)
       blueberry       # GTK bluetooth manager (backend: blueman service in nixos/base.nix)
+      wlogout         # Wayland logout/power menu screen
     ];
 
     # ── wpaperd (wallpaper daemon) ────────────────────────────────────────────────
@@ -328,11 +370,26 @@
 
     # ── GTK theme (for GTK apps running under Hyprland) ──────────────────────────
     # gtk.theme is set by catppuccin.nix when catppuccin is in the feature list.
-    # Only set icon/cursor here; avoid conflicting with catppuccin's theme.name.
     gtk = {
       enable = true;
-      iconTheme.name   = "Adwaita";
-      cursorTheme.name = "Adwaita";
+      iconTheme = {
+        name    = "Papirus-Dark";
+        package = pkgs.papirus-icon-theme;
+      };
+      cursorTheme = {
+        name    = "catppuccin-mocha-dark-cursors";
+        package = pkgs.catppuccin-cursors.mochaDark;
+        size    = 24;
+      };
+    };
+
+    # Propagate cursor theme to Wayland/X11 env vars so all apps pick it up.
+    home.pointerCursor = {
+      name    = "catppuccin-mocha-dark-cursors";
+      package = pkgs.catppuccin-cursors.mochaDark;
+      size    = 24;
+      gtk.enable  = true;
+      x11.enable  = true;
     };
   };
 }

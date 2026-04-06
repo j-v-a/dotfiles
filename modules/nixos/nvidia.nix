@@ -7,6 +7,10 @@
 # - open = false  REQUIRED for Pascal; open kernel module only supports Turing+
 # - modesetting   REQUIRED for Hyprland / Wayland
 # - hardware.graphics replaces hardware.opengl (renamed in NixOS 24.11)
+# - nvidia-vaapi-driver in extraPackages: required for Chromium VA-API (VaapiVideoDecoder
+#   feature flag injected by the nixpkgs Brave/Chrome wrapper). Without it the GPU
+#   process hits a SIGTRAP crash immediately on launch.
+#   Verify after rebuild: vainfo --display drm --device /dev/dri/renderD128
 { ... }:
 
 {
@@ -19,8 +23,14 @@
       powerManagement.enable = false;  # desktop — not a laptop
     };
 
-    hardware.graphics.enable      = true;
-    hardware.graphics.enable32Bit = true;  # needed for Steam + 32-bit games
+    hardware.graphics = {
+      enable      = true;
+      enable32Bit = true;  # needed for Steam + 32-bit games
+      extraPackages = with pkgs; [
+        nvidia-vaapi-driver  # VA-API via NVDEC; required for Brave/Chrome GPU process
+        libva                # VA-API runtime
+      ];
+    };
 
     services.xserver.videoDrivers = [ "nvidia" ];
   };

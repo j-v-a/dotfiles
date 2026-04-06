@@ -166,15 +166,15 @@
         idle_inhibitor = {
           format = "{icon}";
           format-icons = {
-            activated   = "";
-            deactivated = "";
+            activated   = "󰛨";
+            deactivated = "󰒲";
           };
           tooltip = true;
           tooltip-format-activated   = "Idle inhibitor ON — screen won't lock";
           tooltip-format-deactivated = "Idle inhibitor OFF";
         };
         "custom/power" = {
-          format   = "";
+          format   = "󰀑";
           tooltip  = false;
           on-click = "wlogout";
         };

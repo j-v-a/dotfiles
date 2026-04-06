@@ -152,7 +152,8 @@
       };
       protondrive = {
         name       = "Proton Drive";
-        icon       = "google-drive";
+        # No matching icon in Papirus-Dark; falls back to generic app icon.
+        # google-drive is misleading so omitted.
         exec       = "brave --app=https://drive.proton.me";
         comment    = "Encrypted cloud storage";
         categories = [ "Utility" "FileManager" ];

@@ -28,6 +28,11 @@
       wget
       httpie
 
+      # System monitoring / media
+      btop            # interactive process/resource monitor
+      fastfetch       # system info fetcher
+      ffmpeg          # video/audio processing
+
       # Misc utilities
       tree
       watch

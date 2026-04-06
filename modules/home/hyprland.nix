@@ -12,7 +12,7 @@
 { ... }:
 
 {
-  flake.modules.homeManager.hyprland = { pkgs, homeDirectory, wallpapers, ... }: {
+  flake.modules.homeManager.hyprland = { pkgs, lib, config, homeDirectory, wallpapers, ... }: {
     # ── Hyprland user config ───────────────────────────────────────────────────────
     wayland.windowManager.hyprland = {
       enable = true;
@@ -103,7 +103,7 @@
           "$mod SHIFT, E, exec, wlogout"
           "$mod, E, exec, nautilus"
           "$mod, V, togglefloating"
-          "$mod, R, exec, rofi -modi drun -show drun"
+          "$mod, R, exec, rofi -show drun"
           "$mod, P, pseudo"
           "$mod, J, togglesplit"
 
@@ -280,10 +280,45 @@
     };
 
     # ── Rofi (launcher) ───────────────────────────────────────────────────────────
-    # theme is set by catppuccin.nix when catppuccin is in the feature list.
+    # Catppuccin theme is applied by catppuccin.nix. We override layout/behaviour here.
     programs.rofi = {
       enable  = true;
       package = pkgs.rofi-wayland;
+
+      # Extra config on top of the catppuccin theme:
+      # - drun,window,run modes with visible tab switcher for categorisation
+      # - single column, more lines, larger window
+      # - show app icons
+      # - fix selected highlight (catppuccin sets selected-col = bg, invisible)
+      extraConfig = {
+        modi            = "drun,window,run";
+        show-icons      = true;
+        icon-theme      = "Papirus-Dark";
+        drun-display-format = "{name}";
+        display-drun    = " Apps";
+        display-window  = " Windows";
+        display-run     = " Run";
+        sidebar-mode    = true;   # show mode tabs at the bottom
+      };
+
+      theme = let
+        inherit (config.lib.formats.rasi) mkLiteral;
+      in {
+        # Fix the invisible selected highlight from catppuccin base theme
+        "element selected" = {
+          background-color = mkLiteral "@blue";
+          text-color       = mkLiteral "@bg-col";
+        };
+        # Single column, taller window
+        "listview" = {
+          columns = mkLiteral "1";
+          lines   = mkLiteral "10";
+        };
+        "window" = {
+          height = mkLiteral "500px";
+          width  = mkLiteral "640px";
+        };
+      };
     };
 
     # ── Desktop packages ──────────────────────────────────────────────────────────

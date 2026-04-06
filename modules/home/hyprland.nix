@@ -149,18 +149,18 @@
         modules-right  = [ "idle_inhibitor" "cpu" "memory" "temperature" "pulseaudio" "network" "battery" "tray" "custom/power" ];
         # Waybar clock format: {} is the time placeholder; strftime codes go inside.
         # Without {}, the format string is treated as a literal template.
-        clock   = { format = " {:%a %d %b  %H:%M}"; tooltip = false; };
-        cpu     = { format = " {usage}%"; interval = 5; };
-        memory  = { format = " {percentage}%"; interval = 5; };
+        clock   = { format = " {:%a %d %b  %H:%M}"; tooltip = false; };
+        cpu     = { format = " {usage}%"; interval = 5; };
+        memory  = { format = " {percentage}%"; interval = 5; };
         network = {
-          format-wifi         = " {essid}";
-          format-ethernet     = " {ifname}";
+          format-wifi         = " {essid}";
+          format-ethernet     = " {ifname}";
           format-disconnected = "⚠ Disconnected";
         };
         pulseaudio = {
           format       = "{icon} {volume}%";
-          format-muted = " muted";
-          format-icons = { default = [ "" "" "" ]; };
+          format-muted = " muted";
+          format-icons = { default = [ "" "" "" ]; };
           on-click     = "pavucontrol";
         };
         idle_inhibitor = {

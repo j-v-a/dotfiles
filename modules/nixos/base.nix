@@ -74,6 +74,7 @@
     #   slack                — from home/desktop-apps.nix (proprietary)
     #   bitwig-studio        — from home/desktop-apps.nix (commercial DAW)
     #   vcv-rack             — from home/desktop-apps.nix (cc-by-nc-40 + unfreeRedistributable bundled assets)
+    #   1password            — from home/desktop-apps.nix (unfree)
     #   idea-ultimate        — from home/desktop-apps.nix (JetBrains commercial)
     #   pycharm-professional — from home/desktop-apps.nix (JetBrains commercial)
     #   goland               — from home/desktop-apps.nix (JetBrains commercial)
@@ -102,6 +103,8 @@
         "slack"
         "bitwig-studio"
         "vcv-rack"
+        # 1Password
+        "1password"
         # JetBrains IDEs (home/desktop-apps.nix)
         "idea-ultimate"
         "pycharm-professional"

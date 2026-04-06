@@ -21,6 +21,7 @@
 
       # ── Password / Identity ───────────────────────────────────────────────────
       proton-pass                  # Proton password manager + identity
+      _1password-gui               # 1Password desktop client (unfree)
 
       # ── Communication ─────────────────────────────────────────────────────────
       discord                      # voice/text/video chat (unfree)

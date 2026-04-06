@@ -59,6 +59,9 @@
           "wpaperd"
           "blueman-applet"
           "hypridle"
+          # nwg-drawer resident instance — keeps the drawer in memory for fast opens.
+          # Subsequent invocations (Super+R) toggle it via pkill -USR1.
+          "nwg-drawer -r -wm hyprland -pblock hyprlock -pbexit wlogout -pbreboot 'systemctl reboot' -pbpoweroff 'systemctl poweroff' -pbsleep 'systemctl suspend' -pbuseicontheme -i Papirus-Dark"
         ];
 
         input = {
@@ -103,7 +106,8 @@
           "$mod SHIFT, E, exec, wlogout"
           "$mod, E, exec, nautilus"
           "$mod, V, togglefloating"
-          "$mod, R, exec, rofi -show drun"
+          "$mod, R, exec, nwg-drawer"
+          "$mod, Tab, exec, rofi -show window"
           "$mod, P, pseudo"
           "$mod, J, togglesplit"
 
@@ -279,7 +283,9 @@
       };
     };
 
-    # ── Rofi (launcher) ───────────────────────────────────────────────────────────
+    # ── Rofi (window switcher) ────────────────────────────────────────────────────
+    # App launching is handled by nwg-drawer (Super+R). Rofi is kept for window
+    # switching (Super+Tab → rofi -show window) and quick run mode.
     # Catppuccin theme is applied by catppuccin.nix. We override layout/behaviour here.
     programs.rofi = {
       enable  = true;
@@ -291,14 +297,12 @@
       # - show app icons
       # - fix selected highlight (catppuccin sets selected-col = bg, invisible)
       extraConfig = {
-        modi            = "drun,window,run";
+        modi            = "window,run";
         show-icons      = true;
         icon-theme      = "Papirus-Dark";
-        drun-display-format = "{name}";
-        display-drun    = " Apps";
         display-window  = " Windows";
         display-run     = " Run";
-        sidebar-mode    = true;   # show mode tabs at the bottom
+        sidebar-mode    = true;
       };
 
       theme = let
@@ -334,6 +338,7 @@
       wpaperd         # wallpaper daemon (Wayland, wlr-layer-shell)
       blueberry       # GTK bluetooth manager (backend: blueman service in nixos/base.nix)
       wlogout         # Wayland logout/power menu screen
+      nwg-drawer      # GTK app drawer with category sidebar (replaces rofi for drun)
     ];
 
     # ── wpaperd (wallpaper daemon) ────────────────────────────────────────────────

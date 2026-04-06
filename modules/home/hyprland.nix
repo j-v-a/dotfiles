@@ -41,8 +41,10 @@
           "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
           # Firefox / Thunderbird
           "MOZ_ENABLE_WAYLAND,1"
-          # Java/JVM apps (e.g. JetBrains IDEs via _JAVA_AWT_WM_NONREPARENTING workaround)
+          # Java/JVM apps — _JAVA_AWT_WM_NONREPARENTING fixes window decorations;
+          # JAVA_TOOL_OPTIONS enables the Wayland toolkit for JetBrains IDEs
           "_JAVA_AWT_WM_NONREPARENTING,1"
+          "JAVA_TOOL_OPTIONS,-Dawt.toolkit.name=WLToolkit"
           # SDL2 apps
           "SDL_VIDEODRIVER,wayland"
           # Clutter (GNOME apps)

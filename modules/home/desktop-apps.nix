@@ -10,10 +10,18 @@
   flake.modules.homeManager.desktop-apps = { pkgs, ... }: {
     home.packages = with pkgs; [
       # ── Browsers ──────────────────────────────────────────────────────────────
-      # Use commandLineArgs to inject --password-store=basic via wrapGAppsHook.
-      # brave-flags.conf is NOT read by the nixpkgs Brave wrapper (Arch-specific patch);
-      # the correct mechanism is the commandLineArgs package parameter.
-      (brave.override { commandLineArgs = "--password-store=basic"; })
+      # Use commandLineArgs to inject flags via wrapGAppsHook (brave-flags.conf is
+      # an Arch-specific patch and is NOT read by the nixpkgs wrapper).
+      #
+      # VA-API is explicitly disabled here. The nixpkgs Brave wrapper unconditionally
+      # injects --enable-features=VaapiVideoDecoder,VaapiVideoEncoder, but the wrapper
+      # also prepends mesa-24.x/lib to LD_LIBRARY_PATH, causing Mesa's libgbm.so to
+      # load instead of NVIDIA's. Mesa's GBM doesn't support the NV12 format that
+      # Chromium's GPU process requests for VA-API decode, so it hits a CHECK()
+      # assertion → SIGTRAP crash. Disabling VA-API sidesteps the broken interaction.
+      # GBM_BACKEND=nvidia-drm (set in nvidia.nix) is insufficient because it only
+      # works if NVIDIA's libgbm.so is loaded — Mesa's libgbm ignores that variable.
+      (brave.override { commandLineArgs = "--password-store=basic --disable-features=VaapiVideoDecoder,VaapiVideoEncoder,UseChromeOSDirectVideoDecoder"; })
 
       # ── Password / Identity ───────────────────────────────────────────────────
       proton-pass                  # Proton password manager + identity

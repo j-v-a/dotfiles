@@ -11,13 +11,13 @@
 #   feature flag injected by the nixpkgs Brave/Chrome wrapper). Without it the GPU
 #   process hits a SIGTRAP crash immediately on launch.
 #   Verify after rebuild: vainfo --display drm --device /dev/dri/renderD128
-# - GBM_BACKEND / __GLX_VENDOR_LIBRARY_NAME: the nixpkgs Brave wrapper puts
-#   mesa-24.x/lib in LD_LIBRARY_PATH. Mesa's GBM backend doesn't know NV12 format
-#   (used by the Chromium GPU process for VA-API decode), so it logs
-#   "gbm_drv_common: Unknown or not supported format: NV12" and the GPU subprocess
-#   hits a CHECK() → SIGTRAP. Forcing GBM_BACKEND=nvidia-drm makes the GPU process
-#   use NVIDIA's GBM backend (/run/opengl-driver/lib/gbm/nvidia-drm_gbm.so).
-#   __GLX_VENDOR_LIBRARY_NAME=nvidia ensures libglvnd routes GLX to the NVIDIA vendor.
+# - GBM_BACKEND / __GLX_VENDOR_LIBRARY_NAME: kept for Hyprland and other Wayland
+#   compositors / apps that are NOT wrapped by nixpkgs wrappers.
+#   NOTE: GBM_BACKEND=nvidia-drm does NOT fix Brave's SIGTRAP crash — the nixpkgs
+#   Brave wrapper prepends mesa-24.x/lib to LD_LIBRARY_PATH so Mesa's libgbm.so
+#   loads first, and Mesa's libgbm ignores GBM_BACKEND (the nvidia-drm backend plugin
+#   at /run/opengl-driver/lib/gbm/nvidia-drm_gbm.so is only found by NVIDIA's libgbm).
+#   The Brave fix is in desktop-apps.nix: disable VA-API via commandLineArgs.
 # - __EGL_VENDOR_LIBRARY_DIRS: belt-and-suspenders for EGL vendor discovery — points
 #   libglvnd at /run/opengl-driver/share/glvnd/egl_vendor.d in contexts where
 #   the wrapper's isolated libglvnd would otherwise find nothing.

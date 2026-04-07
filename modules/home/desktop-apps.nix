@@ -12,7 +12,8 @@
     home.packages = with pkgs; [
       # ── Browsers ──────────────────────────────────────────────────────────────
       firefox                      # stable Firefox
-      firefox-devedition           # Firefox Developer Edition (separate profile, purple UI)
+      # firefox-devedition is in environment.systemPackages (nixos/base.nix) —
+      # cannot coexist with firefox in home-manager home.packages (library filename collision)
 
       # ── Password / Identity ───────────────────────────────────────────────────
       proton-pass                  # Proton password manager + identity

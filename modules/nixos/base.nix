@@ -91,6 +91,14 @@
       settings.gui.address = "127.0.0.1:8384";
     };
 
+    # ── System packages ───────────────────────────────────────────────────────────
+    environment.systemPackages = with pkgs; [
+      # firefox-devedition cannot coexist with firefox in home-manager home.packages
+      # (both install libmozavutil.so to the same profile path → collision).
+      # Installing at system level avoids the merge conflict.
+      firefox-devedition
+    ];
+
     # ── Nix settings ──────────────────────────────────────────────────────────────
     nix.settings = {
       experimental-features = [ "nix-command" "flakes" ];

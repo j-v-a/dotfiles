@@ -47,6 +47,9 @@
         {
           networking.hostName = hostname;
 
+          # Wire NUR in as a nixpkgs overlay so pkgs.nur is available in all modules.
+          nixpkgs.overlays = [ inputs.nur.overlays.default ];
+
           # Use the same nixpkgs instance as NixOS (no separate pkgs eval).
           home-manager.useGlobalPkgs   = true;
           # Install user packages into /etc/profiles, not ~/.nix-profile.

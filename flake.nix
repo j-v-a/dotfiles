@@ -29,6 +29,11 @@
 
     import-tree.url = "github:vic/import-tree";
 
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     catppuccin.url = "github:catppuccin/nix/v1.2.1";
 
     # Wallpaper collection — pinned to a specific commit for reproducibility.

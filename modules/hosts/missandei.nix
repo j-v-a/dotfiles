@@ -29,6 +29,7 @@
         "editors"           # HM: neovim, zed
         "linux-toolchains"  # HM: nodejs, python, jdk, rust, go, gnused, age, fonts
         "desktop-apps"      # HM: GUI apps — browsers, IDEs, communication, media, utils
+        "firefox"           # HM: Firefox + declarative extensions (NUR)
         "catppuccin"        # HM: Catppuccin Mocha theme for waybar/dunst/rofi/hyprland/kitty/cli
         "ai-tools"          # HM: OpenCode AppImage (Linux); Mac uses Homebrew cask
       ];

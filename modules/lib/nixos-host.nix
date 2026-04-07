@@ -1,10 +1,11 @@
-# modules/_lib/nixos-host.nix
+# modules/lib/nixos-host.nix
 # Flake-parts module: exports flake.lib.loadNixosAndHmModuleForUser.
 #
-# This helper assembles a NixOS system config from a feature list.
-# Each feature name maps to:
-#   - config.flake.modules.nixos.<feature>   (NixOS system module, may be absent)
+# Assembles a NixOS system config from a feature list.
+# Each feature name is looked up in both:
+#   - config.flake.modules.nixos.<feature>        (NixOS system module, may be absent)
 #   - config.flake.modules.homeManager.<feature>  (HM user module, may be absent)
+# A feature absent from BOTH namespaces is a hard error at eval time (typo guard).
 #
 # Usage (from a host module):
 #   flake.nixosConfigurations.missandei =
@@ -12,7 +13,7 @@
 #       hostname = "missandei";
 #       system   = "x86_64-linux";
 #       username = "jasper";
-#       features = [ "base" "hyprland" "dev" "gaming" "nvidia" "shell"
+#       features = [ "base" "users" "hyprland" "dev" "gaming" "nvidia" "shell"
 #                    "cli-tools" "git" "editors" "linux-toolchains" ];
 #       extraNixosModules = [ ./hardware/missandei.nix ];
 #     };
@@ -23,27 +24,37 @@
     cfg:
     { hostname, system, username, features, extraNixosModules ? [] }:
     let
-      nixpkgs   = inputs.nixpkgs-linux;
-      nixosModules  = builtins.map (f: cfg.flake.modules.nixos.${f}          or {}) features;
-      hmModules     = builtins.map (f: cfg.flake.modules.homeManager.${f}    or {}) features;
+      nixpkgs = inputs.nixpkgs;
+
+      # Validate every feature name: throw at eval time if unrecognised in both namespaces.
+      validateFeature = f:
+        if cfg.flake.modules.nixos ? ${f} || cfg.flake.modules.homeManager ? ${f}
+        then f
+        else throw "dotfiles: unknown feature \"${f}\" — not found in nixos.* or homeManager.*";
+
+      validatedFeatures = map validateFeature features;
+      nixosModules      = map (f: cfg.flake.modules.nixos.${f}       or {}) validatedFeatures;
+      hmModules         = map (f: cfg.flake.modules.homeManager.${f} or {}) validatedFeatures;
     in
     nixpkgs.lib.nixosSystem {
       inherit system;
-      specialArgs = { inherit inputs; inherit (inputs) nixos-hardware sops-nix; };
+      # username is passed so NixOS feature modules (e.g. users.nix, virt.nix) can
+      # reference the user without hardcoding a name.
+      specialArgs = { inherit inputs username; inherit (inputs) nixos-hardware sops-nix; };
       modules = nixosModules ++ extraNixosModules ++ [
         inputs.sops-nix.nixosModules.sops
         inputs.home-manager.nixosModules.home-manager
         {
           networking.hostName = hostname;
 
-          # home-manager: use the same nixpkgs instance as NixOS (no separate pkgs eval)
-          home-manager.useGlobalPkgs    = true;
-          # home-manager: install user packages into /etc/profiles, not ~/.nix-profile
+          # Use the same nixpkgs instance as NixOS (no separate pkgs eval).
+          home-manager.useGlobalPkgs   = true;
+          # Install user packages into /etc/profiles, not ~/.nix-profile.
           # Required for Fish/Starship to land on the system PATH correctly under NixOS.
-          home-manager.useUserPackages  = true;
+          home-manager.useUserPackages = true;
 
-          # Pass username + homeDirectory to every HM module so feature modules
-          # can reference them without hardcoding a specific user.
+          # Pass username + homeDirectory so HM feature modules can reference them
+          # without hardcoding a specific user.
           home-manager.extraSpecialArgs = {
             inherit username;
             homeDirectory = "/home/${username}";
@@ -52,8 +63,8 @@
 
           home-manager.users.${username}.imports = [
             ({ osConfig, ... }: { home.stateVersion = osConfig.system.stateVersion; })
-            # catppuccin/nix home-manager module — makes catppuccin.* options available
-            # in every feature module. Enable per-host via the "catppuccin" feature.
+            # catppuccin/nix HM module — makes catppuccin.* options available in every
+            # feature module. Opt in per-host via the "catppuccin" feature.
             inputs.catppuccin.homeManagerModules.catppuccin
           ] ++ hmModules;
         }

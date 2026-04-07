@@ -15,6 +15,9 @@
       xwayland.enable = true;
     };
 
+    # hyprlock must be enabled at the system level (not only in home-manager) because
+    # NixOS needs to install a PAM entry (/etc/pam.d/hyprlock) for screen-unlock auth.
+    # Without this, hyprlock starts but password verification always fails.
     programs.hyprlock.enable  = true;
     services.hypridle.enable  = true;
 

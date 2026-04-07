@@ -1,14 +1,6 @@
 # modules/home/hyprland.nix
 # Hyprland user-level configuration — personal workstation only.
-# System-level Hyprland enablement is in modules/nixos/hyprland.nix.
-# This file manages: Hyprland config, waybar, rofi, dunst, desktop packages, GTK.
-#
-# systemd integration note: hyprland.systemd.enable = true makes Hyprland register
-# itself as a systemd target (hyprland-session.target). Waybar and Dunst are then
-# started as systemd user services (programs.waybar.systemd / services.dunst) which
-# wait on that target. This is more reliable than exec-once and ensures the Hyprland
-# IPC socket is available before Waybar tries to connect to it (needed for
-# hyprland/workspaces module).
+# System-level enablement (PAM, pipewire, XDG portals) is in modules/nixos/hyprland.nix.
 { ... }:
 
 {
@@ -32,24 +24,21 @@
           "XDG_SESSION_TYPE,wayland"
           "GBM_BACKEND,nvidia-drm"
           "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-          "WLR_NO_HARDWARE_CURSORS,1"  # fixes invisible cursor on Nvidia+Wayland
+          # cursor.no_hardware_cursors = true (below) is the correct Hyprland ≥0.41 fix
+          # for invisible cursors on Nvidia+Wayland. WLR_NO_HARDWARE_CURSORS was the
+          # wlroots-era workaround and is now ignored.
 
           # Wayland-native flags for common toolkits
-          # Electron (VSCode, Obsidian, Discord, Slack, etc.)
-          "NIXOS_OZONE_WL,1"
-          # Qt apps (KDE apps, etc.)
-          "QT_QPA_PLATFORM,wayland"
+          "NIXOS_OZONE_WL,1"               # Electron (VSCode, Obsidian, Discord, Slack, etc.)
+          "QT_QPA_PLATFORM,wayland"         # Qt apps
           "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
-          # Firefox / Thunderbird
-          "MOZ_ENABLE_WAYLAND,1"
-          # Java/JVM apps — _JAVA_AWT_WM_NONREPARENTING fixes window decorations;
+          "MOZ_ENABLE_WAYLAND,1"            # Firefox / Thunderbird
+          # _JAVA_AWT_WM_NONREPARENTING fixes window decorations;
           # JAVA_TOOL_OPTIONS enables the Wayland toolkit for JetBrains IDEs
           "_JAVA_AWT_WM_NONREPARENTING,1"
           "JAVA_TOOL_OPTIONS,-Dawt.toolkit.name=WLToolkit"
-          # SDL2 apps
-          "SDL_VIDEODRIVER,wayland"
-          # Clutter (GNOME apps)
-          "CLUTTER_BACKEND,wayland"
+          "SDL_VIDEODRIVER,wayland"          # SDL2 apps
+          "CLUTTER_BACKEND,wayland"          # Clutter (GNOME apps)
         ];
 
         # waybar and dunst are started as systemd user services (see below) —
@@ -78,6 +67,12 @@
           "col.active_border"   = "rgba(88c0d0ff) rgba(81a1c1ff) 45deg";
           "col.inactive_border" = "rgba(4c566aff)";
           layout = "dwindle";
+        };
+
+        cursor = {
+          # Fixes invisible cursor on Nvidia+Wayland (replaces the old wlroots-era
+          # WLR_NO_HARDWARE_CURSORS env var, which Hyprland ≥0.41 no longer reads).
+          no_hardware_cursors = true;
         };
 
         decoration = {
@@ -168,9 +163,8 @@
         position = "top";
         modules-left   = [ "hyprland/workspaces" ];
         modules-center = [ "clock" ];
+        # "battery" is included for future laptop hosts; on Missandei (desktop) it shows empty.
         modules-right  = [ "idle_inhibitor" "cpu" "memory" "temperature" "pulseaudio" "network" "battery" "tray" "custom/power" ];
-        # Waybar clock format: {} is the time placeholder; strftime codes go inside.
-        # Without {}, the format string is treated as a literal template.
         clock   = { format = " {:%a %d %b  %H:%M}"; tooltip = false; };
         cpu     = { format = " {usage}%"; interval = 5; };
         memory  = { format = " {percentage}%"; interval = 5; };
@@ -335,7 +329,7 @@
       nautilus        # file manager (GTK)
       gnome-themes-extra       # themes for GTK apps running under Hyprland
       papirus-icon-theme       # icon theme (replaces Adwaita)
-      catppuccin-cursors.mochaDark  # cursor theme matching Catppuccin Mocha
+      # catppuccin-cursors.mochaDark is pulled in by gtk.cursorTheme and home.pointerCursor below
       wpaperd         # wallpaper daemon (Wayland, wlr-layer-shell)
       blueberry       # GTK bluetooth manager (backend: blueman service in nixos/base.nix)
       wlogout         # Wayland logout/power menu screen

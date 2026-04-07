@@ -2,15 +2,8 @@
 # Linux-only: GUI desktop applications managed by Nix.
 # On macOS these are managed by Homebrew casks (dotfiles-private/darwin/homebrew.nix).
 #
-# Unfree packages in this file that must be listed in base.nix allowUnfreePredicate:
-#   vscode                      — Microsoft license
-#   obsidian                    — proprietary
-#   discord                     — proprietary
-#   spotify                     — proprietary
-#   zoom-us                     — proprietary
-#   slack                       — proprietary
-#   bitwig-studio               — commercial DAW license
-#   jetbrains.*                 — JetBrains commercial license (each product listed separately)
+# Unfree packages (vscode, obsidian, discord, spotify, zoom-us, slack, bitwig-studio,
+# jetbrains.*) are permitted by nixpkgs.config.allowUnfree = true in modules/nixos/base.nix.
 { ... }:
 
 {

@@ -1,9 +1,9 @@
 # modules/hosts/missandei.nix
 # Personal NixOS workstation — Ryzen 9 5900X, Gigabyte Aorus B550, GTX 1060 (Pascal).
-# Declares the feature list; the _lib/nixos-host.nix helper assembles the system.
+# Declares the feature list; modules/lib/nixos-host.nix assembles the system.
 #
-# Features activate both NixOS system config AND home-manager user config in one step.
-# Add/remove a feature name to enable/disable the whole feature (system + user).
+# Each feature activates both the NixOS system config AND the home-manager user config
+# from a single entry. Add/remove a name to enable/disable the whole feature.
 { config, ... }:
 
 {
@@ -12,20 +12,16 @@
       hostname = "missandei";
       system   = "x86_64-linux";
       username = "jasper";
-      # Each feature name is looked up in BOTH flake.modules.nixos and
-      # flake.modules.homeManager. A missing entry in either registry is a no-op ({}).
-      # So a feature like "hyprland" activates BOTH the NixOS system config
-      # (programs.hyprland, SDDM, pipewire) AND the HM user config (waybar, rofi, etc.)
-      # from a single entry here.
       features = [
         "base"              # NixOS: bootloader, locale, nix settings, SSH, docker, syncthing
+        "users"             # NixOS: primary user account + group memberships
         "nvidia"            # NixOS: GTX 1060 driver config
         "hyprland"          # NixOS: Hyprland WM + pipewire  /  HM: waybar, rofi, kitty, GTK
-        "gnome"             # NixOS: GNOME desktop + GDM (session picker for both GNOME and Hyprland)
+        "gnome"             # NixOS: GNOME desktop + GDM (session picker for both WMs)
         "dev"               # NixOS: kubectl, helm, terraform, flux, kubent, etc.
         "gaming"            # NixOS: steam, lutris, gamemode
         "virt"              # NixOS: libvirtd + SPICE for virt-manager
-        "wireshark"         # NixOS: packet capture permissions + wireshark group
+        "wireshark"         # NixOS: setcap packet capture permissions
         "system-utils"      # NixOS: ananicy-cpp daemon + kdeconnect firewall ports
         "shell"             # HM: fish, starship, zoxide, fzf, direnv
         "cli-tools"         # HM: fd, rg, bat, eza, lsd, gh, lazygit, imagemagick, etc.
@@ -33,15 +29,20 @@
         "editors"           # HM: neovim, zed
         "linux-toolchains"  # HM: nodejs, python, jdk, rust, go, gnused, age, fonts
         "desktop-apps"      # HM: GUI apps — browsers, IDEs, communication, media, utils
-        "catppuccin"        # HM: Catppuccin Mocha theme for waybar/dunst/rofi/hyprland/gtk/kitty/cli
+        "catppuccin"        # HM: Catppuccin Mocha theme for waybar/dunst/rofi/hyprland/kitty/cli
         "ai-tools"          # HM: OpenCode AppImage (Linux); Mac uses Homebrew cask
       ];
       extraNixosModules = [
         # Hardware config is not a feature (never reused); import directly.
         ../_hardware/missandei.nix
         # nixos-hardware preset for the Gigabyte B550 board.
-        # Injected here rather than as a feature because it's hardware-specific.
         ({ inputs, ... }: { imports = [ inputs.nixos-hardware.nixosModules.gigabyte-b550 ]; })
+        # Host-specific SSH authorised keys (personal workstation identity).
+        ({ username, ... }: {
+          users.users.${username}.openssh.authorizedKeys.keys = [
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE3qjIsujENfi9C3vnIU29x82lRZ3n3y2rjIkwLDRN64"
+          ];
+        })
       ];
     };
 }

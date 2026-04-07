@@ -36,16 +36,20 @@
       age              # encryption tool for sops-nix secrets
 
       # Fonts (needed for Hyprland + Waybar + KDE/GNOME apps)
-      # nixos-24.11 uses monolithic nerdfonts with an override selector;
-      # the split nerd-fonts.<name> packaging only landed in nixos-unstable/25.05.
+      # TODO(25.05): replace with individual nerd-fonts.* packages when upgrading to nixos-25.05.
+      # The split nerd-fonts.<name> API landed in 25.05; nerdfonts.override is removed there.
+      # When upgrading, replace this block with:
+      #   nerd-fonts.jetbrains-mono nerd-fonts.fira-code nerd-fonts.hack
+      #   nerd-fonts.cascadia-code nerd-fonts.mononoki nerd-fonts.ibm-plex-mono
+      #   nerd-fonts.iosevka nerd-fonts.symbols-only
       (nerdfonts.override { fonts = [
-        "JetBrainsMono"      # primary coding font (terminals, editors)
-        "FiraCode"           # ligature coding font (on Mac via Homebrew cask)
-        "Hack"               # widely-used terminal/editor fallback
-        "CascadiaCode"       # VSCode default; ligature support
-        "Mononoki"           # clean monospace for terminals
-        "IBMPlexMono"        # IBM Plex Mono with Nerd Font patches
-        "Iosevka"            # narrow coding font, popular in dev tooling
+        "JetBrainsMono"        # primary coding font (terminals, editors)
+        "FiraCode"             # ligature coding font (on Mac via Homebrew cask)
+        "Hack"                 # widely-used terminal/editor fallback
+        "CascadiaCode"         # VSCode default; ligature support
+        "Mononoki"             # clean monospace for terminals
+        "IBMPlexMono"          # IBM Plex Mono with Nerd Font patches
+        "Iosevka"              # narrow coding font, popular in dev tooling
         "NerdFontsSymbolsOnly" # symbol-only fallback — ensures icons work in any terminal font
       ]; })
       font-awesome          # waybar icons (solid/brands/regular sets)

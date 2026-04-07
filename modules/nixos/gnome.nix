@@ -12,10 +12,10 @@
     # GNOME desktop environment
     services.xserver.desktopManager.gnome.enable = true;
 
-    # GDM display manager — replaces SDDM as the session picker
-    # In NixOS 24.11, GDM lives under services.xserver.displayManager.gdm
-    # (not services.displayManager.gdm which does not exist).
-    services.xserver.displayManager.gdm = {
+    # GDM display manager — replaces SDDM as the session picker.
+    # services.displayManager.gdm is the correct path since NixOS 24.05;
+    # the old services.xserver.displayManager.gdm alias was removed in 25.05.
+    services.displayManager.gdm = {
       enable  = true;
       wayland = true;
     };

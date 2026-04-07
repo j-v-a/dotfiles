@@ -1,4 +1,4 @@
-# modules/home/mac-toolchains.nix
+# modules/home/mac-shell-env.nix
 # macOS-only home-manager config: shell hooks for imperative language managers.
 # On macOS, nvm/pyenv/jenv/sdkman/rustup are installed and upgraded imperatively
 # (not via Nix) to stay compatible with Wärtsilä tooling and version churn.
@@ -6,7 +6,7 @@
 { ... }:
 
 {
-  flake.modules.homeManager.mac-toolchains = { ... }: {
+  flake.modules.homeManager.mac-shell-env = { ... }: {
     programs.fish.shellInit = ''
       # ── pyenv ──────────────────────────────────────────────────────────────
       if test -d $HOME/.pyenv

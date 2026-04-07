@@ -1,11 +1,6 @@
 # modules/home/catppuccin.nix
 # Catppuccin Mocha theming for the Hyprland desktop stack.
-# Uses catppuccin/nix (github:catppuccin/nix/v1.2.1) home-manager module,
-# which is injected into every HM configuration by modules/_lib/nixos-host.nix.
-#
-# catppuccin.waybar mode: "prependImport" (default) — prepends a catppuccin
-# @import to programs.waybar.style, so our font/layout CSS in hyprland.nix
-# continues to apply on top of catppuccin colours.
+# Uses catppuccin/nix home-manager module injected via nixos-host.nix.
 { ... }:
 
 {
@@ -42,9 +37,8 @@
     # gtk.theme is set directly by the catppuccin module via gtk.theme.name.
 
     # ── Kitty terminal ────────────────────────────────────────────────────────────
-    # kitty is installed as a package but not configured via programs.kitty.
-    # Enable programs.kitty here so catppuccin can write its config file.
-    programs.kitty.enable = true;
+    # programs.kitty is fully configured in hyprland.nix (enable + font + settings).
+    # catppuccin only needs the theme opt-in; no separate enable needed here.
     catppuccin.kitty.enable = true;
 
     # ── CLI tools ─────────────────────────────────────────────────────────────────

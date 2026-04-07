@@ -29,13 +29,12 @@
         # direnv hook is injected automatically by programs.direnv.enable — no manual source needed.
       '';
 
-      # Aliases — ported from ~/.bash/aliases.sh and .zshrc
+      # Aliases
       shellAliases = {
         ls  = "eza --icons";
         ll  = "eza -la --icons --git";
         lt  = "eza --tree --icons -L 2";
         cat = "bat";
-        cd  = "z";  # zoxide
       };
     };
 

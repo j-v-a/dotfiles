@@ -22,6 +22,7 @@
       gh
       lazygit
       delta       # better git diffs
+      git-lfs     # large file storage (filters configured in git.nix)
 
       # Network / http
       curl

@@ -33,5 +33,17 @@
     };
 
     services.xserver.videoDrivers = [ "nvidia" ];
+
+    # Make VA-API driver discoverable system-wide (not just inside Hyprland).
+    # Without these, libva cannot locate nvidia_drv_video.so and the Chromium/Brave
+    # GPU process hits a SIGTRAP before any per-process flag processing occurs.
+    environment.sessionVariables = {
+      LIBVA_DRIVER_NAME  = "nvidia";
+      LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
+    };
+
+    environment.systemPackages = with pkgs; [
+      libva-utils  # provides vainfo for verifying VA-API after rebuild
+    ];
   };
 }

@@ -11,11 +11,16 @@
 #   feature flag injected by the nixpkgs Brave/Chrome wrapper). Without it the GPU
 #   process hits a SIGTRAP crash immediately on launch.
 #   Verify after rebuild: vainfo --display drm --device /dev/dri/renderD128
-# - __EGL_VENDOR_LIBRARY_DIRS: the nixpkgs Brave wrapper ships its own libglvnd which
-#   has no glvnd/egl_vendor.d of its own. Without this var, libglvnd cannot discover
-#   the NVIDIA/Mesa EGL vendor JSON files, EGL init fails, and the Chromium GPU process
-#   hits a CHECK() → SIGTRAP. Setting this system-wide points libglvnd at the correct
-#   vendor configs in all contexts (terminal, GDM, app menu, etc.).
+# - GBM_BACKEND / __GLX_VENDOR_LIBRARY_NAME: the nixpkgs Brave wrapper puts
+#   mesa-24.x/lib in LD_LIBRARY_PATH. Mesa's GBM backend doesn't know NV12 format
+#   (used by the Chromium GPU process for VA-API decode), so it logs
+#   "gbm_drv_common: Unknown or not supported format: NV12" and the GPU subprocess
+#   hits a CHECK() → SIGTRAP. Forcing GBM_BACKEND=nvidia-drm makes the GPU process
+#   use NVIDIA's GBM backend (/run/opengl-driver/lib/gbm/nvidia-drm_gbm.so).
+#   __GLX_VENDOR_LIBRARY_NAME=nvidia ensures libglvnd routes GLX to the NVIDIA vendor.
+# - __EGL_VENDOR_LIBRARY_DIRS: belt-and-suspenders for EGL vendor discovery — points
+#   libglvnd at /run/opengl-driver/share/glvnd/egl_vendor.d in contexts where
+#   the wrapper's isolated libglvnd would otherwise find nothing.
 { ... }:
 
 {
@@ -39,16 +44,18 @@
 
     services.xserver.videoDrivers = [ "nvidia" ];
 
-    # Make VA-API driver discoverable system-wide (not just inside Hyprland).
-    # Without these, libva cannot locate nvidia_drv_video.so and the Chromium/Brave
-    # GPU process hits a SIGTRAP before any per-process flag processing occurs.
+    # Make VA-API and GPU vendor libs discoverable system-wide (not just inside Hyprland).
+    # These must be in sessionVariables (written to /etc/pam/environment, loaded at login)
+    # to apply in all contexts: terminal, GDM, D-Bus app menu, Hyprland children.
+    # Setting only in Hyprland's env block leaves GDM/D-Bus launches without them.
     environment.sessionVariables = {
       LIBVA_DRIVER_NAME  = "nvidia";
       LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
-      # Point libglvnd at the system EGL vendor JSON files. The nixpkgs Brave/Chrome
-      # wrapper ships its own isolated libglvnd with no egl_vendor.d of its own;
-      # without this var it cannot discover NVIDIA/Mesa EGL drivers and the GPU
-      # subprocess hits a CHECK() → SIGTRAP on launch.
+      # Force NVIDIA GBM backend. Mesa's GBM (injected via LD_LIBRARY_PATH by the
+      # nixpkgs Brave wrapper) rejects NV12 format → GPU subprocess CHECK() → SIGTRAP.
+      GBM_BACKEND               = "nvidia-drm";
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      # Belt-and-suspenders: point libglvnd EGL vendor discovery at the system configs.
       __EGL_VENDOR_LIBRARY_DIRS = "/run/opengl-driver/share/glvnd/egl_vendor.d";
     };
 

@@ -7,28 +7,32 @@
 { ... }:
 
 {
-  flake.modules.homeManager.desktop-apps = { pkgs, ... }: {
-    home.packages = with pkgs; [
-      # ── Browsers ──────────────────────────────────────────────────────────────
-      # brave-flags.conf is an Arch-specific patch NOT read by the nixpkgs wrapper;
-      # use commandLineArgs (passed via wrapGAppsHook) for persistent flags.
-      #
-      # VA-API is removed at the preFixup level here. The nixpkgs wrapper injects
+  flake.modules.homeManager.desktop-apps = { pkgs, lib, ... }:
+    let
+      # VA-API is stripped from the wrapper here. The nixpkgs brave wrapper injects
       # --enable-features=VaapiVideoDecoder,VaapiVideoEncoder via gappsWrapperArgs
       # --add-flags in preFixup, and also prepends mesa-24.x/lib to LD_LIBRARY_PATH.
-      # Mesa's libgbm loads instead of NVIDIA's; Mesa's GBM rejects the NV12 format
-      # Chromium requests for VA-API decode → GPU process CHECK() → SIGTRAP.
-      # Appending --disable-features via commandLineArgs does NOT win: Brave's flag
-      # merger gives priority to the first occurrence, so the earlier --enable-features
-      # wins. Fix: strip VaapiVideoDecoder,VaapiVideoEncoder from preFixup directly.
-      # commandLineArgs is also injected via preFixup (as --add-flags ''), so both
-      # changes are applied in a single overrideAttrs to avoid chaining issues.
-      (brave.override { commandLineArgs = "--password-store=basic"; }).overrideAttrs (old: {
+      # Mesa's libgbm then loads instead of NVIDIA's; Mesa's GBM rejects the NV12
+      # format that Chromium's GPU process requests for VA-API decode → SIGTRAP.
+      # Appending --disable-features via commandLineArgs does NOT override this:
+      # Brave's flag merger honours first-occurrence priority, so the earlier
+      # --enable-features wins. Fix: strip VaapiVideoDecoder,VaapiVideoEncoder from
+      # preFixup so they never reach the exec line.
+      # commandLineArgs is threaded in first via .override (which expands the empty
+      # --add-flags '' placeholder in preFixup), then .overrideAttrs strips VA-API.
+      brave-patched = (pkgs.brave.override {
+        commandLineArgs = "--password-store=basic";
+      }).overrideAttrs (old: {
         preFixup = builtins.replaceStrings
           [ "VaapiVideoDecoder,VaapiVideoEncoder" ]
           [ "" ]
           old.preFixup;
-      })
+      });
+    in
+    {
+    home.packages = with pkgs; [
+      # ── Browsers ──────────────────────────────────────────────────────────────
+      brave-patched  # see let binding above — VA-API stripped, --password-store=basic injected
 
       # ── Password / Identity ───────────────────────────────────────────────────
       proton-pass                  # Proton password manager + identity

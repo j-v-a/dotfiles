@@ -10,18 +10,24 @@
   flake.modules.homeManager.desktop-apps = { pkgs, ... }: {
     home.packages = with pkgs; [
       # ── Browsers ──────────────────────────────────────────────────────────────
-      # Use commandLineArgs to inject flags via wrapGAppsHook (brave-flags.conf is
-      # an Arch-specific patch and is NOT read by the nixpkgs wrapper).
+      # brave-flags.conf is an Arch-specific patch NOT read by the nixpkgs wrapper;
+      # use commandLineArgs (passed via wrapGAppsHook) for persistent flags.
       #
-      # VA-API is explicitly disabled here. The nixpkgs Brave wrapper unconditionally
-      # injects --enable-features=VaapiVideoDecoder,VaapiVideoEncoder, but the wrapper
-      # also prepends mesa-24.x/lib to LD_LIBRARY_PATH, causing Mesa's libgbm.so to
-      # load instead of NVIDIA's. Mesa's GBM doesn't support the NV12 format that
-      # Chromium's GPU process requests for VA-API decode, so it hits a CHECK()
-      # assertion → SIGTRAP crash. Disabling VA-API sidesteps the broken interaction.
-      # GBM_BACKEND=nvidia-drm (set in nvidia.nix) is insufficient because it only
-      # works if NVIDIA's libgbm.so is loaded — Mesa's libgbm ignores that variable.
-      (brave.override { commandLineArgs = "--password-store=basic --disable-features=VaapiVideoDecoder,VaapiVideoEncoder,UseChromeOSDirectVideoDecoder"; })
+      # VA-API is removed at the preFixup level here. The nixpkgs wrapper injects
+      # --enable-features=VaapiVideoDecoder,VaapiVideoEncoder via gappsWrapperArgs
+      # --add-flags in preFixup, and also prepends mesa-24.x/lib to LD_LIBRARY_PATH.
+      # Mesa's libgbm loads instead of NVIDIA's; Mesa's GBM rejects the NV12 format
+      # Chromium requests for VA-API decode → GPU process CHECK() → SIGTRAP.
+      # Appending --disable-features via commandLineArgs does NOT win: Brave's flag
+      # merger gives priority to the first occurrence, so the earlier --enable-features
+      # wins. Fix: strip VaapiVideoDecoder,VaapiVideoEncoder from the preFixup
+      # --add-flags string so they never reach the exec line.
+      (brave.overrideAttrs (old: {
+        preFixup = builtins.replaceStrings
+          [ "VaapiVideoDecoder,VaapiVideoEncoder" ]
+          [ "" ]
+          old.preFixup;
+      })).override { commandLineArgs = "--password-store=basic"; }
 
       # ── Password / Identity ───────────────────────────────────────────────────
       proton-pass                  # Proton password manager + identity

@@ -20,14 +20,15 @@
       # Chromium requests for VA-API decode → GPU process CHECK() → SIGTRAP.
       # Appending --disable-features via commandLineArgs does NOT win: Brave's flag
       # merger gives priority to the first occurrence, so the earlier --enable-features
-      # wins. Fix: strip VaapiVideoDecoder,VaapiVideoEncoder from the preFixup
-      # --add-flags string so they never reach the exec line.
-      (brave.overrideAttrs (old: {
+      # wins. Fix: strip VaapiVideoDecoder,VaapiVideoEncoder from preFixup directly.
+      # commandLineArgs is also injected via preFixup (as --add-flags ''), so both
+      # changes are applied in a single overrideAttrs to avoid chaining issues.
+      (brave.override { commandLineArgs = "--password-store=basic"; }).overrideAttrs (old: {
         preFixup = builtins.replaceStrings
           [ "VaapiVideoDecoder,VaapiVideoEncoder" ]
           [ "" ]
           old.preFixup;
-      })).override { commandLineArgs = "--password-store=basic"; }
+      })
 
       # ── Password / Identity ───────────────────────────────────────────────────
       proton-pass                  # Proton password manager + identity

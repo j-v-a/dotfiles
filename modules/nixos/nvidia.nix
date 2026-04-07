@@ -11,6 +11,11 @@
 #   feature flag injected by the nixpkgs Brave/Chrome wrapper). Without it the GPU
 #   process hits a SIGTRAP crash immediately on launch.
 #   Verify after rebuild: vainfo --display drm --device /dev/dri/renderD128
+# - __EGL_VENDOR_LIBRARY_DIRS: the nixpkgs Brave wrapper ships its own libglvnd which
+#   has no glvnd/egl_vendor.d of its own. Without this var, libglvnd cannot discover
+#   the NVIDIA/Mesa EGL vendor JSON files, EGL init fails, and the Chromium GPU process
+#   hits a CHECK() → SIGTRAP. Setting this system-wide points libglvnd at the correct
+#   vendor configs in all contexts (terminal, GDM, app menu, etc.).
 { ... }:
 
 {
@@ -40,6 +45,11 @@
     environment.sessionVariables = {
       LIBVA_DRIVER_NAME  = "nvidia";
       LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
+      # Point libglvnd at the system EGL vendor JSON files. The nixpkgs Brave/Chrome
+      # wrapper ships its own isolated libglvnd with no egl_vendor.d of its own;
+      # without this var it cannot discover NVIDIA/Mesa EGL drivers and the GPU
+      # subprocess hits a CHECK() → SIGTRAP on launch.
+      __EGL_VENDOR_LIBRARY_DIRS = "/run/opengl-driver/share/glvnd/egl_vendor.d";
     };
 
     environment.systemPackages = with pkgs; [

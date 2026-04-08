@@ -25,6 +25,11 @@
       programs.vscode = {
         enable = true;
 
+        # On macOS the binary is installed via Homebrew cask (visual-studio-code)
+        # so Nix does not need to provide it. Setting package to null keeps
+        # programs.vscode active for settings + extensions management only.
+        package = null;
+
         # Allow VSCode to manage extensions outside the Nix store (e.g. workspace
         # recommendations). Set to false for a fully read-only extensions dir.
         mutableExtensionsDir = true;

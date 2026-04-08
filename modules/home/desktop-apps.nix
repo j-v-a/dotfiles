@@ -75,7 +75,7 @@
       identity                     # side-by-side image comparison (GNOME)
 
       # ── Code Editors / IDEs ───────────────────────────────────────────────────
-      vscode                       # Microsoft VS Code (unfree)
+      # vscode managed by "vscode" feature (modules/home/vscode.nix)
       zed-editor                   # fast multiplayer code editor
       ghostty                      # GPU-accelerated terminal
 

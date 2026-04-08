@@ -82,7 +82,7 @@
           (mkt { publisher = "dvirtz";      name = "parquet-viewer";       version = "3.0.1";       sha256 = "3348d1316e41b597602c478dddb8602ea206049337a69d957befe89496f110a3"; })
           (mkt { publisher = "github";      name = "copilot-chat";         version = "0.43.2026040705"; sha256 = "d357c1a6c5c80371b28c45ed1c87786e3071753aa64f4a3b20a55cb655ae023a"; })
           (mkt { publisher = "mechatroner"; name = "rainbow-csv";          version = "3.24.1";      sha256 = "c59a4aea924d5e7c6e75abb32628448bd5404915e2f3dfa19fbbdf177dea4606"; })
-          (mkt { publisher = "ms-azuretools"; name = "vscode-containers";  version = "2.4.1";       sha256 = "7bfa166a235b3bbfa4a46775c7e384792f0ae46eecc53762fd392cf0fca0fcff"; })
+          (mkt { publisher = "ms-azuretools"; name = "vscode-containers";  version = "2.4.1";       sha256 = "3b0c492555b5e4c8af59579295b1503506ebc630e0a5778facf7feaf7a9bf80b"; })
           (mkt { publisher = "ms-python";   name = "vscode-python-envs";   version = "1.27.10931010"; sha256 = "38f0b638a2a09a5724d3d4fc97d22aa3370d539461b95df7937f487341db2bca"; })
           (mkt { publisher = "ms-vscode-remote"; name = "remote-containers"; version = "0.452.0";   sha256 = "0d0b788446e9e0d90688a86972a2a637e82f4a68c258b1cb82ab5fd14e0f41f8"; })
           (mkt { publisher = "ms-vscode";   name = "vscode-typescript-next"; version = "6.0.20260401"; sha256 = "0afa71314711cf5eae1a65936dd65d1e39f49a7cc667287c96d7d9b3f4972864"; })

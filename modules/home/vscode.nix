@@ -79,7 +79,7 @@
           (mkt { publisher = "anthropic";   name = "claude-code";          version = "2.1.96";      sha256 = "7170e2e9ce2ef89e80164cd6c818c30fba91a3198d03657c025852101868d3d7"; })
           (mkt { publisher = "docker";      name = "docker";               version = "0.18.0";      sha256 = "6b95e564bee313160f873d473830a0bf0dbd2537fb0cdc9404541661efb87660"; })
           (mkt { publisher = "dotjoshjohnson"; name = "xml";               version = "2.5.1";       sha256 = "67004dbdb95df0fd662dc292ee21c3ab3c5cf13e8fd42f89432e78fba1379dec"; })
-          (mkt { publisher = "dvirtz";      name = "parquet-viewer";       version = "3.0.1";       sha256 = "3348d1316e41b597602c478dddb8602ea206049337a69d957befe89496f110a3"; })
+          (mkt { publisher = "dvirtz";      name = "parquet-viewer";       version = "3.0.1";       sha256 = "a86d867841e4d3b6b5708aedd0beb2bd46c248c8ba7ec4c72e83c92257f47326"; })
           (mkt { publisher = "github";      name = "copilot-chat";         version = "0.43.2026040705"; sha256 = "8977d147deb03d39b392f6174b13167bd3e45bf12be4cc76e24f73445f54d698"; })
           (mkt { publisher = "mechatroner"; name = "rainbow-csv";          version = "3.24.1";      sha256 = "c59a4aea924d5e7c6e75abb32628448bd5404915e2f3dfa19fbbdf177dea4606"; })
           (mkt { publisher = "ms-azuretools"; name = "vscode-containers";  version = "2.4.1";       sha256 = "3b0c492555b5e4c8af59579295b1503506ebc630e0a5778facf7feaf7a9bf80b"; })

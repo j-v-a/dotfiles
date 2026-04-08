@@ -17,6 +17,26 @@
         init.defaultBranch   = "main";
         push.autoSetupRemote = true;
 
+        rerere.enabled = true;
+
+        alias = {
+          s  = "status";
+          l  = "log --oneline --graph --decorate";
+          aa = "add --all";
+          ca = "commit --amend --no-edit";
+          pb = "push --force-with-lease origin HEAD";
+          d  = "diff";
+          ds = "diff --staged";
+          rc = "rebase --continue";
+        };
+
+        gpg = {
+          format = "ssh";
+          ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+        };
+        commit.gpgsign = true;
+        tag.gpgsign    = true;
+
         core = {
           pager    = "delta";
           autocrlf = "input";

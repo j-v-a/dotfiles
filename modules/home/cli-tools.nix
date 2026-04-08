@@ -11,6 +11,7 @@
       bat
       eza
       lsd             # modern ls with icons and colours
+      vivid           # generates LS_COLORS values from themes
 
       # Data / text processing
       jq

@@ -24,6 +24,8 @@
         "wireshark"         # NixOS: setcap packet capture permissions
         "system-utils"      # NixOS: ananicy-cpp daemon + kdeconnect firewall ports
         "shell"             # HM: fish, starship, zoxide, fzf, direnv
+        "atuin"             # HM: shell history (local-only, replaces fzf-fish Ctrl+R)
+        "tmux"              # HM: terminal multiplexer (prefix C-a, vi keys)
         "cli-tools"         # HM: fd, rg, bat, eza, lsd, gh, lazygit, imagemagick, etc.
         "git"               # HM: git config, delta, gh credential helper
         "editors"           # HM: neovim, zed

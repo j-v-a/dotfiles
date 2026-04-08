@@ -1,7 +1,101 @@
 # modules/home/shell.nix
-# Fish shell + Starship prompt — shared across all devices.
+# Fish shell (primary) + Bash (fallback) + Starship prompt — shared across all devices.
+# Bash mirrors Fish aliases/functions so any environment that lacks Fish still has
+# the same muscle-memory commands available (dev containers, recovery shells, etc.)
 # Replaces: Oh My Zsh, Powerlevel10k, direnv hooks, pyenv init.
 { ... }:
+
+let
+  # ---------------------------------------------------------------------------
+  # Shared aliases — referenced by both Fish and Bash to stay DRY.
+  # ---------------------------------------------------------------------------
+  sharedAliases = {
+    ls  = "eza --icons";
+    ll  = "eza -la --icons --git";
+    lt  = "eza --tree --icons -L 2";
+    cat = "bat";
+
+    # Git shortcuts
+    gs  = "git status";
+    gl  = "git log --oneline --graph --decorate";
+    gaa = "git add --all";
+    gca = "git commit --amend --no-edit";
+    gpb = "git push --force-with-lease origin HEAD";
+    gd  = "git diff";
+    gds = "git diff --staged";
+    grc = "git rebase --continue";
+
+    # Nix shortcuts (shared — work on both Mac and Linux)
+    nix-search = "nix search nixpkgs";
+    nix-shell  = "nix shell nixpkgs#";
+    nix-run    = "nix run nixpkgs#";
+    nix-gc     = "nix-collect-garbage --delete-older-than 30d";
+  };
+
+  # ---------------------------------------------------------------------------
+  # Shared shell functions — Bash syntax (also used verbatim in bashInitExtra).
+  # Fish versions below are re-implemented with Fish syntax.
+  # ---------------------------------------------------------------------------
+  bashFunctions = ''
+    # git commit with auto Jira-ticket prefix from branch name
+    gc() {
+      local branch ticket
+      branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+      ticket=$(echo "$branch" | grep -oE '[A-Z]+-[0-9]+' | head -1)
+      if [ -n "$ticket" ]; then
+        git commit -m "$ticket $*"
+      else
+        git commit -m "$*"
+      fi
+    }
+
+    # git switch with lockfile change warning
+    gsw() {
+      git switch "$@"
+      local changed
+      changed=$(git diff HEAD@{1} HEAD --name-only 2>/dev/null \
+        | grep -E '(package-lock\.json|yarn\.lock|pnpm-lock\.yaml)')
+      if [ -n "$changed" ]; then
+        echo "Lockfile changed — you may need to reinstall dependencies:"
+        echo "$changed" | sed 's/^/  /'
+      fi
+    }
+
+    # Find TODO/FIXME/HACK/XXX comments in all tracked files
+    git-todo() {
+      git ls-files | xargs rg --with-filename --line-number \
+        --color=always 'TODO|FIXME|HACK|XXX|NOTE' 2>/dev/null
+    }
+
+    # Kill the process listening on a given port
+    free-port() {
+      if [ -z "$1" ]; then
+        echo "Usage: free-port <port>"
+        return 1
+      fi
+      local pid
+      pid=$(lsof -ti tcp:"$1")
+      if [ -n "$pid" ]; then
+        echo "Killing PID $pid on port $1"
+        kill -9 "$pid"
+      else
+        echo "No process found on port $1"
+      fi
+    }
+
+    # LS_COLORS via vivid (only if available)
+    if command -v vivid >/dev/null 2>&1; then
+      export LS_COLORS
+      LS_COLORS=$(vivid generate molokai)
+    fi
+
+    # nixos-rebuild shortcuts — only meaningful on NixOS/Linux
+    if [ "$(uname -s)" = "Linux" ]; then
+      alias nrs="sudo nixos-rebuild switch --flake ~/dotfiles#missandei"
+      alias nrb="sudo nixos-rebuild build  --flake ~/dotfiles#missandei"
+    fi
+  '';
+in
 
 {
   flake.modules.homeManager.shell = { pkgs, ... }: {
@@ -44,29 +138,8 @@
         end
       '';
 
-      # Aliases
-      shellAliases = {
-        ls  = "eza --icons";
-        ll  = "eza -la --icons --git";
-        lt  = "eza --tree --icons -L 2";
-        cat = "bat";
-
-        # Git shortcuts
-        gs  = "git status";
-        gl  = "git log --oneline --graph --decorate";
-        gaa = "git add --all";
-        gca = "git commit --amend --no-edit";
-        gpb = "git push --force-with-lease origin HEAD";
-        gd  = "git diff";
-        gds = "git diff --staged";
-        grc = "git rebase --continue";
-
-        # Nix shortcuts (shared — work on both Mac and Linux)
-        nix-search = "nix search nixpkgs";
-        nix-shell  = "nix shell nixpkgs#";
-        nix-run    = "nix run nixpkgs#";
-        nix-gc     = "nix-collect-garbage --delete-older-than 30d";
-      };
+      # Aliases — shared with Bash via the sharedAliases let binding above
+      shellAliases = sharedAliases;
 
       functions = {
         # git commit with auto Jira-ticket prefix from branch name
@@ -130,8 +203,9 @@
 
     # Starship prompt — Pure preset
     programs.starship = {
-      enable               = true;
+      enable                = true;
       enableFishIntegration = true;
+      enableBashIntegration = true;
       settings = {
         format = "$os$username$hostname$directory$git_branch$git_state$git_status$cmd_duration$line_break$python$character";
 
@@ -186,20 +260,38 @@
 
     # zoxide — smarter cd (replaces z plugin)
     programs.zoxide = {
-      enable               = true;
+      enable                = true;
       enableFishIntegration = true;
+      enableBashIntegration = true;
     };
 
     # fzf — fuzzy finder
     programs.fzf = {
-      enable               = true;
+      enable                = true;
       enableFishIntegration = true;
+      enableBashIntegration = true;
     };
 
     # direnv — per-project env vars
     programs.direnv = {
       enable            = true;
       nix-direnv.enable = true;
+    };
+
+    # Bash — fallback shell for dev containers, recovery shells, and any
+    # environment where Fish is unavailable. Mirrors all Fish aliases and
+    # functions via the shared let bindings above so muscle memory works.
+    programs.bash = {
+      enable       = true;
+      shellAliases = sharedAliases;
+      initExtra    = ''
+        ${bashFunctions}
+
+        # Homebrew — macOS only
+        if [ -d /opt/homebrew/bin ]; then
+          export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+        fi
+      '';
     };
 
     # Let home-manager manage itself.

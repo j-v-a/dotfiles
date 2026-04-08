@@ -75,7 +75,7 @@
           vscjava.vscode-gradle                            # Gradle
 
           # ── From marketplace (SHA256 pinned) ──────────────────────────────────
-          (mkt { publisher = "alexkrechik"; name = "cucumberautocomplete"; version = "3.1.0";       sha256 = "a8ffa04be33c8471e71f743f74f9432ca320a257dcefe6c1c374a9c3ef8afe10"; })
+          (mkt { publisher = "alexkrechik"; name = "cucumberautocomplete"; version = "3.1.0";       sha256 = "6f023067d700809714ca216b33daf1d05cc2c76f45e254503a78f0e66fdb3b6e"; })
           (mkt { publisher = "anthropic";   name = "claude-code";          version = "2.1.96";      sha256 = "7170e2e9ce2ef89e80164cd6c818c30fba91a3198d03657c025852101868d3d7"; })
           (mkt { publisher = "docker";      name = "docker";               version = "0.18.0";      sha256 = "b1887278f1378419f0602fe98fc6b9fea1dbd49bf3bd4af9885a5c9fdaed605b"; })
           (mkt { publisher = "dotjoshjohnson"; name = "xml";               version = "2.5.1";       sha256 = "67004dbdb95df0fd662dc292ee21c3ab3c5cf13e8fd42f89432e78fba1379dec"; })

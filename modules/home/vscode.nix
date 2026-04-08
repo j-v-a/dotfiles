@@ -93,7 +93,7 @@
           (mkt { publisher = "tim-koehler"; name = "helm-intellisense";    version = "0.15.0";      sha256 = "4e5d17da3b604ec8dfdadbf20092c6c441ab98b5c009859612b70326e41883ea"; })
           (mkt { publisher = "tomoki1207";  name = "pdf";                  version = "1.2.2";       sha256 = "8b74658b36f0e11b4f92212ca1d449101dc0533a2a23de68872a99d24b113a9b"; })
           (mkt { publisher = "visualstudioexptteam"; name = "intellicode-api-usage-examples"; version = "0.2.9"; sha256 = "f31043f962c16b162df2fdfef25bd5d928aa57cf621388de428776907ecb3475"; })
-          (mkt { publisher = "visualstudioexptteam"; name = "vscodeintellicode"; version = "1.3.2"; sha256 = "d6b2434a94a62f566ddc2a40f6b52be824b30504228dec9a7ce45f2d3b8c3442"; })
+          (mkt { publisher = "visualstudioexptteam"; name = "vscodeintellicode"; version = "1.3.2"; sha256 = "db37b1c97d58283e6382db2f0f1effcf796e87959eef5cacf9746555c372c1fb"; })
           (mkt { publisher = "vue";         name = "volar";                version = "3.2.6";       sha256 = "d51e4ddc98c9519fca3d85c6abf54ecdb326423d5fceb2bd1eb02303c25ad9ae"; })
           (mkt { publisher = "vunguyentuan"; name = "vscode-css-variables"; version = "2.8.3";      sha256 = "6458dc3da3b3fa9ffd4a1d32cd67b282949c5e665cb516380af517e56a65815b"; })
         ];

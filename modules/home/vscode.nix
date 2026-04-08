@@ -87,7 +87,7 @@
           (mkt { publisher = "ms-vscode-remote"; name = "remote-containers"; version = "0.452.0";   sha256 = "25cb3d98907dbf1b5304dc608f12e8671dbe02a618c9691e115b1937b19402d0"; })
           (mkt { publisher = "ms-vscode";   name = "vscode-typescript-next"; version = "6.0.20260401"; sha256 = "9f919242a18f26fdfdc4819c2875282a39517a8e1cbbf95e0cada1dad02f5e50"; })
           (mkt { publisher = "mthierman";   name = "theme-flexoki";        version = "0.0.9";       sha256 = "29ce948b90efff6f48a1d02be588ea4aead408d9d48730344e34864f25309337"; })
-          (mkt { publisher = "nrwl";        name = "angular-console";      version = "18.91.0";     sha256 = "f65277e012e2a26d7a6cc9378726355c4b69baf19a42e026649d9ae6c3f746d7"; })
+          (mkt { publisher = "nrwl";        name = "angular-console";      version = "18.91.0";     sha256 = "ad2d0f1ec8e20441ad257355ad033fbc6d97b177b472da2791945e3eacbef182"; })
           (mkt { publisher = "oven";        name = "bun-vscode";           version = "0.0.32";      sha256 = "565aee387885e7fc15855556d6baba0c473dd2edc8c1bc43feda535f2a610fe5"; })
           (mkt { publisher = "tamasfe";     name = "even-better-toml";     version = "0.21.2";      sha256 = "95fb32ea1b7a3a9bce45187eae1f53d39611aca0b9709bfe69ed6ac0815ebcf7"; })
           (mkt { publisher = "tim-koehler"; name = "helm-intellisense";    version = "0.15.0";      sha256 = "4e5d17da3b604ec8dfdadbf20092c6c441ab98b5c009859612b70326e41883ea"; })

@@ -89,7 +89,7 @@
           (mkt { publisher = "mthierman";   name = "theme-flexoki";        version = "0.0.9";       sha256 = "29ce948b90efff6f48a1d02be588ea4aead408d9d48730344e34864f25309337"; })
           (mkt { publisher = "nrwl";        name = "angular-console";      version = "18.91.0";     sha256 = "ad2d0f1ec8e20441ad257355ad033fbc6d97b177b472da2791945e3eacbef182"; })
           (mkt { publisher = "oven";        name = "bun-vscode";           version = "0.0.32";      sha256 = "565aee387885e7fc15855556d6baba0c473dd2edc8c1bc43feda535f2a610fe5"; })
-          (mkt { publisher = "tamasfe";     name = "even-better-toml";     version = "0.21.2";      sha256 = "95fb32ea1b7a3a9bce45187eae1f53d39611aca0b9709bfe69ed6ac0815ebcf7"; })
+          (mkt { publisher = "tamasfe";     name = "even-better-toml";     version = "0.21.2";      sha256 = "21b8d66af4285eee31e21a4492f921ab36dffcd859a67f1115d2930274650808"; })
           (mkt { publisher = "tim-koehler"; name = "helm-intellisense";    version = "0.15.0";      sha256 = "4e5d17da3b604ec8dfdadbf20092c6c441ab98b5c009859612b70326e41883ea"; })
           (mkt { publisher = "tomoki1207";  name = "pdf";                  version = "1.2.2";       sha256 = "8b74658b36f0e11b4f92212ca1d449101dc0533a2a23de68872a99d24b113a9b"; })
           (mkt { publisher = "visualstudioexptteam"; name = "intellicode-api-usage-examples"; version = "0.2.9"; sha256 = "f31043f962c16b162df2fdfef25bd5d928aa57cf621388de428776907ecb3475"; })

@@ -28,7 +28,11 @@
         # On macOS the binary is installed via Homebrew cask (visual-studio-code).
         # We provide a shim package so home-manager manages settings + extensions
         # without installing its own nixpkgs copy of VS Code.
-        package = pkgs.runCommand "vscode-homebrew-shim" {} ''
+        # home-manager reads pname/version off the package, so they must be set.
+        package = pkgs.runCommand "vscode-homebrew-shim" {
+          pname   = "vscode";
+          version = "homebrew";
+        } ''
           mkdir -p $out/bin
           ln -s /opt/homebrew/bin/code $out/bin/code
         '';

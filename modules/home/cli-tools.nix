@@ -21,6 +21,7 @@
 
       # Dev tooling
       asdf-vm
+      dotnet-sdk      # .NET SDK (includes runtime and CLI)
 
       # Git
       gh

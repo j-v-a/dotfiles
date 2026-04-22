@@ -41,6 +41,11 @@
         fish_add_path $HOME/.cargo/bin
       end
 
+      # ── asdf shims ────────────────────────────────────────────────────────
+      if test -d $HOME/.asdf/shims
+        fish_add_path $HOME/.asdf/shims
+      end
+
       # ── asdf dotnet ────────────────────────────────────────────────────────
       if test -f $HOME/.asdf/plugins/dotnet/set-dotnet-env.fish
         source $HOME/.asdf/plugins/dotnet/set-dotnet-env.fish

@@ -20,7 +20,7 @@
       ast-grep        # structural code search
 
       # Dev tooling
-      asdf
+      asdf-vm
 
       # Git
       gh

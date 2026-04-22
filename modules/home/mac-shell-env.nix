@@ -40,6 +40,11 @@
       if test -d $HOME/.cargo
         fish_add_path $HOME/.cargo/bin
       end
+
+      # ── asdf dotnet ────────────────────────────────────────────────────────
+      if test -f $HOME/.asdf/plugins/dotnet/set-dotnet-env.fish
+        source $HOME/.asdf/plugins/dotnet/set-dotnet-env.fish
+      end
     '';
   };
 }

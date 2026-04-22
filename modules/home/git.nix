@@ -34,6 +34,7 @@
           format = "ssh";
           ssh.allowedSignersFile = "~/.ssh/allowed_signers";
         };
+        user.signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE3qjIsujENfi9C3vnIU29x82lRZ3n3y2rjIkwLDRN64";
         commit.gpgsign = true;
         tag.gpgsign    = true;
 

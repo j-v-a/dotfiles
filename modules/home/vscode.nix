@@ -22,6 +22,17 @@
         };
     in
     {
+      # argv.json is VSCode's early-startup config (read before the renderer process).
+      # "password-store" = "basic" tells VSCode to use its own encrypted file-based
+      # secret store instead of macOS Keychain. This prevents the recurring TCC popup
+      # "VSCode would like to access data from other apps" that fires on every restart
+      # when Copilot/GitHub auth tries to read cross-app keychain items (e.g. the shared
+      # Microsoft ADAL cache written by Teams / Company Portal).
+      # Note: this is NOT managed by programs.vscode — it must be a separate home.file.
+      home.file."Library/Application Support/Code/argv.json".text = builtins.toJSON {
+        "password-store" = "basic";
+      };
+
       programs.vscode = {
         enable = true;
 

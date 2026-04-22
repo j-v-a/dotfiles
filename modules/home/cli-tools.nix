@@ -19,6 +19,9 @@
       imagemagick     # image manipulation CLI
       ast-grep        # structural code search
 
+      # Dev tooling
+      asdf
+
       # Git
       gh
       lazygit

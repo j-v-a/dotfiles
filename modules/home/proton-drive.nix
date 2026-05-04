@@ -14,9 +14,6 @@
   flake.modules.homeManager.proton-drive = { pkgs, username, homeDirectory, ... }: {
     home.packages = [ pkgs.rclone ];
 
-    # Create the mount point directory.
-    home.file."ProtonDrive/.keep".text = "";
-
     # Point Calibre at the library on Proton Drive.
     # Calibre reads this file on startup to find its library location.
     # NOTE: home.file is read-only (managed by Nix); Calibre's own "switch library"
@@ -33,7 +30,7 @@
       };
 
       Service = {
-        Type            = "notify";
+        Type            = "simple";
         ExecStartPre    = "${pkgs.coreutils}/bin/mkdir -p ${homeDirectory}/ProtonDrive";
         ExecStart       = builtins.concatStringsSep " " [
           "${pkgs.rclone}/bin/rclone mount"
@@ -49,7 +46,6 @@
         ExecStop        = "${pkgs.fuse}/bin/fusermount -u ${homeDirectory}/ProtonDrive";
         Restart         = "on-failure";
         RestartSec      = 10;
-        # Give rclone time to unmount cleanly.
         TimeoutStopSec  = 20;
       };
 

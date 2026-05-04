@@ -35,6 +35,7 @@
         "vscode"            # HM: VSCode + declarative extensions + settings
         "catppuccin"        # HM: Catppuccin Mocha theme for waybar/dunst/rofi/hyprland/kitty/cli
         "ai-tools"          # HM: OpenCode AppImage (Linux); Mac uses Homebrew cask
+        "proton-drive"      # HM: rclone FUSE mount of Proton Drive at ~/ProtonDrive
       ];
       extraNixosModules = [
         # Hardware config is not a feature (never reused); import directly.

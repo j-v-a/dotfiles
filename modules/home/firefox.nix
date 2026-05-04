@@ -23,7 +23,7 @@
           name = "default";
           isDefault = true;
 
-          extensions.packages = with addons; [
+          extensions = with addons; [
             onepassword-password-manager  # 1Password browser integration
             proton-pass                   # Proton Pass password manager
             web-clipper-obsidian          # Save pages to Obsidian vault

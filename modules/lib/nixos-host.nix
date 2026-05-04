@@ -55,6 +55,8 @@
           # Install user packages into /etc/profiles, not ~/.nix-profile.
           # Required for Fish/Starship to land on the system PATH correctly under NixOS.
           home-manager.useUserPackages = true;
+          # Back up existing files that conflict with HM-managed symlinks.
+          home-manager.backupFileExtension = "hm-backup";
 
           # Pass username + homeDirectory so HM feature modules can reference them
           # without hardcoding a specific user.

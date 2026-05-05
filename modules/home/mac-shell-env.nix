@@ -7,6 +7,11 @@
 
 {
   flake.modules.homeManager.mac-shell-env = { ... }: {
+    # Global asdf tool versions — prevents "No version is set" warnings.
+    home.file.".tool-versions".text = ''
+      dotnet 10.0.102
+    '';
+
     programs.fish.shellInit = ''
       # ── pyenv ──────────────────────────────────────────────────────────────
       if test -d $HOME/.pyenv

@@ -2,16 +2,16 @@
   description = "j-v-a dotfiles — NixOS + nix-darwin + home-manager (dendritic)";
 
   inputs = {
-    # nixpkgs — canonical Linux/NixOS channel (nixos-24.11).
+    # nixpkgs — canonical Linux/NixOS channel (nixos-26.05).
     # dotfiles-private follows this as its base and adds nixpkgs-darwin separately.
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     # nixpkgs-darwin — macOS channel; kept here so dotfiles-private can follow it.
     # Not used directly in this flake (all hosts here are Linux).
-    nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-24.11-darwin";
+    nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-26.05-darwin";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -34,7 +34,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    catppuccin.url = "github:catppuccin/nix/v1.2.1";
+    catppuccin.url = "github:catppuccin/nix/v26.05";
 
     # Wallpaper collection — pinned to a specific commit for reproducibility.
     # Update with: nix flake update wallpapers

@@ -9,6 +9,10 @@
     wayland.windowManager.hyprland = {
       enable = true;
 
+      # 26.05: configType default changed hyprlang -> lua. Our config below is
+      # written in hyprlang syntax, so pin the legacy type.
+      configType = "hyprlang";
+
       # Register Hyprland as a systemd session target so that waybar, dunst, and
       # other services can declare After=hyprland-session.target and start reliably.
       systemd.enable = true;
@@ -284,7 +288,7 @@
     # Catppuccin theme is applied by catppuccin.nix. We override layout/behaviour here.
     programs.rofi = {
       enable  = true;
-      package = pkgs.rofi-wayland;
+      package = pkgs.rofi;  # rofi-wayland merged into rofi in 26.05
 
       # Extra config on top of the catppuccin theme:
       # - drun,window,run modes with visible tab switcher for categorisation
@@ -328,10 +332,13 @@
       pavucontrol     # PulseAudio/PipeWire GUI volume control
       nautilus        # file manager (GTK)
       gnome-themes-extra       # themes for GTK apps running under Hyprland
-      papirus-icon-theme       # icon theme (replaces Adwaita)
+      # Icon theme is provided via gtk.iconTheme.package. 26.05: catppuccin sets
+      # this to catppuccin-papirus-folders (a full Papirus build with recolored
+      # folders), so we must NOT also add papirus-icon-theme here — the two
+      # collide in home-manager-path.
       # catppuccin-cursors.mochaDark is pulled in by gtk.cursorTheme and home.pointerCursor below
       wpaperd         # wallpaper daemon (Wayland, wlr-layer-shell)
-      blueberry       # GTK bluetooth manager (backend: blueman service in nixos/base.nix)
+      blueman         # GTK bluetooth manager (replaces blueberry, removed 26.05)
       wlogout         # Wayland logout/power menu screen
       nwg-drawer      # GTK app drawer with category sidebar (replaces rofi for drun)
     ];
@@ -422,11 +429,13 @@
 
     # ── GTK theme (for GTK apps running under Hyprland) ──────────────────────────
     # gtk.theme is set by catppuccin.nix when catppuccin is in the feature list.
+    # 26.05: catppuccin now also sets gtk.iconTheme.package (catppuccin-papirus-folders),
+    # so we lower our defaults to mkDefault to let catppuccin's themed icons win.
     gtk = {
       enable = true;
       iconTheme = {
-        name    = "Papirus-Dark";
-        package = pkgs.papirus-icon-theme;
+        name    = lib.mkDefault "Papirus-Dark";
+        package = lib.mkDefault pkgs.papirus-icon-theme;
       };
       cursorTheme = {
         name    = "catppuccin-mocha-dark-cursors";

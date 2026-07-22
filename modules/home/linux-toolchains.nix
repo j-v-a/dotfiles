@@ -36,33 +36,26 @@
       age              # encryption tool for sops-nix secrets
 
       # Fonts (needed for Hyprland + Waybar + KDE/GNOME apps)
-      # TODO(25.05): replace with individual nerd-fonts.* packages when upgrading to nixos-25.05.
-      # The split nerd-fonts.<name> API landed in 25.05; nerdfonts.override is removed there.
-      # When upgrading, replace this block with:
-      #   nerd-fonts.jetbrains-mono nerd-fonts.fira-code nerd-fonts.hack
-      #   nerd-fonts.cascadia-code nerd-fonts.mononoki nerd-fonts.ibm-plex-mono
-      #   nerd-fonts.iosevka nerd-fonts.symbols-only
-      (nerdfonts.override { fonts = [
-        "JetBrainsMono"        # primary coding font (terminals, editors)
-        "FiraCode"             # ligature coding font (on Mac via Homebrew cask)
-        "Hack"                 # widely-used terminal/editor fallback
-        "CascadiaCode"         # VSCode default; ligature support
-        "Mononoki"             # clean monospace for terminals
-        "IBMPlexMono"          # IBM Plex Mono with Nerd Font patches
-        "Iosevka"              # narrow coding font, popular in dev tooling
-        "NerdFontsSymbolsOnly" # symbol-only fallback — ensures icons work in any terminal font
-      ]; })
+      # 26.05: nerdfonts.override was removed; use the split nerd-fonts.<name> packages.
+      nerd-fonts.jetbrains-mono   # primary coding font (terminals, editors)
+      nerd-fonts.fira-code        # ligature coding font (on Mac via Homebrew cask)
+      nerd-fonts.hack             # widely-used terminal/editor fallback
+      nerd-fonts.caskaydia-cove   # Cascadia Code (VSCode default); ligature support
+      nerd-fonts.mononoki         # clean monospace for terminals
+      nerd-fonts.blex-mono        # IBM Plex Mono with Nerd Font patches
+      nerd-fonts.iosevka          # narrow coding font, popular in dev tooling
+      nerd-fonts.symbols-only     # symbol-only fallback — ensures icons work in any terminal font
       font-awesome          # waybar icons (solid/brands/regular sets)
       noto-fonts            # broad Unicode coverage: Latin, Greek, Cyrillic
       noto-fonts-cjk-sans   # CJK (Chinese/Japanese/Korean) glyphs
-      noto-fonts-emoji      # colour emoji (needed by browsers, GNOME, KDE apps)
+      noto-fonts-color-emoji # colour emoji (needed by browsers, GNOME, KDE apps; renamed 26.05)
     ];
 
     # Git credential helper — Linux uses gh CLI auth directly.
     # On macOS we go through 1Password CLI (set in dotfiles-private).
     # On Linux, gh CLI manages its own token (~/.config/gh/).
     # Run once after first boot: gh auth login
-    programs.git.extraConfig = {
+    programs.git.settings = {
       "credential \"https://github.com/\"".helper = "!gh auth git-credential";
     };
 

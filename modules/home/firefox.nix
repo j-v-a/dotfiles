@@ -23,7 +23,10 @@
           name = "default";
           isDefault = true;
 
-          extensions = with addons; [
+          # 26.05: extensions is now a submodule; declaratively managing the
+          # extension set requires force = true to override the profile's list.
+          extensions.force = true;
+          extensions.packages = with addons; [
             onepassword-password-manager  # 1Password browser integration
             proton-pass                   # Proton Pass password manager
             web-clipper-obsidian          # Save pages to Obsidian vault

@@ -57,7 +57,7 @@
         # ── Settings ──────────────────────────────────────────────────────────────
         userSettings = {
           "workbench.startupEditor"                    = "none";
-          "workbench.colorTheme"                       = "Flexoki Dark";
+          "workbench.colorTheme"                       = lib.mkForce "Flexoki Dark";
           "window.systemColorTheme"                    = "dark";
           "files.autoSave"                             = "onFocusChange";
           "explorer.confirmDelete"                     = false;

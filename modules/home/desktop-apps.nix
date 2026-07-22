@@ -33,7 +33,7 @@
       audacity                     # audio editor (runs via Xwayland)
       mousai                       # music identification (Shazam-like)
       easyeffects                  # PipeWire audio effects and EQ
-      helvum                       # PipeWire patchbay / routing GUI
+      crosspipe                    # PipeWire patchbay / routing GUI (replaces helvum, removed 26.05)
       vcv-rack                     # modular synth (GPL; some bundled art non-free)
       bitwig-studio                # DAW (unfree)
       hypnotix                     # IPTV player
@@ -82,8 +82,8 @@
       # ── JetBrains IDEs ────────────────────────────────────────────────────────
       # All JetBrains IDEs are unfree (commercial license).
       # Listed individually so the allowUnfreePredicate can be explicit.
-      jetbrains.idea-ultimate      # Java / JVM (IntelliJ IDEA Ultimate)
-      jetbrains.pycharm-professional  # Python
+      jetbrains.idea               # Java / JVM (IntelliJ IDEA; editions unified in 26.05)
+      jetbrains.pycharm            # Python (editions unified in 26.05)
       jetbrains.goland             # Go
       jetbrains.webstorm           # JavaScript / TypeScript
       jetbrains.datagrip           # Databases / SQL
@@ -97,10 +97,10 @@
       gamescope                    # Valve micro-compositor for gaming
 
       # ── VPN ───────────────────────────────────────────────────────────────────
-      protonvpn-gui                # ProtonVPN client
+      proton-vpn                   # ProtonVPN client (renamed from protonvpn-gui, 26.05)
 
       # ── Web apps (native Electron) ────────────────────────────────────────────
-      youtube-music                # YouTube Music native Electron app
+      pear-desktop                 # YouTube Music native Electron app (renamed from youtube-music, 26.05)
     ];
 
     # ── Web apps (PWA-style via Firefox --new-window) ─────────────────────────────

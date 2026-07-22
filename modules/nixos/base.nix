@@ -59,6 +59,12 @@
     #                        bitwig-studio, vcv-rack, 1password, JetBrains IDEs
     nixpkgs.config.allowUnfree = true;
 
+    # ── Insecure packages ─────────────────────────────────────────────────────────
+    # ventoy bundles prebuilt blobs and is flagged insecure by nixpkgs (26.05).
+    # We use ventoy-full (desktop-apps.nix) to make bootable USBs; permit it
+    # explicitly. Review periodically — remove if no longer needed.
+    nixpkgs.config.permittedInsecurePackages = [ "ventoy-1.1.12" ];
+
     # ── SSH ───────────────────────────────────────────────────────────────────────
     services.openssh = {
       enable   = true;

@@ -7,8 +7,9 @@
 {
   flake.modules.nixos.virt = { ... }: {
     virtualisation.libvirtd = {
-      enable           = true;
-      qemu.ovmf.enable = true;   # UEFI firmware for VMs
+      enable = true;
+      # 26.05: virtualisation.libvirtd.qemu.ovmf was removed; OVMF UEFI firmware
+      # images shipped with QEMU are now available by default.
     };
     virtualisation.spiceUSBRedirection.enable = true;
   };

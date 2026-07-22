@@ -9,20 +9,16 @@
 
 {
   flake.modules.nixos.gnome = { pkgs, ... }: {
-    # GNOME desktop environment
-    services.xserver.desktopManager.gnome.enable = true;
+    # GNOME desktop environment (26.05: moved out of services.xserver)
+    services.desktopManager.gnome.enable = true;
 
     # GDM display manager — replaces SDDM as the session picker.
-    # TODO(25.05): migrate to services.displayManager.gdm (the old xserver path is
-    # removed in 25.05; the new path does not exist in 24.11).
-    services.xserver.displayManager.gdm = {
-      enable  = true;
-      wayland = true;
-    };
+    # 26.05: GDM moved to services.displayManager.gdm; the `wayland` toggle was
+    # removed (GNOME 50 is always Wayland).
+    services.displayManager.gdm.enable = true;
 
     # Disable SDDM — GDM and SDDM conflict; only one display manager can be active.
-    # TODO(25.05): services.displayManager.sddm.enable = false;
-    services.xserver.displayManager.sddm.enable = false;
+    services.displayManager.sddm.enable = false;
 
     # GNOME keyring — unlocks on GDM login; used by apps for credential storage
     services.gnome.gnome-keyring.enable = true;

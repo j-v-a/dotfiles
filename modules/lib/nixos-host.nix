@@ -70,7 +70,7 @@
             ({ osConfig, ... }: { home.stateVersion = osConfig.system.stateVersion; })
             # catppuccin/nix HM module — makes catppuccin.* options available in every
             # feature module. Opt in per-host via the "catppuccin" feature.
-            inputs.catppuccin.homeManagerModules.catppuccin
+            inputs.catppuccin.homeModules.catppuccin
           ] ++ hmModules;
         }
       ];

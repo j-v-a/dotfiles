@@ -91,7 +91,8 @@
         animations.enabled = true;
 
         dwindle = {
-          pseudotile    = true;
+          # `pseudotile` config bool was removed in Hyprland 0.55 — pseudotiling is
+          # now runtime-only (the `pseudo` window dispatcher, bound to $mod+P below).
           preserve_split = true;
         };
 
@@ -109,7 +110,7 @@
           "$mod, R, exec, nwg-drawer"
           "$mod, Tab, exec, rofi -show window"
           "$mod, P, pseudo"
-          "$mod, J, togglesplit"
+          "$mod, J, layoutmsg, togglesplit"
 
           # Focus
           "$mod, left,  movefocus, l"

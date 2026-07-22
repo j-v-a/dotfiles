@@ -52,6 +52,8 @@
         # recommendations). Set to false for a fully read-only extensions dir.
         mutableExtensionsDir = true;
 
+        profiles.default = {
+
         # ── Settings ──────────────────────────────────────────────────────────────
         userSettings = {
           "workbench.startupEditor"                    = "none";
@@ -120,6 +122,7 @@
           (mkt { publisher = "vue";         name = "volar";                version = "3.2.6";       sha256 = "d51e4ddc98c9519fca3d85c6abf54ecdb326423d5fceb2bd1eb02303c25ad9ae"; })
           (mkt { publisher = "vunguyentuan"; name = "vscode-css-variables"; version = "2.8.3";      sha256 = "6458dc3da3b3fa9ffd4a1d32cd67b282949c5e665cb516380af517e56a65815b"; })
         ];
+        };
       };
     };
 }

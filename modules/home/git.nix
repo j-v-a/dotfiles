@@ -8,10 +8,10 @@
     programs.git = {
       enable = true;
 
-      userName  = "j-v-a";
-      userEmail = "jvanameijden@gmail.com";
+      settings = {
+        user.name  = "j-v-a";
+        user.email = "jvanameijden@gmail.com";
 
-      extraConfig = {
         pull.rebase          = true;
         fetch.prune          = true;
         init.defaultBranch   = "main";

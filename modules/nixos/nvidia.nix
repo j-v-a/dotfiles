@@ -1,8 +1,11 @@
 # modules/nixos/nvidia.nix
 # Nvidia GPU driver configuration — GTX 1060 (Pascal).
 #
-# GTX 1060 (Pascal) confirmed NOT on Nvidia legacy list → use nvidiaPackages.stable.
-# If ever upgrading GPU, recheck: https://www.nvidia.com/en-us/drivers/unix/legacy-gpu/
+# GTX 1060 (Pascal) became LEGACY as of the 595.xx driver series. nixpkgs 26.05
+# bumped nvidiaPackages.stable to 595.71.05, which DROPS Pascal support ("No
+# NVIDIA GPU found" / falls back to framebuffer). Pascal is now served by the
+# 580.xx legacy branch → use nvidiaPackages.legacy_580.
+# Recheck on GPU upgrade: https://www.nvidia.com/en-us/drivers/unix/legacy-gpu/
 #
 # - open = false  REQUIRED for Pascal; open kernel module only supports Turing+
 # - modesetting   REQUIRED for Hyprland / Wayland
@@ -16,7 +19,7 @@
 {
   flake.modules.nixos.nvidia = { pkgs, ... }: {
     hardware.nvidia = {
-      package            = pkgs.linuxPackages.nvidiaPackages.stable;
+      package            = pkgs.linuxPackages.nvidiaPackages.legacy_580;
       modesetting.enable = true;
       open               = false;
       nvidiaSettings     = true;   # installs nvidia-settings GUI

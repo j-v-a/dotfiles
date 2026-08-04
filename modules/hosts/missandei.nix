@@ -22,6 +22,7 @@
         "gaming"            # NixOS: steam, lutris, gamemode
         "virt"              # NixOS: libvirtd + SPICE for virt-manager
         "wireshark"         # NixOS: setcap packet capture permissions
+        "logitech"          # NixOS: Solaar — Logitech MX button/DPI config via Bolt receiver
         "system-utils"      # NixOS: ananicy-cpp daemon + kdeconnect firewall ports
         "shell"             # HM: fish, starship, zoxide, fzf, direnv
         "atuin"             # HM: shell history (local-only, replaces fzf-fish Ctrl+R)

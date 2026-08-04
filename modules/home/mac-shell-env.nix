@@ -42,6 +42,10 @@
       end
 
       # ── rustup / cargo ─────────────────────────────────────────────────────
+      # Homebrew rustup is keg-only; add its bin so cargo/rustc/rustup are on PATH
+      if test -d /opt/homebrew/opt/rustup/bin
+        fish_add_path /opt/homebrew/opt/rustup/bin
+      end
       if test -d $HOME/.cargo
         fish_add_path $HOME/.cargo/bin
       end

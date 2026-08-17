@@ -78,6 +78,7 @@
       # vscode managed by "vscode" feature (modules/home/vscode.nix)
       zed-editor                   # fast multiplayer code editor
       ghostty                      # GPU-accelerated terminal
+      glamoroustoolkit             # moldable, Pharo-based development environment (gtoolkit.com)
 
       # ── JetBrains IDEs ────────────────────────────────────────────────────────
       # All JetBrains IDEs are unfree (commercial license).

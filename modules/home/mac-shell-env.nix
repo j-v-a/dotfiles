@@ -59,6 +59,14 @@
       if test -f $HOME/.asdf/plugins/dotnet/set-dotnet-env.fish
         source $HOME/.asdf/plugins/dotnet/set-dotnet-env.fish
       end
+
+      # ── horizon (team AI coding toolkit) ────────────────────────────────────
+      # Local git checkout, not a Nix package. install.sh only wires zsh, so
+      # Fish needs its own PATH entry here.
+      if test -d $HOME/Projects/horizon/bin
+        set -gx HORIZON_HOME $HOME/Projects/horizon
+        fish_add_path $HORIZON_HOME/bin
+      end
     '';
   };
 }

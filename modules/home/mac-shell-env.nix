@@ -7,11 +7,6 @@
 
 {
   flake.modules.homeManager.mac-shell-env = { ... }: {
-    # Global asdf tool versions — prevents "No version is set" warnings.
-    home.file.".tool-versions".text = ''
-      dotnet 10.0.102
-    '';
-
     programs.fish.shellInit = ''
       # ── pyenv ──────────────────────────────────────────────────────────────
       if test -d $HOME/.pyenv
@@ -53,11 +48,6 @@
       # ── asdf shims ────────────────────────────────────────────────────────
       if test -d $HOME/.asdf/shims
         fish_add_path $HOME/.asdf/shims
-      end
-
-      # ── asdf dotnet ────────────────────────────────────────────────────────
-      if test -f $HOME/.asdf/plugins/dotnet/set-dotnet-env.fish
-        source $HOME/.asdf/plugins/dotnet/set-dotnet-env.fish
       end
 
       # ── horizon (team AI coding toolkit) ────────────────────────────────────

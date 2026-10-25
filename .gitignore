@@ -11,3 +11,7 @@ result-*
 # sops age private keys — NEVER commit
 *.age
 keys.txt
+
+# Editor / local tooling
+.idea/
+.envrc

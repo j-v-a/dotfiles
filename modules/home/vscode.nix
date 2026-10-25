@@ -22,31 +22,11 @@
         };
     in
     {
-      # argv.json is VSCode's early-startup config (read before the renderer process).
-      # "password-store" = "basic" tells VSCode to use its own encrypted file-based
-      # secret store instead of macOS Keychain. This prevents the recurring TCC popup
-      # "VSCode would like to access data from other apps" that fires on every restart
-      # when Copilot/GitHub auth tries to read cross-app keychain items (e.g. the shared
-      # Microsoft ADAL cache written by Teams / Company Portal).
-      # Note: this is NOT managed by programs.vscode — it must be a separate home.file.
-      home.file."Library/Application Support/Code/argv.json".text = builtins.toJSON {
-        "password-store" = "basic";
-      };
-
       programs.vscode = {
         enable = true;
 
-        # On macOS the binary is installed via Homebrew cask (visual-studio-code).
-        # We provide a shim package so home-manager manages settings + extensions
-        # without installing its own nixpkgs copy of VS Code.
-        # home-manager reads pname/version off the package, so they must be set.
-        package = pkgs.runCommand "vscode-homebrew-shim" {
-          pname   = "vscode";
-          version = "homebrew";
-        } ''
-          mkdir -p $out/bin
-          ln -s /opt/homebrew/bin/code $out/bin/code
-        '';
+        # Hosts may override (e.g. a shim around an externally installed binary).
+        package = lib.mkDefault pkgs.vscode;
 
         # Allow VSCode to manage extensions outside the Nix store (e.g. workspace
         # recommendations). Set to false for a fully read-only extensions dir.

@@ -16,6 +16,7 @@
     };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+    nixos-hardware.inputs.nixpkgs.follows = "nixpkgs";
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -34,7 +35,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    catppuccin.url = "github:catppuccin/nix/v26.05";
+    catppuccin = {
+      url = "github:catppuccin/nix/v26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Wallpaper collection — pinned to a specific commit for reproducibility.
     # Update with: nix flake update wallpapers

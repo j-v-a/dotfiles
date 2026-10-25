@@ -1,6 +1,6 @@
 # modules/home/git.nix
 # Git config — personal identity as default.
-# Work identity (Wärtsilä) is applied via includeIf in dotfiles-private.
+# Work identity is applied via includeIf in dotfiles-private.
 { ... }:
 
 {

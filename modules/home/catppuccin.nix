@@ -14,6 +14,10 @@
     # Per-app opt-ins: only enable themes for apps that are actually installed
     # and configured via home-manager on this host.
 
+    # VS Code uses Flexoki Dark (vscode.nix, mkForce), so the catppuccin extension
+    # was unused — and its pnpm build dependency is flagged insecure on 26.05.
+    catppuccin.vscode.profiles.default.enable = false;
+
     # ── Waybar ────────────────────────────────────────────────────────────────────
     # mode = "prependImport": catppuccin CSS is @imported at the top of
     # programs.waybar.style — our font/layout rules in hyprland.nix still apply.

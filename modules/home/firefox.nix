@@ -17,6 +17,8 @@
     {
       programs.firefox = {
         enable = true;
+        # Keep the existing profile location (HM 26.05 default moved to XDG for new installs).
+        configPath = ".mozilla/firefox";
 
         profiles.default = {
           id   = 0;

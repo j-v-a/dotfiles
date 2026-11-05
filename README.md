@@ -6,17 +6,18 @@ Declarative NixOS + home-manager configuration using flake-parts and the **dendr
 
 | Host | Arch | Desktop |
 |------|------|---------|
-| **Missandei** | x86_64-linux | Hyprland + GNOME (GDM) |
+| **Missandei** | x86_64-linux | GNOME + Hyprland (UWSM), GDM session picker |
 
-Surface Pro 7+ and a home server are planned future hosts.
+Planned: Surface Pro 7+ and a home server (Beelink S13).
 
 ## Structure
 
 ```
 flake.nix              # flake-parts entrypoint
 modules/
+  flake/treefmt.nix    # `nix fmt` (nixfmt, deadnix, statix) + formatting check
   lib/nixos-host.nix   # host helper (wires NixOS + home-manager per user)
-  hosts/missandei.nix  # feature list for this host
+  hosts/missandei.nix  # feature list + stateVersion for this host
   _hardware/           # hardware-configuration (excluded from auto-import)
   nixos/               # NixOS system modules (base, nvidia, hyprland, gnome, dev, gaming, ...)
   home/                # home-manager modules (shell, cli-tools, git, editors, desktop-apps, ...)
@@ -34,12 +35,18 @@ secrets/               # sops-nix encrypted secrets (age)
 ## Usage
 
 ```bash
-# Rebuild locally
-sudo nixos-rebuild switch --flake .#missandei
+# Rebuild locally (nh: progress tree + package diff; NH_FLAKE points here)
+nh os switch            # or: sudo nixos-rebuild switch --flake .#missandei
+nh os boot              # kernel / NVIDIA / session changes, then reboot
 
 # Rebuild remotely (from Mac)
-ssh -t missandei 'cd ~/dotfiles && git pull && sudo nixos-rebuild switch --flake .#missandei'
+ssh -t missandei 'cd ~/dotfiles && git pull && nh os switch'
+
+# Format before committing
+nix fmt
 ```
+
+CI (`.github/workflows/`): gitleaks history scan, `nix flake check`, full Missandei build; weekly `flake.lock` update PR.
 
 ## Related
 

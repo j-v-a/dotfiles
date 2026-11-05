@@ -34,6 +34,7 @@
     # XDG portal for GNOME apps (file pickers, screen sharing, etc.)
     # xdg-desktop-portal-hyprland is added by hyprland.nix; we add the GTK/GNOME portal here.
     xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    xdg.portal.config.gnome.default = [ "gnome" "gtk" ];
 
     # Exclude GNOME apps we don't want (avoid bloat)
     environment.gnome.excludePackages = with pkgs; [

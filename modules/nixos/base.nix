@@ -5,11 +5,17 @@
 { ... }:
 
 {
-  flake.modules.nixos.base = { pkgs, username, ... }: {
+  flake.modules.nixos.base = { pkgs, lib, username, ... }: {
 
     # ── Bootloader ────────────────────────────────────────────────────────────────
     boot.loader.systemd-boot.enable      = true;
+    # Caps boot-menu entries only (keeps the ESP from filling up); older generations
+    # stay in the store until `nh clean` removes them (see Nix housekeeping below).
+    boot.loader.systemd-boot.configurationLimit = lib.mkDefault 15;
     boot.loader.efi.canTouchEfiVariables = true;
+
+    # Compressed RAM swap — cheap insurance against OOM during large builds.
+    zramSwap.enable = lib.mkDefault true;
 
     # ── Networking ────────────────────────────────────────────────────────────────
     networking.networkmanager.enable = true;
@@ -114,7 +120,30 @@
       # Accepted risk on a single-user personal workstation.
       trusted-users       = [ username ];
       auto-optimise-store = true;
+      # Auto-GC when free space drops below 5 GiB, up to 20 GiB free.
+      min-free = 5 * 1024 * 1024 * 1024;
+      max-free = 20 * 1024 * 1024 * 1024;
+      download-buffer-size = 512 * 1024 * 1024;
     };
+
+    # ── Nix housekeeping ──────────────────────────────────────────────────────────
+    # nh: `nh os switch|boot|build` (nom build tree + package diff, sudo only at activation).
+    # Weekly clean keeps ≥ 14 days AND ≥ 10 generations (plan decision D1).
+    programs.nh = {
+      enable = true;
+      flake  = "/home/${username}/dotfiles";
+      clean = {
+        enable    = true;
+        dates     = "weekly";
+        extraArgs = "--keep-since 14d --keep 10";
+      };
+    };
+
+    # Run unpatched dynamic binaries (AppImages, vendor CLIs, VS Code server bits).
+    programs.nix-ld.enable = true;
+
+    # command-not-found needs channels (unused with flakes); nix-index (HM cli-tools) replaces it.
+    programs.command-not-found.enable = false;
 
     # Set at install time — NEVER change after first boot.
     system.stateVersion = "24.11";

@@ -13,19 +13,25 @@
     programs.hyprland = {
       enable          = true;
       xwayland.enable = true;
+      # Run Hyprland as a systemd session (UWSM): proper graphical-session.target ordering
+      # for waybar/dunst/hypridle/polkit. GDM shows "Hyprland (uwsm-managed)".
+      withUWSM        = true;
     };
 
     # hyprlock must be enabled at the system level (not only in home-manager) because
     # NixOS needs to install a PAM entry (/etc/pam.d/hyprlock) for screen-unlock auth.
     # Without this, hyprlock starts but password verification always fails.
     programs.hyprlock.enable  = true;
-    services.hypridle.enable  = true;
+    # hypridle runs as the home-manager user service (home/hyprland.nix), Hyprland-only.
 
     # XDG portal for Wayland (needed for screen sharing, file pickers, etc.)
     # xdg-desktop-portal-gtk is added by gnome.nix when GNOME coexists.
     xdg.portal = {
       enable       = true;
       extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+      # Per-desktop portal routing (key = lowercased XDG_CURRENT_DESKTOP), so GNOME and
+      # Hyprland each get their own backend for screencast/file picker.
+      config.hyprland.default = [ "hyprland" "gtk" ];
     };
 
     # Audio — pipewire

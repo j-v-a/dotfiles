@@ -13,9 +13,10 @@
       # written in hyprlang syntax, so pin the legacy type.
       configType = "hyprlang";
 
-      # Register Hyprland as a systemd session target so that waybar, dunst, and
-      # other services can declare After=hyprland-session.target and start reliably.
-      systemd.enable = true;
+      # Session is managed by UWSM (nixos/hyprland.nix: withUWSM), which provides
+      # graphical-session.target and exports the environment to systemd/D-Bus.
+      # HM's own hyprland-session.target must be off under UWSM (double management).
+      systemd.enable = false;
 
       settings = {
         # Monitor — auto-detect; override once you know your display layout.
@@ -42,14 +43,12 @@
           "SDL_VIDEODRIVER,wayland,x11"      # SDL2 apps; x11 fallback for games
         ];
 
-        # waybar and dunst are started as systemd user services (see below) —
+        # waybar, dunst and hypridle are systemd user services (see below) —
         # do NOT also launch them here or you get double instances.
         # wpaperd is launched here since it has no systemd service integration.
         exec-once = [
-          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
           "wpaperd"
           "blueman-applet"
-          "hypridle"
           # nwg-drawer resident instance — keeps the drawer in memory for fast opens.
           # Subsequent invocations (Super+R) toggle it via pkill -USR1.
           "nwg-drawer -r -wm hyprland -pblock hyprlock -pbexit wlogout -pbreboot 'systemctl reboot' -pbpoweroff 'systemctl poweroff' -pbsleep 'systemctl suspend' -pbuseicontheme -i Papirus-Dark"
@@ -155,9 +154,8 @@
     programs.waybar = {
       enable = true;
 
-      # Start waybar as a systemd user service after hyprland-session.target.
-      # This ensures the Hyprland IPC socket exists before waybar connects to it,
-      # which is required for the hyprland/workspaces module to function.
+      # Start waybar as a systemd user service on graphical-session.target (UWSM).
+      # Restricted to Hyprland sessions via hyprlandOnly below.
       systemd.enable = true;
 
       settings = [{
@@ -450,5 +448,12 @@
       gtk.enable  = true;
       x11.enable  = true;
     };
+
+    # ── Hyprland-only user services ───────────────────────────────────────────────
+    # graphical-session.target is also reached in GNOME; without this condition
+    # waybar, dunst (vs GNOME notifications) and hypridle (hyprctl/lock) leak into GNOME.
+    systemd.user.services = lib.genAttrs [ "waybar" "dunst" "hypridle" ] (_: {
+      Unit.ConditionEnvironment = "XDG_CURRENT_DESKTOP=Hyprland";
+    });
   };
 }

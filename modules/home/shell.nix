@@ -29,7 +29,6 @@ let
     nix-search = "nix search nixpkgs";
     nix-shell  = "nix shell nixpkgs#";
     nix-run    = "nix run nixpkgs#";
-    nix-gc     = "nix-collect-garbage --delete-older-than 30d";
   };
 
   # ---------------------------------------------------------------------------

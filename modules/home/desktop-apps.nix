@@ -47,7 +47,6 @@
       kdePackages.okular           # document / PDF viewer (KDE)
       kdePackages.kate             # text editor with syntax highlighting (KDE)
       calibre                      # e-book manager and converter
-      celeste                      # cloud sync GUI (rclone-based)
       komikku                      # manga reader (GNOME)
       alpaca                       # local LLM frontend (Ollama GUI)
       qalculate-gtk                # powerful calculator (GUI + qalc CLI)

@@ -9,10 +9,10 @@
 {
   flake.modules.homeManager.ai-tools = { pkgs, lib, ... }:
   let
-    opencode-version = "1.3.15";
+    opencode-version = "1.19.5";
     opencode-src = pkgs.fetchurl {
-      url = "https://github.com/anomalyco/opencode/releases/download/v${opencode-version}/opencode-electron-linux-x86_64.AppImage";
-      hash = "sha256-Q0GT3BcctU4NILjrJBgXncNR0cG1E+KZSP1VSIn0Vjo=";
+      url = "https://github.com/anomalyco/opencode/releases/download/v${opencode-version}/opencode-desktop-linux-x86_64.AppImage";
+      hash = "sha256-LFtTcihd/htcs6QcDhgTqHW4lc0JPHDjQX/YOP1giIM=";
     };
     opencode = pkgs.appimageTools.wrapType2 {
       pname   = "opencode";
@@ -32,7 +32,7 @@
       exec    = "opencode";
       comment = "AI coding assistant";
       categories = [ "Development" "IDE" ];
-      terminal = true;
+      terminal = false;
     };
   };
 }

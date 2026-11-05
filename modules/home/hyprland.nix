@@ -21,11 +21,10 @@
         # Monitor — auto-detect; override once you know your display layout.
         monitor = ",preferred,auto,1";
 
-        # Environment variables for Nvidia Wayland
+        # Environment variables for Nvidia Wayland.
+        # LIBVA_* live in nixos/nvidia.nix (sessionVariables); XDG_SESSION_TYPE is set by
+        # the session; Firefox and Clutter default to Wayland, so no MOZ_/CLUTTER_ vars.
         env = [
-          "LIBVA_DRIVER_NAME,nvidia"
-          "LIBVA_DRIVERS_PATH,/run/opengl-driver/lib/dri"
-          "XDG_SESSION_TYPE,wayland"
           "GBM_BACKEND,nvidia-drm"
           "__GLX_VENDOR_LIBRARY_NAME,nvidia"
           # cursor.no_hardware_cursors = true (below) is the correct Hyprland ≥0.41 fix
@@ -36,13 +35,11 @@
           "NIXOS_OZONE_WL,1"               # Electron (VSCode, Obsidian, Discord, Slack, etc.)
           "QT_QPA_PLATFORM,wayland"         # Qt apps
           "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
-          "MOZ_ENABLE_WAYLAND,1"            # Firefox / Thunderbird
           # _JAVA_AWT_WM_NONREPARENTING fixes window decorations;
           # JAVA_TOOL_OPTIONS enables the Wayland toolkit for JetBrains IDEs
           "_JAVA_AWT_WM_NONREPARENTING,1"
           "JAVA_TOOL_OPTIONS,-Dawt.toolkit.name=WLToolkit"
-          "SDL_VIDEODRIVER,wayland"          # SDL2 apps
-          "CLUTTER_BACKEND,wayland"          # Clutter (GNOME apps)
+          "SDL_VIDEODRIVER,wayland,x11"      # SDL2 apps; x11 fallback for games
         ];
 
         # waybar and dunst are started as systemd user services (see below) —

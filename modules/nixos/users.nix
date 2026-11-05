@@ -10,15 +10,15 @@
 #   wireshark                            — non-root packet capture (programs.wireshark)
 #
 # SSH authorised keys live in hosts/<hostname>.nix (host-specific identity).
-{ ... }:
+_:
 
 {
   flake.modules.nixos.users = { pkgs, username, ... }: {
     users.users.${username} = {
       isNormalUser = true;
-      description  = username;
-      shell        = pkgs.fish;
-      extraGroups  = [
+      description = username;
+      shell = pkgs.fish;
+      extraGroups = [
         "wheel"
         "networkmanager"
         "video"

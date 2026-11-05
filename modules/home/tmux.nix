@@ -1,16 +1,16 @@
 # modules/home/tmux.nix
 # Tmux — terminal multiplexer. Prefix: C-a. vi keys. True colour for kitty.
-{ ... }:
+_:
 
 {
-  flake.modules.homeManager.tmux = { ... }: {
+  flake.modules.homeManager.tmux = _: {
     programs.tmux = {
-      enable       = true;
-      terminal     = "tmux-256color";
+      enable = true;
+      terminal = "tmux-256color";
       historyLimit = 10000;
-      keyMode      = "vi";
-      mouse        = true;
-      prefix       = "C-a";
+      keyMode = "vi";
+      mouse = true;
+      prefix = "C-a";
 
       extraConfig = ''
         # True colour — kitty sets TERM=xterm-kitty; cover both common values

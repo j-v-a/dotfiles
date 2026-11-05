@@ -5,7 +5,7 @@
 # Display manager note: GDM and SDDM conflict — only one can be active.
 # This module enables GDM and explicitly disables SDDM (which hyprland.nix would otherwise enable).
 # Hyprland remains selectable as a session in GDM's session menu.
-{ ... }:
+_:
 
 {
   flake.modules.nixos.gnome = { pkgs, ... }: {
@@ -34,15 +34,18 @@
     # XDG portal for GNOME apps (file pickers, screen sharing, etc.)
     # xdg-desktop-portal-hyprland is added by hyprland.nix; we add the GTK/GNOME portal here.
     xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-    xdg.portal.config.gnome.default = [ "gnome" "gtk" ];
+    xdg.portal.config.gnome.default = [
+      "gnome"
+      "gtk"
+    ];
 
     # Exclude GNOME apps we don't want (avoid bloat)
     environment.gnome.excludePackages = with pkgs; [
       gnome-tour
       gnome-connections
-      epiphany          # GNOME browser (we use Brave)
-      geary             # GNOME email (we use Thunderbird)
-      totem             # GNOME video player (we use VLC/MPV)
+      epiphany # GNOME browser (we use Brave)
+      geary # GNOME email (we use Thunderbird)
+      totem # GNOME video player (we use VLC/MPV)
     ];
   };
 }

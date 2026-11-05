@@ -1,31 +1,31 @@
 # modules/home/git.nix
 # Git config — personal identity as default.
 # Work identity is applied via includeIf in dotfiles-private.
-{ ... }:
+_:
 
 {
-  flake.modules.homeManager.git = { ... }: {
+  flake.modules.homeManager.git = _: {
     programs.git = {
       enable = true;
 
       settings = {
-        user.name  = "j-v-a";
+        user.name = "j-v-a";
         user.email = "jvanameijden@gmail.com";
 
-        pull.rebase          = true;
-        fetch.prune          = true;
-        init.defaultBranch   = "main";
+        pull.rebase = true;
+        fetch.prune = true;
+        init.defaultBranch = "main";
         push.autoSetupRemote = true;
 
         rerere.enabled = true;
 
         alias = {
-          s  = "status";
-          l  = "log --oneline --graph --decorate";
+          s = "status";
+          l = "log --oneline --graph --decorate";
           aa = "add --all";
           ca = "commit --amend --no-edit";
           pb = "push --force-with-lease origin HEAD";
-          d  = "diff";
+          d = "diff";
           ds = "diff --staged";
           rc = "rebase --continue";
         };
@@ -36,21 +36,21 @@
         };
         user.signingkey = "~/.ssh/id_ed25519_personalgh";
         commit.gpgsign = true;
-        tag.gpgsign    = true;
+        tag.gpgsign = true;
 
         core = {
-          pager    = "delta";
+          pager = "delta";
           autocrlf = "input";
         };
 
         interactive.diffFilter = "delta --color-only";
         delta = {
-          navigate     = true;
+          navigate = true;
           side-by-side = true;
           line-numbers = true;
         };
         merge.conflictstyle = "zdiff3";
-        diff.colormoved     = "zebra";
+        diff.colormoved = "zebra";
 
         # GitHub credential helper: set per-device in device-specific config.
         # - macOS (work-mac): uses 1Password — set in dotfiles-private/modules/home/work-git.nix
@@ -64,9 +64,9 @@
 
         # git-lfs
         filter.lfs = {
-          clean    = "git-lfs clean -- %f";
-          smudge   = "git-lfs smudge -- %f";
-          process  = "git-lfs filter-process";
+          clean = "git-lfs clean -- %f";
+          smudge = "git-lfs smudge -- %f";
+          process = "git-lfs filter-process";
           required = true;
         };
       };

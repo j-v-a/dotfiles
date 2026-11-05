@@ -1,6 +1,6 @@
 # modules/nixos/logitech.nix
 # Logitech MX device support — Solaar for button/DPI/flow configuration via Unifying/Bolt receiver.
-{ ... }:
+_:
 
 {
   flake.modules.nixos.logitech = { pkgs, ... }: {
@@ -8,8 +8,8 @@
     # Also installs the required udev rules for non-root access to receivers.
     environment.systemPackages = [ pkgs.solaar ];
     hardware.logitech.wireless = {
-      enable       = true;   # udev rules for Unifying/Bolt receivers
-      enableGraphical = true;  # pulls in solaar GUI
+      enable = true; # udev rules for Unifying/Bolt receivers
+      enableGraphical = true; # pulls in solaar GUI
     };
   };
 }

@@ -1,7 +1,7 @@
 # modules/home/catppuccin.nix
 # Catppuccin Mocha theming for the Hyprland desktop stack.
 # Uses catppuccin/nix home-manager module injected via nixos-host.nix.
-{ ... }:
+_:
 
 {
   flake.modules.homeManager.catppuccin = {
@@ -23,7 +23,7 @@
     # programs.waybar.style — our font/layout rules in hyprland.nix still apply.
     catppuccin.waybar = {
       enable = true;
-      mode   = "prependImport";
+      mode = "prependImport";
     };
 
     # ── Dunst ─────────────────────────────────────────────────────────────────────
@@ -50,11 +50,11 @@
     catppuccin.kitty.enable = true;
 
     # ── CLI tools ─────────────────────────────────────────────────────────────────
-    catppuccin.bat.enable      = true;
-    catppuccin.fzf.enable      = true;
-    catppuccin.delta.enable    = true;  # git diff pager (configured in git.nix)
+    catppuccin.bat.enable = true;
+    catppuccin.fzf.enable = true;
+    catppuccin.delta.enable = true; # git diff pager (configured in git.nix)
     catppuccin.starship.enable = true;
-    catppuccin.lazygit.enable  = true;
-    catppuccin.k9s.enable      = true;
+    catppuccin.lazygit.enable = true;
+    catppuccin.k9s.enable = true;
   };
 }

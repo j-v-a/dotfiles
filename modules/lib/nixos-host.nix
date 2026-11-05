@@ -17,62 +17,77 @@
 #                    "cli-tools" "git" "editors" "linux-toolchains" ];
 #       extraNixosModules = [ ./hardware/missandei.nix ];
 #     };
-{ inputs, config, ... }:
+{ inputs, ... }:
 
 {
   flake.lib.loadNixosAndHmModuleForUser =
     cfg:
-    { hostname, system, username, features, extraNixosModules ? [] }:
+    {
+      hostname,
+      system,
+      username,
+      features,
+      extraNixosModules ? [ ],
+    }:
     let
-      nixpkgs = inputs.nixpkgs;
+      inherit (inputs) nixpkgs;
 
       # Validate every feature name: throw at eval time if unrecognised in both namespaces.
-      validateFeature = f:
-        if cfg.flake.modules.nixos ? ${f} || cfg.flake.modules.homeManager ? ${f}
-        then f
-        else throw "dotfiles: unknown feature \"${f}\" — not found in nixos.* or homeManager.*";
+      validateFeature =
+        f:
+        if cfg.flake.modules.nixos ? ${f} || cfg.flake.modules.homeManager ? ${f} then
+          f
+        else
+          throw "dotfiles: unknown feature \"${f}\" — not found in nixos.* or homeManager.*";
 
       validatedFeatures = map validateFeature features;
-      nixosModules      = map (f: cfg.flake.modules.nixos.${f}       or {}) validatedFeatures;
-      hmModules         = map (f: cfg.flake.modules.homeManager.${f} or {}) validatedFeatures;
+      nixosModules = map (f: cfg.flake.modules.nixos.${f} or { }) validatedFeatures;
+      hmModules = map (f: cfg.flake.modules.homeManager.${f} or { }) validatedFeatures;
     in
     nixpkgs.lib.nixosSystem {
       inherit system;
       # username is passed so NixOS feature modules (e.g. users.nix, virt.nix) can
       # reference the user without hardcoding a name.
-      specialArgs = { inherit inputs username; inherit (inputs) nixos-hardware sops-nix; };
-      modules = nixosModules ++ extraNixosModules ++ [
-        inputs.sops-nix.nixosModules.sops
-        inputs.home-manager.nixosModules.home-manager
-        {
-          networking.hostName = hostname;
+      specialArgs = {
+        inherit inputs username;
+        inherit (inputs) nixos-hardware sops-nix;
+      };
+      modules =
+        nixosModules
+        ++ extraNixosModules
+        ++ [
+          inputs.sops-nix.nixosModules.sops
+          inputs.home-manager.nixosModules.home-manager
+          {
+            networking.hostName = hostname;
 
-          # Wire NUR in as a nixpkgs overlay so pkgs.nur is available in all modules.
-          nixpkgs.overlays = [ inputs.nur.overlays.default ];
+            # Wire NUR in as a nixpkgs overlay so pkgs.nur is available in all modules.
+            nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
-          # Use the same nixpkgs instance as NixOS (no separate pkgs eval).
-          home-manager.useGlobalPkgs   = true;
-          # Install user packages into /etc/profiles, not ~/.nix-profile.
-          # Required for Fish/Starship to land on the system PATH correctly under NixOS.
-          home-manager.useUserPackages = true;
-          # Back up existing files that conflict with HM-managed symlinks.
-          home-manager.backupFileExtension = "hm-backup";
+            # Use the same nixpkgs instance as NixOS (no separate pkgs eval).
+            home-manager.useGlobalPkgs = true;
+            # Install user packages into /etc/profiles, not ~/.nix-profile.
+            # Required for Fish/Starship to land on the system PATH correctly under NixOS.
+            home-manager.useUserPackages = true;
+            # Back up existing files that conflict with HM-managed symlinks.
+            home-manager.backupFileExtension = "hm-backup";
 
-          # Pass username + homeDirectory so HM feature modules can reference them
-          # without hardcoding a specific user.
-          home-manager.extraSpecialArgs = {
-            inherit username;
-            homeDirectory = "/home/${username}";
-            inherit (inputs) wallpapers;
-          };
+            # Pass username + homeDirectory so HM feature modules can reference them
+            # without hardcoding a specific user.
+            home-manager.extraSpecialArgs = {
+              inherit username;
+              homeDirectory = "/home/${username}";
+              inherit (inputs) wallpapers;
+            };
 
-          home-manager.users.${username}.imports = [
-            ({ osConfig, ... }: { home.stateVersion = osConfig.system.stateVersion; })
-            # catppuccin/nix HM module — makes catppuccin.* options available in every
-            # feature module. Opt in per-host via the "catppuccin" feature.
-            inputs.catppuccin.homeModules.catppuccin
-          ] ++ hmModules;
-        }
-      ];
+            home-manager.users.${username}.imports = [
+              ({ osConfig, ... }: { home.stateVersion = osConfig.system.stateVersion; })
+              # catppuccin/nix HM module — makes catppuccin.* options available in every
+              # feature module. Opt in per-host via the "catppuccin" feature.
+              inputs.catppuccin.homeModules.catppuccin
+            ]
+            ++ hmModules;
+          }
+        ];
     };
 }

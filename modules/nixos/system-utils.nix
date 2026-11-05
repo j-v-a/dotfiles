@@ -1,6 +1,6 @@
 # modules/nixos/system-utils.nix
 # System-level utilities and daemons for desktop responsiveness and phone integration.
-{ ... }:
+_:
 
 {
   flake.modules.nixos.system-utils = { pkgs, ... }: {
@@ -8,8 +8,8 @@
     # Applies CPU/IO nice levels to improve UI responsiveness under load
     # (e.g. prevents compile jobs from starving the compositor).
     services.ananicy = {
-      enable  = true;
-      package = pkgs.ananicy-cpp;   # use the C++ rewrite (faster, lower overhead)
+      enable = true;
+      package = pkgs.ananicy-cpp; # use the C++ rewrite (faster, lower overhead)
     };
 
     # KDE Connect — phone/desktop integration (file transfer, notifications, clipboard).

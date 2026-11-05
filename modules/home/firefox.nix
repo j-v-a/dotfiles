@@ -7,10 +7,11 @@
 # firefox-devedition shares library files with firefox and cannot coexist in
 # home.packages — it is installed via environment.systemPackages in nixos/base.nix.
 # Extensions are applied to the default profile only (used by stable Firefox).
-{ ... }:
+_:
 
 {
-  flake.modules.homeManager.firefox = { pkgs, ... }:
+  flake.modules.homeManager.firefox =
+    { pkgs, ... }:
     let
       addons = pkgs.nur.repos.rycee.firefox-addons;
     in
@@ -21,7 +22,7 @@
         configPath = ".mozilla/firefox";
 
         profiles.default = {
-          id   = 0;
+          id = 0;
           name = "default";
           isDefault = true;
 
@@ -29,11 +30,11 @@
           # extension set requires force = true to override the profile's list.
           extensions.force = true;
           extensions.packages = with addons; [
-            onepassword-password-manager  # 1Password browser integration
-            proton-pass                   # Proton Pass password manager
-            web-clipper-obsidian          # Save pages to Obsidian vault
-            react-devtools                # React debugging in devtools
-            raindropio                    # Raindrop.io bookmark manager
+            onepassword-password-manager # 1Password browser integration
+            proton-pass # Proton Pass password manager
+            web-clipper-obsidian # Save pages to Obsidian vault
+            react-devtools # React debugging in devtools
+            raindropio # Raindrop.io bookmark manager
           ];
         };
       };

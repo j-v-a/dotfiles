@@ -14,26 +14,26 @@
 #   for apps like mpv, VLC, etc. Verify: vainfo --display drm --device /dev/dri/renderD128
 # - LIBVA_* in sessionVariables: system-wide so VA-API works in all contexts (terminal,
 #   GDM, D-Bus app menu, Hyprland children). Hyprland env block alone is insufficient.
-{ ... }:
+_:
 
 {
   flake.modules.nixos.nvidia = { pkgs, ... }: {
     hardware.nvidia = {
-      package            = pkgs.linuxPackages.nvidiaPackages.legacy_580;
+      package = pkgs.linuxPackages.nvidiaPackages.legacy_580;
       modesetting.enable = true;
-      open               = false;
-      nvidiaSettings     = true;   # installs nvidia-settings GUI
+      open = false;
+      nvidiaSettings = true; # installs nvidia-settings GUI
       # Saves VRAM across suspend/resume (nvidia-suspend/resume services). Without it,
       # resume fails with Xid 13 + "Flip event timeout" and the display stays dead.
       powerManagement.enable = true;
     };
 
     hardware.graphics = {
-      enable      = true;
-      enable32Bit = true;  # needed for Steam + 32-bit games
+      enable = true;
+      enable32Bit = true; # needed for Steam + 32-bit games
       extraPackages = with pkgs; [
-        nvidia-vaapi-driver  # VA-API via NVDEC for hardware video decode
-        libva                # VA-API runtime
+        nvidia-vaapi-driver # VA-API via NVDEC for hardware video decode
+        libva # VA-API runtime
       ];
     };
 
@@ -42,12 +42,12 @@
     # Make VA-API libs discoverable system-wide (not just inside Hyprland).
     # Written to /etc/environment via PAM — applies at login in all contexts.
     environment.sessionVariables = {
-      LIBVA_DRIVER_NAME  = "nvidia";
+      LIBVA_DRIVER_NAME = "nvidia";
       LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
     };
 
     environment.systemPackages = with pkgs; [
-      libva-utils  # provides vainfo for verifying VA-API after rebuild
+      libva-utils # provides vainfo for verifying VA-API after rebuild
     ];
   };
 }

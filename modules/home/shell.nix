@@ -3,32 +3,32 @@
 # Bash mirrors Fish aliases/functions so any environment that lacks Fish still has
 # the same muscle-memory commands available (dev containers, recovery shells, etc.)
 # Replaces: Oh My Zsh, Powerlevel10k, direnv hooks, pyenv init.
-{ ... }:
+_:
 
 let
   # ---------------------------------------------------------------------------
   # Shared aliases — referenced by both Fish and Bash to stay DRY.
   # ---------------------------------------------------------------------------
   sharedAliases = {
-    ls  = "eza --icons";
-    ll  = "eza -la --icons --git";
-    lt  = "eza --tree --icons -L 2";
+    ls = "eza --icons";
+    ll = "eza -la --icons --git";
+    lt = "eza --tree --icons -L 2";
     cat = "bat";
 
     # Git shortcuts
-    gs  = "git status";
-    gl  = "git log --oneline --graph --decorate";
+    gs = "git status";
+    gl = "git log --oneline --graph --decorate";
     gaa = "git add --all";
     gca = "git commit --amend --no-edit";
     gpb = "git push --force-with-lease origin HEAD";
-    gd  = "git diff";
+    gd = "git diff";
     gds = "git diff --staged";
     grc = "git rebase --continue";
 
     # Nix shortcuts (shared — work on both Mac and Linux)
     nix-search = "nix search nixpkgs";
-    nix-shell  = "nix shell nixpkgs#";
-    nix-run    = "nix run nixpkgs#";
+    nix-shell = "nix shell nixpkgs#";
+    nix-run = "nix run nixpkgs#";
   };
 
   # ---------------------------------------------------------------------------
@@ -103,8 +103,14 @@ in
 
       # Plugins managed by home-manager (no fisher needed)
       plugins = [
-        { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; }
-        { name = "autopair"; src = pkgs.fishPlugins.autopair.src; }
+        {
+          name = "fzf-fish";
+          src = pkgs.fishPlugins.fzf-fish.src;
+        }
+        {
+          name = "autopair";
+          src = pkgs.fishPlugins.autopair.src;
+        }
       ];
 
       # Shell init — runs on every interactive shell start
@@ -202,7 +208,7 @@ in
 
     # Starship prompt — Pure preset
     programs.starship = {
-      enable                = true;
+      enable = true;
       enableFishIntegration = true;
       enableBashIntegration = true;
       settings = {
@@ -210,70 +216,72 @@ in
 
         os = {
           disabled = false;
-          format   = "[$symbol]($style) ";
-          style    = "blue";
-          symbols  = { NixOS = ""; };
+          format = "[$symbol]($style) ";
+          style = "blue";
+          symbols = {
+            NixOS = "";
+          };
         };
 
         directory.style = "blue";
 
         character = {
           success_symbol = "[❯](purple)";
-          error_symbol   = "[❯](red)";
-          vimcmd_symbol  = "[❮](green)";
+          error_symbol = "[❯](red)";
+          vimcmd_symbol = "[❮](green)";
         };
 
         git_branch = {
           format = "[$branch]($style)";
-          style  = "bright-black";
+          style = "bright-black";
         };
 
         git_status = {
-          format     = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)";
-          style      = "cyan";
+          format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)";
+          style = "cyan";
           conflicted = "";
-          untracked  = "";
-          modified   = "";
-          staged     = "";
-          renamed    = "";
-          deleted    = "";
-          stashed    = "≡";
+          untracked = "";
+          modified = "";
+          staged = "";
+          renamed = "";
+          deleted = "";
+          stashed = "≡";
         };
 
         git_state = {
           format = ''(\[$state( $progress_current/$progress_total)]($style)) '';
-          style  = "bright-black";
+          style = "bright-black";
         };
 
         cmd_duration = {
           format = "[$duration]($style) ";
-          style  = "yellow";
+          style = "yellow";
         };
 
         python = {
           format = "[$virtualenv]($style) ";
-          style  = "bright-black";
+          style = "bright-black";
         };
       };
     };
 
     # zoxide — smarter cd (replaces z plugin)
     programs.zoxide = {
-      enable                = true;
+      enable = true;
       enableFishIntegration = true;
       enableBashIntegration = true;
     };
 
     # fzf — fuzzy finder
     programs.fzf = {
-      enable                = true;
+      enable = true;
       enableFishIntegration = true;
       enableBashIntegration = true;
     };
 
     # direnv — per-project env vars
     programs.direnv = {
-      enable            = true;
+      enable = true;
       nix-direnv.enable = true;
     };
 
@@ -281,9 +289,9 @@ in
     # environment where Fish is unavailable. Mirrors all Fish aliases and
     # functions via the shared let bindings above so muscle memory works.
     programs.bash = {
-      enable       = true;
+      enable = true;
       shellAliases = sharedAliases;
-      initExtra    = ''
+      initExtra = ''
         ${bashFunctions}
 
         # Homebrew — macOS only

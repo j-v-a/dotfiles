@@ -1,7 +1,7 @@
 # modules/nixos/gaming.nix
 # Gaming + media — personal workstation only.
 # Requires allowUnfreePredicate to be set (done in base.nix).
-{ ... }:
+_:
 
 {
   flake.modules.nixos.gaming = { pkgs, ... }: {
@@ -17,8 +17,8 @@
 
     environment.systemPackages = with pkgs; [
       lutris
-      mangohud   # in-game performance overlay
-      gamemode   # game performance optimisation daemon
+      mangohud # in-game performance overlay
+      gamemode # game performance optimisation daemon
     ];
 
     # GameMode — optimises system for gaming when games request it

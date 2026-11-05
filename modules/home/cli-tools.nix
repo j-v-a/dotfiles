@@ -20,24 +20,24 @@
       ripgrep
       bat
       eza
-      lsd             # modern ls with icons and colours
-      vivid           # generates LS_COLORS values from themes
+      lsd # modern ls with icons and colours
+      vivid # generates LS_COLORS values from themes
 
       # Data / text processing
       jq
       yq-go
-      imagemagick     # image manipulation CLI
-      ast-grep        # structural code search
+      imagemagick # image manipulation CLI
+      ast-grep # structural code search
 
       # Dev tooling
       asdf-vm
-      dotnet-sdk_10   # .NET 10 SDK (includes runtime and CLI)
+      dotnet-sdk_10 # .NET 10 SDK (includes runtime and CLI)
 
       # Git
       gh
       lazygit
-      delta       # better git diffs
-      git-lfs     # large file storage (filters configured in git.nix)
+      delta # better git diffs
+      git-lfs # large file storage (filters configured in git.nix)
 
       # Network / http
       curl
@@ -45,10 +45,10 @@
       httpie
 
       # System monitoring / media
-      btop            # interactive process/resource monitor
-      fastfetch       # system info fetcher
-      ffmpeg          # video/audio processing
-      unimatrix       # matrix rain terminal screensaver
+      btop # interactive process/resource monitor
+      fastfetch # system info fetcher
+      ffmpeg # video/audio processing
+      unimatrix # matrix rain terminal screensaver
 
       # Misc utilities
       tree
@@ -57,8 +57,8 @@
       pwgen
 
       # Nix tooling
-      nix-tree    # visualise nix derivation trees
-      nvd         # diff two closures / generations
+      nix-tree # visualise nix derivation trees
+      nvd # diff two closures / generations
     ];
   };
 }

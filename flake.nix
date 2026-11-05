@@ -30,6 +30,12 @@
 
     import-tree.url = "github:vic/import-tree";
 
+    # `nix fmt` / formatting check (modules/flake/treefmt.nix).
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Prebuilt nix-index database + comma (used by home/cli-tools.nix).
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -54,13 +60,18 @@
     };
   };
 
-  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-    imports = [
-      inputs.flake-parts.flakeModules.modules
-      (inputs.import-tree ./modules)
-    ];
-    # This flake only produces NixOS configs — no perSystem outputs.
-    # Set to the union of all host systems so flake-parts doesn't complain.
-    systems = [ "x86_64-linux" "aarch64-linux" ];
-  };
+  outputs =
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        inputs.flake-parts.flakeModules.modules
+        (inputs.import-tree ./modules)
+      ];
+      # perSystem outputs (formatter, checks) only; aarch64-darwin so `nix fmt` works on the Mac.
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
+    };
 }

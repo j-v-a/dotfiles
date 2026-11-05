@@ -1,18 +1,18 @@
 # modules/home/atuin.nix
 # Shell history via Atuin — local-only (no sync), replaces fzf-fish Ctrl+R.
-{ ... }:
+_:
 
 {
-  flake.modules.homeManager.atuin = { ... }: {
+  flake.modules.homeManager.atuin = _: {
     programs.atuin = {
-      enable                = true;
+      enable = true;
       enableFishIntegration = true;
       settings = {
-        auto_sync      = false;
+        auto_sync = false;
         sync_frequency = "0";
-        style          = "compact";
-        inline_height  = 20;
-        show_preview   = true;
+        style = "compact";
+        inline_height = 20;
+        show_preview = true;
         history_filter = [
           "^ls"
           "^ll"

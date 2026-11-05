@@ -33,7 +33,11 @@
     catppuccin.rofi.enable = true;
 
     # ── Hyprland window borders ───────────────────────────────────────────────────
-    catppuccin.hyprland.enable = true;
+    # Disabled: the catppuccin module is Lua-only now (`colors._var = require(...)`),
+    # which breaks our hyprlang config (runtime overlay "colors:_var:_type does not
+    # exist"). Border colours are set directly in hyprland.nix. Re-enable only after
+    # migrating hyprland.nix to configType = "lua".
+    catppuccin.hyprland.enable = false;
 
     # ── GTK apps ──────────────────────────────────────────────────────────────────
     # catppuccin.gtk is NOT enabled: the upstream GTK port has been archived.

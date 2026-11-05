@@ -1,17 +1,14 @@
 # modules/nixos/base.nix
 # Base NixOS configuration — common to all NixOS hosts.
-# Covers: bootloader, locale, nix settings, SSH, Docker, Syncthing.
+# Covers: bootloader, locale, nix settings, SSH, firewall, nh.
+# Docker, Syncthing, Bluetooth and Firefox Developer Edition are separate features
+# (docker.nix, syncthing.nix, bluetooth.nix, firefox-devedition.nix).
 # User account is declared in nixos/users.nix (add "users" to feature list).
 _:
 
 {
   flake.modules.nixos.base =
-    {
-      pkgs,
-      lib,
-      username,
-      ...
-    }:
+    { lib, username, ... }:
     {
 
       # ── Bootloader ────────────────────────────────────────────────────────────────
@@ -25,14 +22,7 @@ _:
       zramSwap.enable = lib.mkDefault true;
 
       # ── Networking ────────────────────────────────────────────────────────────────
-      networking.networkmanager.enable = true;
-
-      # ── Bluetooth ─────────────────────────────────────────────────────────────────
-      hardware.bluetooth = {
-        enable = true;
-        powerOnBoot = true;
-      };
-      services.blueman.enable = true;
+      networking.networkmanager.enable = lib.mkDefault true;
 
       # ── Firewall ──────────────────────────────────────────────────────────────────
       networking.firewall = {
@@ -41,8 +31,8 @@ _:
       };
 
       # ── Locale / time ─────────────────────────────────────────────────────────────
-      time.timeZone = "Europe/Amsterdam";
-      i18n.defaultLocale = "en_US.UTF-8";
+      time.timeZone = lib.mkDefault "Europe/Amsterdam";
+      i18n.defaultLocale = lib.mkDefault "en_US.UTF-8";
       i18n.supportedLocales = [
         "en_US.UTF-8/UTF-8"
         "nl_NL.UTF-8/UTF-8"
@@ -52,7 +42,7 @@ _:
         LC_TIME = "nl_NL.UTF-8";
         LC_MONETARY = "nl_NL.UTF-8";
       };
-      console.keyMap = "us";
+      console.keyMap = lib.mkDefault "us";
 
       # ── Fish login shell ───────────────────────────────────────────────────────────
       # Must be enabled system-wide so Fish is a valid login shell in /etc/shells.
@@ -88,37 +78,6 @@ _:
           AllowUsers = [ username ];
         };
       };
-
-      # ── Docker ────────────────────────────────────────────────────────────────────
-      # WARNING: membership of the `docker` group is root-equivalent.
-      # Any process running as the user can escape to root via `docker run --privileged`.
-      # Rootless Docker would eliminate this but breaks some compose workflows.
-      # Accepted risk for a single-user personal workstation.
-      virtualisation.docker = {
-        enable = true;
-        daemon.settings.features.containerd-snapshotter = true;
-      };
-
-      # ── Syncthing ─────────────────────────────────────────────────────────────────
-      # Web UI at http://localhost:8384 — loopback only, not LAN-exposed.
-      # Device pairing is done manually in the web UI after first boot.
-      # NOTE: set a GUI password in the web UI — Nix cannot manage the hashed password
-      # declaratively without storing secrets in the Nix store.
-      services.syncthing = {
-        enable = true;
-        user = username;
-        dataDir = "/home/${username}";
-        configDir = "/home/${username}/.config/syncthing";
-        settings.gui.address = "127.0.0.1:8384";
-      };
-
-      # ── System packages ───────────────────────────────────────────────────────────
-      environment.systemPackages = with pkgs; [
-        # firefox-devedition cannot coexist with firefox in home-manager home.packages
-        # (both install libmozavutil.so to the same profile path → collision).
-        # Installing at system level avoids the merge conflict.
-        firefox-devedition
-      ];
 
       # ── Nix settings ──────────────────────────────────────────────────────────────
       nix.settings = {

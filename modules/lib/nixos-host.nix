@@ -15,7 +15,7 @@
 #       username = "jasper";
 #       features = [ "base" "users" "hyprland" "dev" "gaming" "nvidia" "shell"
 #                    "cli-tools" "git" "editors" "linux-toolchains" ];
-#       extraNixosModules = [ ./hardware/missandei.nix ];
+#       extraNixosModules = [ ../_hardware/missandei.nix ];
 #     };
 { inputs, ... }:
 
@@ -81,7 +81,14 @@
             };
 
             home-manager.users.${username}.imports = [
-              ({ osConfig, ... }: { home.stateVersion = osConfig.system.stateVersion; })
+              (
+                { osConfig, ... }:
+                {
+                  home.stateVersion = osConfig.system.stateVersion;
+                  home.username = username;
+                  home.homeDirectory = "/home/${username}";
+                }
+              )
               # catppuccin/nix HM module — makes catppuccin.* options available in every
               # feature module. Opt in per-host via the "catppuccin" feature.
               inputs.catppuccin.homeModules.catppuccin

@@ -121,7 +121,7 @@ _:
           bind = [
             "$mod, Return, exec, kitty"
             "$mod, Q, killactive"
-            "$mod, M, exit"
+            "$mod, M, exec, uwsm stop"
             "$mod, L, exec, hyprlock"
             "$mod SHIFT, E, exec, wlogout"
             "$mod, E, exec, nautilus"
@@ -252,7 +252,8 @@ _:
         # Minimal CSS — sets the font to a Nerd Font so all icons render correctly.
         # Without this, Waybar falls back to the system sans-serif font which has no
         # Nerd Font glyphs, causing all icons to be invisible (not even boxes).
-        # catppuccin/nix will replace this style block entirely when theming is applied.
+        # catppuccin.waybar uses mode = "prependImport" (catppuccin.nix): its palette CSS is
+        # @imported above this block, so these rules still apply on top of it.
         style = ''
           * {
             font-family: "JetBrainsMono Nerd Font Mono", "JetBrainsMono Nerd Font", "Font Awesome 6 Free", monospace;
@@ -340,7 +341,7 @@ _:
         package = pkgs.rofi; # rofi-wayland merged into rofi in 26.05
 
         # Extra config on top of the catppuccin theme:
-        # - drun,window,run modes with visible tab switcher for categorisation
+        # - window,run modes only (app launching/drun is handled by nwg-drawer)
         # - single column, more lines, larger window
         # - show app icons
         # - fix selected highlight (catppuccin sets selected-col = bg, invisible)

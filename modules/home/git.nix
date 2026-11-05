@@ -5,6 +5,18 @@ _:
 
 {
   flake.modules.homeManager.git = _: {
+    # delta pager — programs.delta (not raw git settings) so catppuccin.delta applies.
+    # enableGitIntegration sets core.pager + interactive.diffFilter.
+    programs.delta = {
+      enable = true;
+      enableGitIntegration = true;
+      options = {
+        navigate = true;
+        side-by-side = true;
+        line-numbers = true;
+      };
+    };
+
     programs.git = {
       enable = true;
 
@@ -38,17 +50,7 @@ _:
         commit.gpgsign = true;
         tag.gpgsign = true;
 
-        core = {
-          pager = "delta";
-          autocrlf = "input";
-        };
-
-        interactive.diffFilter = "delta --color-only";
-        delta = {
-          navigate = true;
-          side-by-side = true;
-          line-numbers = true;
-        };
+        core.autocrlf = "input";
         merge.conflictstyle = "zdiff3";
         diff.colormoved = "zebra";
 
@@ -81,7 +83,6 @@ _:
         "*.log"
         # Nix / direnv
         ".direnv"
-        ".envrc"
         # Secrets
         ".env"
         ".env.*"

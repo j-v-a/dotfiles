@@ -31,7 +31,6 @@
 
       # Dev tooling
       asdf-vm
-      dotnet-sdk_10 # .NET 10 SDK (includes runtime and CLI)
 
       # Git
       gh

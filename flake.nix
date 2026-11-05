@@ -6,8 +6,8 @@
     # dotfiles-private follows this as its base and adds nixpkgs-darwin separately.
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
-    # nixpkgs-darwin — macOS channel; kept here so dotfiles-private can follow it.
-    # Not used directly in this flake (all hosts here are Linux).
+    # nixpkgs-darwin — macOS channel. Consumed by dotfiles-private
+    # (nixpkgs.follows = "dotfiles/nixpkgs-darwin"); not used directly in this flake.
     nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-26.05-darwin";
 
     home-manager = {
@@ -45,6 +45,7 @@
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
     };
 
     catppuccin = {

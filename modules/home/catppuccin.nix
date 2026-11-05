@@ -52,7 +52,7 @@ _:
     # ── CLI tools ─────────────────────────────────────────────────────────────────
     catppuccin.bat.enable = true;
     catppuccin.fzf.enable = true;
-    catppuccin.delta.enable = true; # git diff pager (configured in git.nix)
+    catppuccin.delta.enable = true; # git diff pager (programs.delta in git.nix)
     catppuccin.starship.enable = true;
     catppuccin.lazygit.enable = true;
     catppuccin.k9s.enable = true;

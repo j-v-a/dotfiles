@@ -6,12 +6,7 @@ _:
 
 {
   flake.modules.homeManager.linux-toolchains =
-    {
-      pkgs,
-      username,
-      homeDirectory,
-      ...
-    }:
+    { pkgs, ... }:
     {
       home.packages = with pkgs; [
         # Node.js
@@ -32,6 +27,9 @@ _:
 
         # Go
         go
+
+        # .NET
+        dotnet-sdk_10 # .NET 10 SDK (includes runtime and CLI)
 
         # Shell utilities — Linux-only
         # Note: GPU monitoring via nvidia-smi (provided by hardware.nvidia — no extra package needed).
@@ -68,8 +66,5 @@ _:
 
       # SSH agent — use ssh-agent on Linux (1Password SSH agent not available on Linux).
       services.ssh-agent.enable = true;
-
-      home.username = username;
-      home.homeDirectory = homeDirectory;
     };
 }

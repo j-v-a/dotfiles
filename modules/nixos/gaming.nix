@@ -1,6 +1,6 @@
 # modules/nixos/gaming.nix
 # Gaming + media — personal workstation only.
-# Requires allowUnfreePredicate to be set (done in base.nix).
+# Unfree packages (steam, proton-ge-bin) are permitted by nixpkgs.config.allowUnfree in base.nix.
 _:
 
 {
@@ -12,16 +12,16 @@ _:
       extraCompatPackages = [ pkgs.proton-ge-bin ];
     };
 
-    # 32-bit graphics support (required for Steam + older games)
+    # 32-bit graphics support (required for Steam + older games). programs.steam also
+    # sets this; kept explicit here as the single declaration (removed from nvidia.nix).
     hardware.graphics.enable32Bit = true;
 
     environment.systemPackages = with pkgs; [
       lutris
       mangohud # in-game performance overlay
-      gamemode # game performance optimisation daemon
     ];
 
-    # GameMode — optimises system for gaming when games request it
+    # GameMode — optimises system for gaming when games request it (also installs gamemoderun)
     programs.gamemode.enable = true;
   };
 }

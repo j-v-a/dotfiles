@@ -27,7 +27,6 @@ let
 
     # Nix shortcuts (shared — work on both Mac and Linux)
     nix-search = "nix search nixpkgs";
-    nix-shell = "nix shell nixpkgs#";
     nix-run = "nix run nixpkgs#";
   };
 
@@ -87,12 +86,6 @@ let
       export LS_COLORS
       LS_COLORS=$(vivid generate molokai)
     fi
-
-    # nixos-rebuild shortcuts — only meaningful on NixOS/Linux
-    if [ "$(uname -s)" = "Linux" ]; then
-      alias nrs="sudo nixos-rebuild switch --flake ~/dotfiles#missandei"
-      alias nrb="sudo nixos-rebuild build  --flake ~/dotfiles#missandei"
-    fi
   '';
 in
 
@@ -135,12 +128,6 @@ in
 
         # Disable fzf-fish history widget — Atuin handles Ctrl+R instead.
         set -gx FZF_FISH_DISABLE_KEYBINDING history
-
-        # nixos-rebuild shortcuts — only meaningful on NixOS/Linux.
-        if string match -q "Linux" (uname -s)
-          alias nrs="sudo nixos-rebuild switch --flake ~/dotfiles#missandei"
-          alias nrb="sudo nixos-rebuild build  --flake ~/dotfiles#missandei"
-        end
       '';
 
       # Aliases — shared with Bash via the sharedAliases let binding above
@@ -206,7 +193,8 @@ in
       };
     };
 
-    # Starship prompt — Pure preset
+    # Starship prompt — custom minimal format (OS icon, dir, git, duration, python venv; ❯ on its own line).
+    # Colours come from catppuccin.starship (catppuccin.nix) where enabled.
     programs.starship = {
       enable = true;
       enableFishIntegration = true;

@@ -12,7 +12,11 @@
     system = "x86_64-linux";
     username = "jasper";
     features = [
-      "base" # NixOS: bootloader, locale, nix settings, SSH, docker, syncthing
+      "base" # NixOS: bootloader, locale, nix settings, SSH, firewall, nh
+      "docker" # NixOS: Docker daemon (group membership in users)
+      "syncthing" # NixOS: Syncthing as primary user (GUI loopback-only)
+      "bluetooth" # NixOS: Bluetooth + Blueman
+      "firefox-devedition" # NixOS: Firefox Developer Edition (system-level, avoids HM collision)
       "users" # NixOS: primary user account + group memberships
       "nvidia" # NixOS: GTX 1060 driver config
       "hyprland" # NixOS: Hyprland WM + pipewire  /  HM: waybar, rofi, kitty, GTK

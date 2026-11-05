@@ -30,7 +30,6 @@ _:
 
     hardware.graphics = {
       enable = true;
-      enable32Bit = true; # needed for Steam + 32-bit games
       extraPackages = with pkgs; [
         nvidia-vaapi-driver # VA-API via NVDEC for hardware video decode
         libva # VA-API runtime

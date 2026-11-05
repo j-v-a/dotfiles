@@ -54,7 +54,6 @@ _:
 
         # ── File Management / System ───────────────────────────────────────────────
         kdePackages.dolphin # file manager (KDE)
-        kdePackages.kdeconnect-kde # phone/desktop integration (KDE)
         kdePackages.spectacle # screenshot tool (KDE)
         bleachbit # disk cleaner
         czkawka # duplicate file finder
@@ -82,7 +81,7 @@ _:
 
         # ── JetBrains IDEs ────────────────────────────────────────────────────────
         # All JetBrains IDEs are unfree (commercial license).
-        # Listed individually so the allowUnfreePredicate can be explicit.
+        # Permitted by nixpkgs.config.allowUnfree = true (base.nix).
         jetbrains.idea # Java / JVM (IntelliJ IDEA; editions unified in 26.05)
         jetbrains.pycharm # Python (editions unified in 26.05)
         jetbrains.goland # Go

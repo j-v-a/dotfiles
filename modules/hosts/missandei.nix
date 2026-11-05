@@ -39,6 +39,9 @@
       # and rejected by Proton. Revisit when Proton's official Linux sync daemon ships.
     ];
     extraNixosModules = [
+      # Set at install time — NEVER change after first boot. Per host: new installs use
+      # their own install release (e.g. "26.05"). HM inherits it via the host helper.
+      { system.stateVersion = "24.11"; }
       # Hardware config is not a feature (never reused); import directly.
       ../_hardware/missandei.nix
       # nixos-hardware preset for the Gigabyte B550 board.

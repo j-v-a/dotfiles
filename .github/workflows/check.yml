@@ -20,5 +20,21 @@ jobs:
       - uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b # v31.11.3
       - name: Secret scan (full history)
         run: nix run --inputs-from . nixpkgs#gitleaks -- git --redact --no-banner .
-      - name: Evaluate missandei
-        run: nix eval --raw .#nixosConfigurations.missandei.config.system.build.toplevel.drvPath
+      - name: Flake check (formatting, eval)
+        run: nix flake check --no-build --all-systems
+      - name: Formatting
+        run: nix build .#checks.x86_64-linux.treefmt
+
+  # Full system build: catches failures that eval alone misses (hashes, broken
+  # packages). Runner disk is too small for the closure without nothing-but-nix.
+  build:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: wimpysworld/nothing-but-nix@687c797a730352432950c707ab493fcc951818d7 # v10
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b # v31.11.3
+      - name: Build missandei
+        run: nix build --print-build-logs .#nixosConfigurations.missandei.config.system.build.toplevel

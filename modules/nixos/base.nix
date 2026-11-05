@@ -154,8 +154,5 @@ _:
 
       # command-not-found needs channels (unused with flakes); nix-index (HM cli-tools) replaces it.
       programs.command-not-found.enable = false;
-
-      # Set at install time — NEVER change after first boot.
-      system.stateVersion = "24.11";
     };
 }

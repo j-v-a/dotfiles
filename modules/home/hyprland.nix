@@ -12,6 +12,21 @@ _:
       wallpapers,
       ...
     }:
+    let
+      # Wallpapers to skip, relative to the wallpapers repo (e.g. "unthemed/foo.png").
+      wallpaperExclude = [
+      ];
+      wallpaperDir = pkgs.runCommand "wallpapers" { } ''
+        cd ${wallpapers}
+        find . -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) \
+          | sed 's|^\./||' | sort > $TMPDIR/all
+        printf '%s\n' ${lib.escapeShellArgs wallpaperExclude} | sort > $TMPDIR/skip
+        comm -23 $TMPDIR/all $TMPDIR/skip | while IFS= read -r f; do
+          mkdir -p "$out/$(dirname "$f")"
+          ln -s "${wallpapers}/$f" "$out/$f"
+        done
+      '';
+    in
     {
       # ── Hyprland user config ───────────────────────────────────────────────────────
       wayland.windowManager.hyprland = {
@@ -110,6 +125,9 @@ _:
             "$mod, L, exec, hyprlock"
             "$mod SHIFT, E, exec, wlogout"
             "$mod, E, exec, nautilus"
+            # Wallpaper: next / show current file name (to add it to wallpaperExclude)
+            "$mod, W, exec, wpaperctl next"
+            "$mod SHIFT, W, exec, notify-send -a wpaperd 'Wallpaper' \"$(wpaperctl get $(hyprctl activeworkspace -j | jq -r .monitor) | sed 's|.*-wallpapers/||')\""
             "$mod, V, togglefloating"
             "$mod, R, exec, nwg-drawer"
             "$mod, Tab, exec, rofi -show window"
@@ -384,9 +402,11 @@ _:
       # symlinking: ln -s ~/Pictures/Wallpapers/* <store-path>  — or just add a second
       # wpaperd output section when you know your monitor name (hyprctl monitors).
       # wpaperctl next/previous to cycle manually.
+      # Disliked images: add the path relative to the wallpapers repo (Super+Shift+W shows it).
+      # The rest of the pinned collection (images only) is symlinked into wallpaperDir.
       xdg.configFile."wpaperd/config.toml".text = ''
         [any]
-        path = "${wallpapers}"
+        path = "${wallpaperDir}"
         duration = "30m"
         sorting = "random"
 

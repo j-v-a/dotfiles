@@ -492,6 +492,17 @@ _:
         x11.enable = true;
       };
 
+      # UWSM runs XDG autostart entries. GNOME's ibus-daemon entry excludes only GNOME/KDE,
+      # so under Hyprland it pops an "IBus should be called from the desktop session" notice.
+      # A same-named user entry shadows the system one; Hyprland added to NotShowIn.
+      xdg.configFile."autostart/ibus-daemon.desktop".text = ''
+        [Desktop Entry]
+        Name=IBus
+        Type=Application
+        Exec=ibus-daemon --daemonize --xim
+        NotShowIn=GNOME;KDE;Hyprland;
+      '';
+
       # ── Hyprland-only user services ───────────────────────────────────────────────
       # graphical-session.target is also reached in GNOME; without this condition
       # waybar, dunst (vs GNOME notifications) and hypridle (hyprctl/lock) leak into GNOME.

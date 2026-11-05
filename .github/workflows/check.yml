@@ -20,10 +20,9 @@ jobs:
       - uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b # v31.11.3
       - name: Secret scan (full history)
         run: nix run --inputs-from . nixpkgs#gitleaks -- git --redact --no-banner .
-      - name: Flake check (formatting, eval)
-        run: nix flake check --no-build --all-systems
-      - name: Formatting
-        run: nix build .#checks.x86_64-linux.treefmt
+      # No --no-build: missandei eval needs import-from-derivation (catppuccin-firefox).
+      - name: Flake check (eval + treefmt formatting check)
+        run: nix flake check
 
   # Full system build: catches failures that eval alone misses (hashes, broken
   # packages). Runner disk is too small for the closure without nothing-but-nix.

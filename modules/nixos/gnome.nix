@@ -17,6 +17,10 @@
     # removed (GNOME 50 is always Wayland).
     services.displayManager.gdm.enable = true;
 
+    # GDM's greeter suspends after ~15 min idle by default. That kills SSH sessions
+    # (incl. remote nixos-rebuild) and makes the box unreachable while sitting at login.
+    services.displayManager.gdm.autoSuspend = false;
+
     # Disable SDDM — GDM and SDDM conflict; only one display manager can be active.
     services.displayManager.sddm.enable = false;
 

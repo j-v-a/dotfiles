@@ -23,7 +23,9 @@
       modesetting.enable = true;
       open               = false;
       nvidiaSettings     = true;   # installs nvidia-settings GUI
-      powerManagement.enable = false;  # desktop — not a laptop
+      # Saves VRAM across suspend/resume (nvidia-suspend/resume services). Without it,
+      # resume fails with Xid 13 + "Flip event timeout" and the display stays dead.
+      powerManagement.enable = true;
     };
 
     hardware.graphics = {

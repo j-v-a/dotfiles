@@ -453,7 +453,8 @@
     # graphical-session.target is also reached in GNOME; without this condition
     # waybar, dunst (vs GNOME notifications) and hypridle (hyprctl/lock) leak into GNOME.
     systemd.user.services = lib.genAttrs [ "waybar" "dunst" "hypridle" ] (_: {
-      Unit.ConditionEnvironment = "XDG_CURRENT_DESKTOP=Hyprland";
+      # mkForce: replaces HM's default (WAYLAND_DISPLAY), which is kept in the list.
+      Unit.ConditionEnvironment = lib.mkForce [ "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP=Hyprland" ];
     });
   };
 }

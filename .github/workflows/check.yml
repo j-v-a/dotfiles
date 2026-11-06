@@ -9,8 +9,9 @@ on:
   workflow_dispatch:
 
 # One run per ref: a new push cancels the in-flight run for the same branch/PR.
+# Nightly runs get their own group so a push to main does not cancel them.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name == 'schedule' && 'nightly' || github.ref }}
   cancel-in-progress: true
 
 permissions:

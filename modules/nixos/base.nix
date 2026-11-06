@@ -1,6 +1,6 @@
 # modules/nixos/base.nix
 # Base NixOS configuration — common to all NixOS hosts.
-# Covers: bootloader, locale, nix settings, SSH, firewall, nh.
+# Covers: bootloader, locale, nix settings, SSH, sops-nix defaults, firewall, nh.
 # Docker, Syncthing, Bluetooth and Firefox Developer Edition are separate features
 # (docker.nix, syncthing.nix, bluetooth.nix, firefox-devedition.nix).
 # User account is declared in nixos/users.nix (add "users" to feature list).
@@ -8,7 +8,16 @@ _:
 
 {
   flake.modules.nixos.base =
-    { lib, username, ... }:
+    {
+      config,
+      lib,
+      username,
+      ...
+    }:
+    let
+      # Per-host sops file. Until it is committed, nothing references sops (inert).
+      sopsFile = ../../secrets/${config.networking.hostName}.yaml;
+    in
     {
 
       # ── Bootloader ────────────────────────────────────────────────────────────────
@@ -78,6 +87,12 @@ _:
           AllowUsers = [ username ];
         };
       };
+
+      # ── Secrets (sops-nix, decision D2) ────────────────────────────────────────────
+      # Decrypted at activation with the host's SSH key (age recipient via ssh-to-age, see
+      # .sops.yaml). Features declare their own secrets behind the same pathExists guard.
+      sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+      sops.defaultSopsFile = lib.mkIf (builtins.pathExists sopsFile) sopsFile;
 
       # ── Nix settings ──────────────────────────────────────────────────────────────
       nix.settings = {

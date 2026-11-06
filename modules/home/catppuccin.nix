@@ -1,60 +1,51 @@
 # modules/home/catppuccin.nix
-# Catppuccin Mocha theming for the Hyprland desktop stack.
+# Catppuccin Mocha theming for CLI tools (and any HM-managed app not themed by Noctalia).
 # Uses catppuccin/nix home-manager module injected via nixos-host.nix.
+#
+# On Linux the desktop palette (kitty, GTK, Qt, Hyprland borders) is owned by Noctalia's
+# templates (home/noctalia.nix), so the matching catppuccin targets are switched off there.
 _:
 
 {
-  flake.modules.homeManager.catppuccin = {
-    catppuccin = {
-      enable = true;
-      flavor = "mocha";
-      accent = "mauve";
+  flake.modules.homeManager.catppuccin =
+    { lib, pkgs, ... }:
+    let
+      inherit (pkgs.stdenv) isLinux;
+    in
+    {
+      # `catppuccin.enable` turns on every port whose program is enabled via home-manager.
+      catppuccin = {
+        enable = true;
+        flavor = "mocha";
+        accent = "mauve";
+      };
+
+      # VS Code uses Flexoki Dark (vscode.nix, mkForce), so the catppuccin extension
+      # was unused — and its pnpm build dependency is flagged insecure on 26.05.
+      catppuccin.vscode.profiles.default.enable = false;
+
+      # ── Hyprland window borders ───────────────────────────────────────────────────
+      # Always off: the catppuccin port is Lua-only now (`colors._var = require(...)`),
+      # which breaks our hyprlang config (runtime overlay "colors:_var:_type does not
+      # exist"). On Linux the border colours come from Noctalia's hyprland template.
+      catppuccin.hyprland.enable = false;
+
+      # ── CLI tools ─────────────────────────────────────────────────────────────────
+      catppuccin.bat.enable = true;
+      catppuccin.fzf.enable = true;
+      catppuccin.delta.enable = true; # git diff pager (programs.delta in git.nix)
+      catppuccin.starship.enable = true;
+      catppuccin.lazygit.enable = true;
+      catppuccin.k9s.enable = true;
+
+      # ── Noctalia-owned targets (Linux only) ───────────────────────────────────────
+      # Noctalia renders kitty/GTK/Qt colours from its active palette; catppuccin writing
+      # the same files would fight it. GTK has no catppuccin theme port anymore (archived
+      # upstream) — only the Papirus folder recolour, which we drop for plain Papirus.
+      # Cursor is Bibata (hyprland.nix). The mkIf guards keep any other host unchanged.
+      catppuccin.kitty.enable = lib.mkIf isLinux false;
+      catppuccin.gtk.icon.enable = lib.mkIf isLinux false;
+      catppuccin.kvantum.enable = lib.mkIf isLinux false;
+      catppuccin.cursors.enable = lib.mkIf isLinux false;
     };
-
-    # Per-app opt-ins: only enable themes for apps that are actually installed
-    # and configured via home-manager on this host.
-
-    # VS Code uses Flexoki Dark (vscode.nix, mkForce), so the catppuccin extension
-    # was unused — and its pnpm build dependency is flagged insecure on 26.05.
-    catppuccin.vscode.profiles.default.enable = false;
-
-    # ── Waybar ────────────────────────────────────────────────────────────────────
-    # mode = "prependImport": catppuccin CSS is @imported at the top of
-    # programs.waybar.style — our font/layout rules in hyprland.nix still apply.
-    catppuccin.waybar = {
-      enable = true;
-      mode = "prependImport";
-    };
-
-    # ── Dunst ─────────────────────────────────────────────────────────────────────
-    catppuccin.dunst.enable = true;
-
-    # ── Rofi ──────────────────────────────────────────────────────────────────────
-    catppuccin.rofi.enable = true;
-
-    # ── Hyprland window borders ───────────────────────────────────────────────────
-    # Disabled: the catppuccin module is Lua-only now (`colors._var = require(...)`),
-    # which breaks our hyprlang config (runtime overlay "colors:_var:_type does not
-    # exist"). Border colours are set directly in hyprland.nix. Re-enable only after
-    # migrating hyprland.nix to configType = "lua".
-    catppuccin.hyprland.enable = false;
-
-    # ── GTK apps ──────────────────────────────────────────────────────────────────
-    # catppuccin.gtk is NOT enabled: the upstream GTK port has been archived.
-    # See https://github.com/catppuccin/gtk/issues/262
-    # gtk.theme is set directly by the catppuccin module via gtk.theme.name.
-
-    # ── Kitty terminal ────────────────────────────────────────────────────────────
-    # programs.kitty is fully configured in hyprland.nix (enable + font + settings).
-    # catppuccin only needs the theme opt-in; no separate enable needed here.
-    catppuccin.kitty.enable = true;
-
-    # ── CLI tools ─────────────────────────────────────────────────────────────────
-    catppuccin.bat.enable = true;
-    catppuccin.fzf.enable = true;
-    catppuccin.delta.enable = true; # git diff pager (programs.delta in git.nix)
-    catppuccin.starship.enable = true;
-    catppuccin.lazygit.enable = true;
-    catppuccin.k9s.enable = true;
-  };
 }

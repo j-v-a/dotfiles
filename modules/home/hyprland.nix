@@ -1,6 +1,9 @@
 # modules/home/hyprland.nix
 # Hyprland user-level configuration — personal workstation only.
-# System-level enablement (PAM, pipewire, XDG portals) is in modules/nixos/hyprland.nix.
+# Compositor look + core binds, wallpaper list, kitty, GTK/Qt/cursor/fonts.
+# System-level enablement (UWSM, pipewire, XDG portals) is in modules/nixos/hyprland.nix.
+# Shell (bar, notifications, lock, idle, wallpaper rotation): home/noctalia.nix.
+# Launcher, window switcher, keybind cheatsheet: home/walker.nix.
 _:
 
 {
@@ -66,29 +69,19 @@ _:
             "SDL_VIDEODRIVER,wayland,x11" # SDL2 apps; x11 fallback for games
           ];
 
-          # waybar, dunst and hypridle are systemd user services (see below) —
-          # do NOT also launch them here or you get double instances.
-          # wpaperd is launched here since it has no systemd service integration.
-          exec-once = [
-            "wpaperd"
-            "blueman-applet"
-            # nwg-drawer resident instance — keeps the drawer in memory for fast opens.
-            # Subsequent invocations (Super+R) toggle it via pkill -USR1.
-            "nwg-drawer -r -wm hyprland -pblock hyprlock -pbexit wlogout -pbreboot 'systemctl reboot' -pbpoweroff 'systemctl poweroff' -pbsleep 'systemctl suspend' -pbuseicontheme -i Papirus-Dark"
-          ];
-
           input = {
             kb_layout = "us";
             follow_mouse = 1;
             sensitivity = 0;
           };
 
+          # ── Look (adapted from n3rsti's dotfiles + Noctalia's Hyprland guide) ───────
           general = {
-            gaps_in = 4;
-            gaps_out = 8;
-            border_size = 2;
-            "col.active_border" = "rgba(88c0d0ff) rgba(81a1c1ff) 45deg";
-            "col.inactive_border" = "rgba(4c566aff)";
+            gaps_in = 5;
+            gaps_out = 10;
+            border_size = 1;
+            # col.active_border / col.inactive_border come from Noctalia's hyprland template
+            # (`source = …/hypr/noctalia.conf`, home/noctalia.nix) so they follow the palette.
             layout = "dwindle";
           };
 
@@ -99,15 +92,48 @@ _:
           };
 
           decoration = {
-            rounding = 8;
+            rounding = 15;
+            rounding_power = 2;
+            active_opacity = 0.95;
+            inactive_opacity = 0.9;
+            shadow = {
+              enabled = true;
+              range = 4;
+              render_power = 3;
+              color = "rgba(1a1a1aee)";
+            };
             blur = {
               enabled = true;
               size = 3;
-              passes = 1;
+              passes = 2;
+              vibrancy = 0.1696;
             };
           };
 
           animations.enabled = true;
+          bezier = [
+            "easeOutQuint, 0.23, 1, 0.32, 1"
+            "easeInOutCubic, 0.65, 0.05, 0.36, 1"
+            "linear, 0, 0, 1, 1"
+            "almostLinear, 0.5, 0.5, 0.75, 1"
+            "quick, 0.15, 0, 0.1, 1"
+          ];
+          animation = [
+            "global, 1, 10, default"
+            "border, 1, 5.39, easeOutQuint"
+            "windows, 1, 4.79, easeOutQuint"
+            "windowsIn, 1, 4.1, easeOutQuint, popin 87%"
+            "windowsOut, 1, 1.49, linear, popin 87%"
+            "fadeIn, 1, 1.73, almostLinear"
+            "fadeOut, 1, 1.46, almostLinear"
+            "fade, 1, 3.03, quick"
+            "layers, 1, 3.81, easeOutQuint"
+            "layersIn, 1, 4, easeOutQuint, fade"
+            "layersOut, 1, 1.5, linear, fade"
+            "fadeLayersIn, 1, 1.79, almostLinear"
+            "fadeLayersOut, 1, 1.39, almostLinear"
+            "workspaces, 1, 2, easeOutQuint"
+          ];
 
           dwindle = {
             # `pseudotile` config bool was removed in Hyprland 0.55 — pseudotiling is
@@ -116,21 +142,19 @@ _:
           };
 
           # ── Keybinds ────────────────────────────────────────────────────────────────
+          # Shell/launcher binds live with their feature (home/noctalia.nix, home/walker.nix);
+          # all lists merge, and Super+Shift+/ shows the merged result (walker.nix).
           "$mod" = "SUPER";
 
           bind = [
+            # Apps + session
             "$mod, Return, exec, kitty"
+            "$mod, E, exec, nautilus"
             "$mod, Q, killactive"
             "$mod, M, exec, uwsm stop"
-            "$mod, L, exec, hyprlock"
-            "$mod SHIFT, E, exec, wlogout"
-            "$mod, E, exec, nautilus"
-            # Wallpaper: next / show current file name (to add it to wallpaperExclude)
-            "$mod, W, exec, wpaperctl next"
-            "$mod SHIFT, W, exec, notify-send -a wpaperd 'Wallpaper' \"$(wpaperctl get $(hyprctl activeworkspace -j | jq -r .monitor) | sed 's|.*-wallpapers/||')\""
+
+            # Window layout
             "$mod, V, togglefloating"
-            "$mod, R, exec, nwg-drawer"
-            "$mod, Tab, exec, rofi -show window"
             "$mod, P, pseudo"
             "$mod, J, layoutmsg, togglesplit"
 
@@ -164,6 +188,11 @@ _:
             "$mod SHIFT, 9, movetoworkspace, 9"
             "$mod SHIFT, 0, movetoworkspace, 10"
 
+            # Wallpaper (Noctalia): random next / show current file relative to the
+            # wallpapers repo, ready to paste into wallpaperExclude above.
+            "$mod, W, exec, noctalia msg wallpaper-random"
+            "$mod SHIFT, W, exec, wallpaper-current"
+
             # Screenshots
             ", Print, exec, grimblast copy area"
           ];
@@ -176,144 +205,21 @@ _:
         };
       };
 
-      # ── Waybar ────────────────────────────────────────────────────────────────────
-      programs.waybar = {
-        enable = true;
-
-        # Start waybar as a systemd user service on graphical-session.target (UWSM).
-        # Restricted to Hyprland sessions via hyprlandOnly below.
-        systemd.enable = true;
-
-        settings = [
-          {
-            layer = "top";
-            position = "top";
-            modules-left = [ "hyprland/workspaces" ];
-            modules-center = [ "clock" ];
-            # "battery" is included for future laptop hosts; on Missandei (desktop) it shows empty.
-            modules-right = [
-              "idle_inhibitor"
-              "cpu"
-              "memory"
-              "temperature"
-              "pulseaudio"
-              "network"
-              "battery"
-              "tray"
-              "custom/power"
-            ];
-            clock = {
-              format = " {:%a %d %b  %H:%M}";
-              tooltip = false;
-            };
-            cpu = {
-              format = " {usage}%";
-              interval = 5;
-            };
-            memory = {
-              format = " {percentage}%";
-              interval = 5;
-            };
-            network = {
-              format-wifi = " {essid}";
-              format-ethernet = " {ifname}";
-              format-disconnected = "⚠ Disconnected";
-            };
-            pulseaudio = {
-              format = "{icon} {volume}%";
-              format-muted = " muted";
-              format-icons = {
-                default = [
-                  ""
-                  ""
-                  ""
-                ];
-              };
-              on-click = "pavucontrol";
-            };
-            idle_inhibitor = {
-              format = "{icon}";
-              format-icons = {
-                activated = "󰛨";
-                deactivated = "󰒲";
-              };
-              tooltip = true;
-              tooltip-format-activated = "Idle inhibitor ON — screen won't lock";
-              tooltip-format-deactivated = "Idle inhibitor OFF";
-            };
-            "custom/power" = {
-              format = "󰀑";
-              tooltip = false;
-              on-click = "wlogout";
-            };
-          }
-        ];
-
-        # Minimal CSS — sets the font to a Nerd Font so all icons render correctly.
-        # Without this, Waybar falls back to the system sans-serif font which has no
-        # Nerd Font glyphs, causing all icons to be invisible (not even boxes).
-        # catppuccin.waybar uses mode = "prependImport" (catppuccin.nix): its palette CSS is
-        # @imported above this block, so these rules still apply on top of it.
-        style = ''
-          * {
-            font-family: "JetBrainsMono Nerd Font Mono", "JetBrainsMono Nerd Font", "Font Awesome 6 Free", monospace;
-            font-size: 13px;
-          }
-
-          window#waybar {
-            background-color: rgba(30, 30, 46, 0.9);
-            color: #cdd6f4;
-            border-bottom: 2px solid rgba(137, 180, 250, 0.5);
-          }
-
-          .modules-left, .modules-center, .modules-right {
-            padding: 0 8px;
-          }
-
-          #workspaces button {
-            padding: 0 6px;
-            color: #6c7086;
-          }
-
-          #workspaces button.active {
-            color: #cdd6f4;
-            border-bottom: 2px solid #89b4fa;
-          }
-
-          #clock, #cpu, #memory, #temperature, #pulseaudio, #network, #battery, #tray, #idle-inhibitor, #custom-power {
-            padding: 0 8px;
-            color: #cdd6f4;
-          }
-
-          #idle-inhibitor.activated {
-            color: #a6e3a1;
-          }
-
-          #custom-power {
-            color: #f38ba8;
-            padding: 0 12px;
-            font-size: 16px;
-          }
-        '';
-      };
-
-      # ── Dunst (notification daemon) ───────────────────────────────────────────────
-      # Use the home-manager service rather than launching dunst via exec-once.
-      # The service registers on org.freedesktop.Notifications via D-Bus, which is
-      # required for applications to deliver notifications. A raw exec-once binary
-      # may not register correctly in all session configurations.
-      services.dunst = {
-        enable = true;
-        settings = {
-          global = {
-            font = "JetBrainsMono Nerd Font Mono 11";
-            corner_radius = 8;
-            frame_width = 2;
-            frame_color = "#89b4fa";
-            background = "#1e1e2e";
-            foreground = "#cdd6f4";
-            timeout = 5;
-          };
+      # ── Wallpapers (rotated by Noctalia) ──────────────────────────────────────────
+      # Base wallpapers come from the pinned teowelton/Wallpapers flake input; disliked
+      # images go in wallpaperExclude (Super+Shift+W shows the path to add). The rest are
+      # symlinked into wallpaperDir — Noctalia's scan follows file symlinks (is_regular_file)
+      # and recurses into the collection's subfolders.
+      programs.noctalia.settings.wallpaper = {
+        enabled = true;
+        directory = "${wallpaperDir}";
+        fill_mode = "crop";
+        transition = [ "fade" ];
+        automation = {
+          enabled = true;
+          interval_seconds = 1800;
+          order = "random";
+          recursive = true;
         };
       };
 
@@ -332,186 +238,87 @@ _:
         };
       };
 
-      # ── Rofi (window switcher) ────────────────────────────────────────────────────
-      # App launching is handled by nwg-drawer (Super+R). Rofi is kept for window
-      # switching (Super+Tab → rofi -show window) and quick run mode.
-      # Catppuccin theme is applied by catppuccin.nix. We override layout/behaviour here.
-      programs.rofi = {
-        enable = true;
-        package = pkgs.rofi; # rofi-wayland merged into rofi in 26.05
-
-        # Extra config on top of the catppuccin theme:
-        # - window,run modes only (app launching/drun is handled by nwg-drawer)
-        # - single column, more lines, larger window
-        # - show app icons
-        # - fix selected highlight (catppuccin sets selected-col = bg, invisible)
-        extraConfig = {
-          modi = "window,run";
-          show-icons = true;
-          icon-theme = "Papirus-Dark";
-          display-window = " Windows";
-          display-run = " Run";
-          sidebar-mode = true;
-        };
-
-        theme =
-          let
-            inherit (config.lib.formats.rasi) mkLiteral;
-          in
-          {
-            # Fix the invisible selected highlight from catppuccin base theme
-            "element selected" = {
-              background-color = mkLiteral "@blue";
-              text-color = mkLiteral "@bg-col";
-            };
-            # Single column, taller window
-            "listview" = {
-              columns = mkLiteral "1";
-              lines = mkLiteral "10";
-            };
-            "window" = {
-              height = mkLiteral "500px";
-              width = mkLiteral "640px";
-            };
-          };
-      };
-
       # ── Desktop packages ──────────────────────────────────────────────────────────
       home.packages = with pkgs; [
-        libnotify # notify-send CLI (dunst itself is managed by services.dunst above)
+        libnotify # notify-send CLI (Noctalia is the notification daemon)
         grimblast # screenshot (wlr-screencopy + slurp)
         wl-clipboard # wl-copy / wl-paste
         pavucontrol # PulseAudio/PipeWire GUI volume control
         nautilus # file manager (GTK)
-        gnome-themes-extra # themes for GTK apps running under Hyprland
-        # Icon theme is provided via gtk.iconTheme.package. 26.05: catppuccin sets
-        # this to catppuccin-papirus-folders (a full Papirus build with recolored
-        # folders), so we must NOT also add papirus-icon-theme here — the two
-        # collide in home-manager-path.
-        # catppuccin-cursors.mochaDark is pulled in by gtk.cursorTheme and home.pointerCursor below
-        wpaperd # wallpaper daemon (Wayland, wlr-layer-shell)
         blueman # GTK bluetooth manager (replaces blueberry, removed 26.05)
-        wlogout # Wayland logout/power menu screen
-        nwg-drawer # GTK app drawer with category sidebar (replaces rofi for drun)
+        # Qt colour plugins: Noctalia's qt template writes qt{5,6}ct/colors/noctalia.conf.
+        libsForQt5.qt5ct
+        qt6Packages.qt6ct
+        # Super+Shift+W: notify the current wallpaper relative to the wallpapers repo.
+        # wallpaperDir and the input are both /nix/store/<hash>-<name>/<rel>, so stripping
+        # the store prefix yields the path wallpaperExclude expects either way.
+        (writeShellScriptBin "wallpaper-current" ''
+          mon=$(hyprctl activeworkspace -j | ${lib.getExe jq} -r .monitor)
+          path=$(noctalia msg wallpaper-get "$mon" | sed -E 's|^/nix/store/[^/]+/||')
+          noctalia msg notification-show Wallpaper "$path"
+        '')
       ];
 
-      # ── wpaperd (wallpaper daemon) ────────────────────────────────────────────────
-      # Base wallpapers come from the pinned teowelton/Wallpapers flake input (Nix store,
-      # read-only). Personal wallpapers go in ~/Pictures/Wallpapers (not managed by Nix).
-      # wpaperd uses [any] to match all outputs; path can only be one directory, so we
-      # point at the pinned store path. Drop personal wallpapers in the same dir by
-      # symlinking: ln -s ~/Pictures/Wallpapers/* <store-path>  — or just add a second
-      # wpaperd output section when you know your monitor name (hyprctl monitors).
-      # wpaperctl next/previous to cycle manually.
-      # Disliked images: add the path relative to the wallpapers repo (Super+Shift+W shows it).
-      # The rest of the pinned collection (images only) is symlinked into wallpaperDir.
-      xdg.configFile."wpaperd/config.toml".text = ''
-        [any]
-        path = "${wallpaperDir}"
-        duration = "30m"
-        sorting = "random"
-
-        [any.transition.fade]
-      '';
-
-      # ── Hypridle (idle daemon) ────────────────────────────────────────────────────
-      services.hypridle = {
-        enable = true;
-        settings = {
-          general = {
-            lock_cmd = "pidof hyprlock || hyprlock"; # don't spawn multiple hyprlock
-            before_sleep_cmd = "loginctl lock-session";
-            after_sleep_cmd = "hyprctl dispatch dpms on";
-          };
-          listener = [
-            {
-              timeout = 300; # 5 min: lock screen
-              on-timeout = "loginctl lock-session";
-            }
-            {
-              timeout = 360; # 6 min: turn off displays
-              on-timeout = "hyprctl dispatch dpms off";
-              on-resume = "hyprctl dispatch dpms on";
-            }
-          ];
-        };
-      };
-
-      # ── Hyprlock (screen locker) ──────────────────────────────────────────────────
-      programs.hyprlock = {
-        enable = true;
-        settings = {
-          general = {
-            disable_loading_bar = true;
-            hide_cursor = true;
-          };
-          background = [
-            {
-              monitor = "";
-              path = "screenshot";
-              blur_passes = 3;
-              blur_size = 8;
-            }
-          ];
-          input-field = [
-            {
-              monitor = "";
-              size = "300, 50";
-              position = "0, -80";
-              halign = "center";
-              valign = "center";
-              fade_on_empty = false;
-              placeholder_text = "";
-              check_color = "rgb(cba6f7)";
-              fail_color = "rgb(f38ba8)";
-              font_color = "rgb(cdd6f4)";
-              inner_color = "rgb(313244)";
-              outer_color = "rgb(6c7086)";
-              outline_thickness = 2;
-              shadow_passes = 2;
-            }
-          ];
-          label = [
-            {
-              monitor = "";
-              text = "$TIME";
-              position = "0, 160";
-              halign = "center";
-              valign = "center";
-              font_size = 64;
-              font_family = "JetBrainsMono Nerd Font Mono";
-              color = "rgb(cdd6f4)";
-              shadow_passes = 2;
-            }
-          ];
-        };
-      };
-
-      # ── GTK theme (for GTK apps running under Hyprland) ──────────────────────────
-      # gtk.theme is set by catppuccin.nix when catppuccin is in the feature list.
-      # 26.05: catppuccin now also sets gtk.iconTheme.package (catppuccin-papirus-folders),
-      # so we lower our defaults to mkDefault to let catppuccin's themed icons win.
+      # ── GTK (Hyprland look; colours from Noctalia's gtk3/gtk4 templates) ──────────
+      # Noctalia's gtk template writes gtk-{3,4}.0/noctalia.css, @imports it from gtk.css
+      # and selects adw-gtk3-dark via gsettings. So HM must NOT own gtk.css: gtk4.theme is
+      # null (otherwise HM writes a read-only gtk-4.0/gtk.css importing the theme).
       gtk = {
         enable = true;
-        iconTheme = {
-          name = lib.mkDefault "Papirus-Dark";
-          package = lib.mkDefault pkgs.papirus-icon-theme;
+        theme = {
+          name = "adw-gtk3-dark";
+          package = pkgs.adw-gtk3;
         };
-        cursorTheme = {
-          name = "catppuccin-mocha-dark-cursors";
-          package = pkgs.catppuccin-cursors.mochaDark;
-          size = 24;
+        gtk4.theme = null;
+        font = {
+          name = "Adwaita Sans";
+          package = pkgs.adwaita-fonts;
+          size = 11;
+        };
+        iconTheme = {
+          name = "Papirus-Dark";
+          package = pkgs.papirus-icon-theme;
         };
       };
 
-      # Propagate cursor theme to Wayland/X11 env vars so all apps pick it up.
+      # ── Qt ────────────────────────────────────────────────────────────────────────
+      # qt.enable only adds QT_PLUGIN_PATH (so qt5ct/qt6ct plugins are found);
+      # platformTheme stays null because HM would export QT_QPA_PLATFORMTHEME globally,
+      # i.e. into GNOME too. The Hyprland-only variable is in uwsm/env-hyprland below.
+      # qt{5,6}ct.conf are read-only HM files: they just point at Noctalia's colour file.
+      qt.enable = true;
+      qt.qt5ctSettings.Appearance = {
+        custom_palette = true;
+        color_scheme_path = "${config.xdg.configHome}/qt5ct/colors/noctalia.conf";
+        icon_theme = "Papirus-Dark";
+        style = "Fusion";
+      };
+      qt.qt6ctSettings.Appearance = {
+        custom_palette = true;
+        color_scheme_path = "${config.xdg.configHome}/qt6ct/colors/noctalia.conf";
+        icon_theme = "Papirus-Dark";
+        style = "Fusion";
+      };
+
+      # ── Cursor ────────────────────────────────────────────────────────────────────
+      # Sets gtk.cursorTheme, XCURSOR_* and HYPRCURSOR_* so Hyprland, GTK/Qt and
+      # Xwayland apps agree. Bibata ships only XCursor; Hyprland falls back to it.
       home.pointerCursor = {
-        name = "catppuccin-mocha-dark-cursors";
-        package = pkgs.catppuccin-cursors.mochaDark;
+        name = "Bibata-Modern-Classic";
+        package = pkgs.bibata-cursors;
         size = 24;
         gtk.enable = true;
         x11.enable = true;
+        hyprcursor.enable = true;
       };
+
+      # UWSM sources this only for Hyprland sessions and exports it to the systemd user
+      # environment, so services (Noctalia, Walker) and the apps they launch see it too.
+      xdg.configFile."uwsm/env-hyprland".text = ''
+        export QT_QPA_PLATFORMTHEME=qt5ct
+        export XCURSOR_THEME=${config.home.pointerCursor.name}
+        export XCURSOR_SIZE=${toString config.home.pointerCursor.size}
+      '';
 
       # UWSM runs XDG autostart entries. GNOME's ibus-daemon entry excludes only GNOME/KDE,
       # so under Hyprland it pops an "IBus should be called from the desktop session" notice.
@@ -523,16 +330,5 @@ _:
         Exec=ibus-daemon --daemonize --xim
         NotShowIn=GNOME;KDE;Hyprland;
       '';
-
-      # ── Hyprland-only user services ───────────────────────────────────────────────
-      # graphical-session.target is also reached in GNOME; without this condition
-      # waybar, dunst (vs GNOME notifications) and hypridle (hyprctl/lock) leak into GNOME.
-      systemd.user.services = lib.genAttrs [ "waybar" "dunst" "hypridle" ] (_: {
-        # mkForce: replaces HM's default (WAYLAND_DISPLAY), which is kept in the list.
-        Unit.ConditionEnvironment = lib.mkForce [
-          "WAYLAND_DISPLAY"
-          "XDG_CURRENT_DESKTOP=Hyprland"
-        ];
-      });
     };
 }

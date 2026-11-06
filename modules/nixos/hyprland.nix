@@ -1,6 +1,7 @@
 # modules/nixos/hyprland.nix
 # Hyprland WM — system-level enablement.
-# User config (keybinds, rules, waybar, rofi) is in modules/home/hyprland.nix.
+# User config (keybinds, rules, look) is in modules/home/hyprland.nix; the shell
+# (bar, notifications, lock, idle, wallpaper) is Noctalia (home/noctalia.nix).
 #
 # Display manager note: this module no longer sets a display manager.
 # When gnome.nix is in the feature list, GDM is used and Hyprland appears as
@@ -14,15 +15,12 @@ _:
       enable = true;
       xwayland.enable = true;
       # Run Hyprland as a systemd session (UWSM): proper graphical-session.target ordering
-      # for waybar/dunst/hypridle/polkit. GDM shows "Hyprland (uwsm-managed)".
+      # for the Noctalia/Walker user services. GDM shows "Hyprland (uwsm-managed)".
       withUWSM = true;
     };
 
-    # hyprlock must be enabled at the system level (not only in home-manager) because
-    # NixOS needs to install a PAM entry (/etc/pam.d/hyprlock) for screen-unlock auth.
-    # Without this, hyprlock starts but password verification always fails.
-    programs.hyprlock.enable = true;
-    # hypridle runs as the home-manager user service (home/hyprland.nix), Hyprland-only.
+    # Screen lock + idle are Noctalia's (home/noctalia.nix). Its lock screen authenticates
+    # via the stock `login` PAM service, so no extra /etc/pam.d entry is needed.
 
     # XDG portal for Wayland (needed for screen sharing, file pickers, etc.)
     # xdg-desktop-portal-gtk is added by gnome.nix when GNOME coexists.

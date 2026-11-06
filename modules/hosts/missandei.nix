@@ -19,7 +19,9 @@
       "firefox-devedition" # NixOS: Firefox Developer Edition (system-level, avoids HM collision)
       "users" # NixOS: primary user account + group memberships
       "nvidia" # NixOS: GTX 1060 driver config
-      "hyprland" # NixOS: Hyprland WM + pipewire  /  HM: waybar, rofi, kitty, GTK
+      "hyprland" # NixOS: Hyprland WM (UWSM) + pipewire  /  HM: look, binds, kitty, GTK/Qt, cursor
+      "noctalia" # HM: Noctalia shell — bar, notifications, lock/idle, wallpapers, palette
+      "walker" # HM: Walker launcher + Elephant, window switcher, keybind cheatsheet
       "gnome" # NixOS: GNOME desktop + GDM (session picker for both WMs)
       "dev" # NixOS: kubectl, helm, terraform, flux, kubent, etc.
       "gaming" # NixOS: steam, lutris, gamemode
@@ -37,7 +39,7 @@
       "desktop-apps" # HM: GUI apps — browsers, IDEs, communication, media, utils
       "firefox" # HM: Firefox + declarative extensions (NUR)
       "vscode" # HM: VSCode + declarative extensions + settings
-      "catppuccin" # HM: Catppuccin Mocha theme for waybar/dunst/rofi/hyprland/kitty/cli
+      "catppuccin" # HM: Catppuccin Mocha for CLI tools (desktop colours: Noctalia)
       "ai-tools" # HM: OpenCode AppImage (Linux); Mac uses Homebrew cask
       # Proton Drive: web app only (desktop-apps.nix) — rclone backend is unmaintained
       # and rejected by Proton. Revisit when Proton's official Linux sync daemon ships.

@@ -27,7 +27,7 @@ _:
       home.packages = [ opencode ];
 
       # AppImage wrappers don't generate .desktop files automatically,
-      # so rofi/app launchers can't find OpenCode. Add one manually.
+      # so app launchers (Walker) can't find OpenCode. Add one manually.
       xdg.desktopEntries.opencode = {
         name = "OpenCode";
         exec = "opencode";

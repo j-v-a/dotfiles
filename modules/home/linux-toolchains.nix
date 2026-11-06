@@ -40,7 +40,7 @@ _:
         usbutils # lsusb
         age # encryption tool for sops-nix secrets
 
-        # Fonts (needed for Hyprland + Waybar + KDE/GNOME apps)
+        # Fonts (needed for Hyprland/Noctalia + GNOME apps). UI font Adwaita Sans: gtk.font (hyprland.nix).
         # 26.05: nerdfonts.override was removed; use the split nerd-fonts.<name> packages.
         nerd-fonts.jetbrains-mono # primary coding font (terminals, editors)
         nerd-fonts.fira-code # ligature coding font (on Mac via Homebrew cask)
@@ -50,7 +50,6 @@ _:
         nerd-fonts.blex-mono # IBM Plex Mono with Nerd Font patches
         nerd-fonts.iosevka # narrow coding font, popular in dev tooling
         nerd-fonts.symbols-only # symbol-only fallback — ensures icons work in any terminal font
-        font-awesome # waybar icons (solid/brands/regular sets)
         noto-fonts # broad Unicode coverage: Latin, Greek, Cyrillic
         noto-fonts-cjk-sans # CJK (Chinese/Japanese/Korean) glyphs
         noto-fonts-color-emoji # colour emoji (needed by browsers, GNOME, KDE apps; renamed 26.05)

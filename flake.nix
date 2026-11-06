@@ -53,6 +53,23 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Noctalia — Wayland desktop shell for Hyprland: bar, notifications, lock, idle,
+    # wallpaper, polkit agent, OSD (home/noctalia.nix). Following our nixpkgs means
+    # noctalia.cachix.org hits are unlikely; it then builds locally (small C++ project).
+    noctalia = {
+      url = "github:noctalia-dev/noctalia";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Walker launcher + its Elephant data-provider backend (home/walker.nix).
+    # elephant keeps its own nixpkgs: it needs buildGo127Module, which nixos-26.05 lacks.
+    elephant.url = "github:abenz1267/elephant";
+    walker = {
+      url = "github:abenz1267/walker";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.elephant.follows = "elephant";
+    };
+
     # Wallpaper collection — pinned to a specific commit for reproducibility.
     # Update with: nix flake update wallpapers
     wallpapers = {

@@ -4,7 +4,14 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: "0 3 * * *" # nightly full build (03:00 UTC)
   workflow_dispatch:
+
+# One run per ref: a new push cancels the in-flight run for the same branch/PR.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -26,8 +33,14 @@ jobs:
 
   # Full system build: catches failures that eval alone misses (hashes, broken
   # packages). Runner disk is too small for the closure without nothing-but-nix.
+  # Slow (~40 min cold), so only for lock-bump PRs (update-flake-lock's default branch
+  # update_flake_lock_action), the nightly schedule and manual runs.
   build:
     needs: check
+    if: >-
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.head_ref == 'update_flake_lock_action')
     runs-on: ubuntu-latest
     steps:
       - uses: wimpysworld/nothing-but-nix@687c797a730352432950c707ab493fcc951818d7 # v10

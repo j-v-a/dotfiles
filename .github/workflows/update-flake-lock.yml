@@ -2,6 +2,7 @@ name: update-flake-lock
 
 # Weekly lock bump as a PR (lock diff in the PR body). Review + merge, then
 # `nix flake update dotfiles` in dotfiles-private.
+# PR branch: update_flake_lock_action (check.yml runs the full build for it).
 # Note: PRs opened with GITHUB_TOKEN don't trigger other workflows — run `check`
 # on the PR branch via "Run workflow" (workflow_dispatch) before merging.
 on:

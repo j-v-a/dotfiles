@@ -11,15 +11,13 @@
     hostname = "missandei";
     system = "x86_64-linux";
     username = "jasper";
+    # workstation: base, docker, syncthing, bluetooth, firefox-devedition, users
+    # (bundle defined in modules/lib/nixos-host.nix).
+    profiles = [ "workstation" ];
     features = [
-      "base" # NixOS: bootloader, locale, nix settings, SSH, firewall, nh
-      "docker" # NixOS: Docker daemon (group membership in users)
-      "syncthing" # NixOS: Syncthing as primary user (GUI loopback-only)
-      "bluetooth" # NixOS: Bluetooth + Blueman
-      "firefox-devedition" # NixOS: Firefox Developer Edition (system-level, avoids HM collision)
-      "users" # NixOS: primary user account + group memberships
       "nvidia" # NixOS: GTX 1060 driver config
-      "hyprland" # NixOS: Hyprland WM (UWSM) + pipewire  /  HM: look, binds, kitty, GTK/Qt, cursor
+      "hyprland" # NixOS: Hyprland WM (UWSM) + pipewire  /  HM: look, binds, session env
+      "wayland-common" # HM: kitty, GTK/Qt, cursor, desktop utils, wallpaper collection
       "noctalia" # HM: Noctalia shell — bar, notifications, lock/idle, wallpapers, palette
       "walker" # HM: Walker launcher + Elephant, window switcher, keybind cheatsheet
       "gnome" # NixOS: GNOME desktop + GDM (session picker for both WMs)

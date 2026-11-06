@@ -7,13 +7,18 @@
 #   - config.flake.modules.homeManager.<feature>  (HM user module, may be absent)
 # A feature absent from BOTH namespaces is a hard error at eval time (typo guard).
 #
+# Profiles bundle features: `profiles = [ "workstation" ]` expands to the feature list in
+# `profileFeatures` below (prepended, de-duplicated) before validation. Unknown profile
+# names are a hard error too. The expanded list is passed to modules as `features`.
+#
 # Usage (from a host module):
 #   flake.nixosConfigurations.missandei =
 #     config.flake.lib.loadNixosAndHmModuleForUser config {
 #       hostname = "missandei";
 #       system   = "x86_64-linux";
 #       username = "jasper";
-#       features = [ "base" "users" "hyprland" "dev" "gaming" "nvidia" "shell"
+#       profiles = [ "workstation" ];
+#       features = [ "hyprland" "dev" "gaming" "nvidia" "shell"
 #                    "cli-tools" "git" "editors" "linux-toolchains" ];
 #       extraNixosModules = [ ../_hardware/missandei.nix ];
 #     };
@@ -26,11 +31,34 @@
       hostname,
       system,
       username,
-      features,
+      profiles ? [ ],
+      features ? [ ],
       extraNixosModules ? [ ],
     }:
     let
       inherit (inputs) nixpkgs;
+
+      # Profile name → feature bundle. Add profile-server / profile-tablet here when the
+      # first such host lands (Phase C/D).
+      profileFeatures = {
+        # Desktop machine with a human user: base system + account, containers, file sync,
+        # Bluetooth, system-level Firefox Developer Edition.
+        workstation = [
+          "base"
+          "docker"
+          "syncthing"
+          "bluetooth"
+          "firefox-devedition"
+          "users"
+        ];
+      };
+
+      expandProfile =
+        p:
+        profileFeatures.${p}
+          or (throw "dotfiles: unknown profile \"${p}\" — known: ${toString (builtins.attrNames profileFeatures)}");
+
+      allFeatures = nixpkgs.lib.unique (builtins.concatMap expandProfile profiles ++ features);
 
       # Validate every feature name: throw at eval time if unrecognised in both namespaces.
       validateFeature =
@@ -40,7 +68,7 @@
         else
           throw "dotfiles: unknown feature \"${f}\" — not found in nixos.* or homeManager.*";
 
-      validatedFeatures = map validateFeature features;
+      validatedFeatures = map validateFeature allFeatures;
       nixosModules = map (f: cfg.flake.modules.nixos.${f} or { }) validatedFeatures;
       hmModules = map (f: cfg.flake.modules.homeManager.${f} or { }) validatedFeatures;
     in
@@ -51,6 +79,7 @@
       specialArgs = {
         inherit inputs username;
         inherit (inputs) nixos-hardware sops-nix;
+        features = validatedFeatures;
       };
       modules =
         nixosModules

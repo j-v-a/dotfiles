@@ -1,6 +1,7 @@
 # modules/home/hyprland.nix
 # Hyprland user-level configuration — personal workstation only.
-# Compositor look + core binds, wallpaper list, kitty, GTK/Qt/cursor/fonts.
+# Compositor look + core binds, Hyprland session env (UWSM), hyprcursor.
+# Compositor-independent bits (kitty, GTK/Qt/cursor/fonts, wallpapers): home/wayland-common.nix.
 # System-level enablement (UWSM, pipewire, XDG portals) is in modules/nixos/hyprland.nix.
 # Shell (bar, notifications, lock, idle, wallpaper rotation): home/noctalia.nix.
 # Launcher, window switcher, keybind cheatsheet: home/walker.nix.
@@ -12,24 +13,8 @@ _:
       pkgs,
       lib,
       config,
-      wallpapers,
       ...
     }:
-    let
-      # Wallpapers to skip, relative to the wallpapers repo (e.g. "unthemed/foo.png").
-      wallpaperExclude = [
-      ];
-      wallpaperDir = pkgs.runCommand "wallpapers" { } ''
-        cd ${wallpapers}
-        find . -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) \
-          | sed 's|^\./||' | sort > $TMPDIR/all
-        printf '%s\n' ${lib.escapeShellArgs wallpaperExclude} | sort > $TMPDIR/skip
-        comm -23 $TMPDIR/all $TMPDIR/skip | while IFS= read -r f; do
-          mkdir -p "$out/$(dirname "$f")"
-          ln -s "${wallpapers}/$f" "$out/$f"
-        done
-      '';
-    in
     {
       # ── Hyprland user config ───────────────────────────────────────────────────────
       wayland.windowManager.hyprland = {
@@ -189,7 +174,7 @@ _:
             "$mod SHIFT, 0, movetoworkspace, 10"
 
             # Wallpaper (Noctalia): random next / show current file relative to the
-            # wallpapers repo, ready to paste into wallpaperExclude above.
+            # wallpapers repo, ready to paste into wallpaperExclude (home/wayland-common.nix).
             "$mod, W, exec, noctalia msg wallpaper-random"
             "$mod SHIFT, W, exec, wallpaper-current"
 
@@ -205,50 +190,9 @@ _:
         };
       };
 
-      # ── Wallpapers (rotated by Noctalia) ──────────────────────────────────────────
-      # Base wallpapers come from the pinned teowelton/Wallpapers flake input; disliked
-      # images go in wallpaperExclude (Super+Shift+W shows the path to add). The rest are
-      # symlinked into wallpaperDir — Noctalia's scan follows file symlinks (is_regular_file)
-      # and recurses into the collection's subfolders.
-      programs.noctalia.settings.wallpaper = {
-        enabled = true;
-        directory = "${wallpaperDir}";
-        fill_mode = "crop";
-        transition = [ "fade" ];
-        automation = {
-          enabled = true;
-          interval_seconds = 1800;
-          order = "random";
-          recursive = true;
-        };
-      };
-
-      # ── Kitty (terminal) ──────────────────────────────────────────────────────────
-      programs.kitty = {
-        enable = true;
-        font = {
-          name = "JetBrainsMono Nerd Font Mono";
-          size = 12;
-        };
-        settings = {
-          cursor_shape = "beam";
-          scrollback_lines = 10000;
-          enable_audio_bell = false;
-          window_padding_width = 8;
-        };
-      };
-
       # ── Desktop packages ──────────────────────────────────────────────────────────
       home.packages = with pkgs; [
-        libnotify # notify-send CLI (Noctalia is the notification daemon)
         grimblast # screenshot (wlr-screencopy + slurp)
-        wl-clipboard # wl-copy / wl-paste
-        pavucontrol # PulseAudio/PipeWire GUI volume control
-        nautilus # file manager (GTK)
-        blueman # GTK bluetooth manager (replaces blueberry, removed 26.05)
-        # Qt colour plugins: Noctalia's qt template writes qt{5,6}ct/colors/noctalia.conf.
-        libsForQt5.qt5ct
-        qt6Packages.qt6ct
         # Super+Shift+W: notify the current wallpaper relative to the wallpapers repo.
         # wallpaperDir and the input are both /nix/store/<hash>-<name>/<rel>, so stripping
         # the store prefix yields the path wallpaperExclude expects either way.
@@ -259,59 +203,10 @@ _:
         '')
       ];
 
-      # ── GTK (Hyprland look; colours from Noctalia's gtk3/gtk4 templates) ──────────
-      # Noctalia's gtk template writes gtk-{3,4}.0/noctalia.css, @imports it from gtk.css
-      # and selects adw-gtk3-dark via gsettings. So HM must NOT own gtk.css: gtk4.theme is
-      # null (otherwise HM writes a read-only gtk-4.0/gtk.css importing the theme).
-      gtk = {
-        enable = true;
-        theme = {
-          name = "adw-gtk3-dark";
-          package = pkgs.adw-gtk3;
-        };
-        gtk4.theme = null;
-        font = {
-          name = "Adwaita Sans";
-          package = pkgs.adwaita-fonts;
-          size = 11;
-        };
-        iconTheme = {
-          name = "Papirus-Dark";
-          package = pkgs.papirus-icon-theme;
-        };
-      };
+      # Bibata ships only XCursor; Hyprland falls back to it. Base cursor: wayland-common.
+      home.pointerCursor.hyprcursor.enable = true;
 
-      # ── Qt ────────────────────────────────────────────────────────────────────────
-      # qt.enable only adds QT_PLUGIN_PATH (so qt5ct/qt6ct plugins are found);
-      # platformTheme stays null because HM would export QT_QPA_PLATFORMTHEME globally,
-      # i.e. into GNOME too. The Hyprland-only variable is in uwsm/env-hyprland below.
-      # qt{5,6}ct.conf are read-only HM files: they just point at Noctalia's colour file.
-      qt.enable = true;
-      qt.qt5ctSettings.Appearance = {
-        custom_palette = true;
-        color_scheme_path = "${config.xdg.configHome}/qt5ct/colors/noctalia.conf";
-        icon_theme = "Papirus-Dark";
-        style = "Fusion";
-      };
-      qt.qt6ctSettings.Appearance = {
-        custom_palette = true;
-        color_scheme_path = "${config.xdg.configHome}/qt6ct/colors/noctalia.conf";
-        icon_theme = "Papirus-Dark";
-        style = "Fusion";
-      };
-
-      # ── Cursor ────────────────────────────────────────────────────────────────────
-      # Sets gtk.cursorTheme, XCURSOR_* and HYPRCURSOR_* so Hyprland, GTK/Qt and
-      # Xwayland apps agree. Bibata ships only XCursor; Hyprland falls back to it.
-      home.pointerCursor = {
-        name = "Bibata-Modern-Classic";
-        package = pkgs.bibata-cursors;
-        size = 24;
-        gtk.enable = true;
-        x11.enable = true;
-        hyprcursor.enable = true;
-      };
-
+      # QT_QPA_PLATFORMTHEME is Hyprland-only (HM's qt.platformTheme would leak into GNOME).
       # UWSM sources this only for Hyprland sessions and exports it to the systemd user
       # environment, so services (Noctalia, Walker) and the apps they launch see it too.
       xdg.configFile."uwsm/env-hyprland".text = ''

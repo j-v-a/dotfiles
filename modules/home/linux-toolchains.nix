@@ -40,7 +40,7 @@ _:
         usbutils # lsusb
         age # encryption tool for sops-nix secrets
 
-        # Fonts (needed for Hyprland/Noctalia + GNOME apps). UI font Adwaita Sans: gtk.font (hyprland.nix).
+        # Fonts (needed for Hyprland/Noctalia + GNOME apps). UI font Adwaita Sans: gtk.font (wayland-common.nix).
         # 26.05: nerdfonts.override was removed; use the split nerd-fonts.<name> packages.
         nerd-fonts.jetbrains-mono # primary coding font (terminals, editors)
         nerd-fonts.fira-code # ligature coding font (on Mac via Homebrew cask)

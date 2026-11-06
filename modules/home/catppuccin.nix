@@ -42,7 +42,7 @@ _:
       # Noctalia renders kitty/GTK/Qt colours from its active palette; catppuccin writing
       # the same files would fight it. GTK has no catppuccin theme port anymore (archived
       # upstream) — only the Papirus folder recolour, which we drop for plain Papirus.
-      # Cursor is Bibata (hyprland.nix). The mkIf guards keep any other host unchanged.
+      # Cursor is Bibata (wayland-common.nix). The mkIf guards keep any other host unchanged.
       catppuccin.kitty.enable = lib.mkIf isLinux false;
       catppuccin.gtk.icon.enable = lib.mkIf isLinux false;
       catppuccin.kvantum.enable = lib.mkIf isLinux false;

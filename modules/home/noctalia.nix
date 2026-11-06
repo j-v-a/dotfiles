@@ -33,6 +33,23 @@
     {
       imports = [ inputs.noctalia.homeModules.default ];
 
+      # ── Wallpaper rotation ──────────────────────────────────────────────────────────
+      # Collection + exclude list: home/wayland-common.nix (required by this feature).
+      # Noctalia's scan follows file symlinks (is_regular_file) and recurses into the
+      # collection's subfolders.
+      programs.noctalia.settings.wallpaper = {
+        enabled = true;
+        directory = "${config.desktop.wallpaperDir}";
+        fill_mode = "crop";
+        transition = [ "fade" ];
+        automation = {
+          enabled = true;
+          interval_seconds = 1800;
+          order = "random";
+          recursive = true;
+        };
+      };
+
       programs.noctalia = {
         enable = true;
         # User unit on graphical-session.target (reached via UWSM); gated below.

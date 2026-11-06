@@ -1,19 +1,25 @@
-# .sops.yaml — sops-nix encryption rules
+# .sops.yaml — sops-nix encryption rules (decision D2; see dotfiles-context/secrets.md)
 #
-# Each NixOS device has an age key generated on first boot:
-#   age-keygen -o ~/.config/sops/age/keys.txt
-# Back up the private key to 1Password IMMEDIATELY after generation.
-# Then add the public key (age1...) to this file and re-encrypt secrets with:
-#   sops updatekeys secrets/<hostname>.yaml
+# Two recipients per NixOS host:
+#   - host key: the machine's SSH host key, converted to age. sops-nix decrypts with it at
+#     activation (sops.age.sshKeyPaths in nixos/base.nix). Derive from the PUBLIC key:
+#       ssh <host> cat /etc/ssh/ssh_host_ed25519_key.pub | nix run nixpkgs#ssh-to-age
+#   - user key: ~/.config/sops/age/keys.txt, used to edit secrets with `sops`.
+#     Public key: age-keygen -y ~/.config/sops/age/keys.txt
+#     Back up the private key to 1Password ("NixOS age key — <hostname>").
+# After changing recipients, re-encrypt: sops updatekeys secrets/<hostname>.yaml
 #
 # The Mac (work-mac) does not use sops-nix — secrets come from 1Password CLI.
 
 keys:
-  # missandei (personal workstation)
+  # missandei — user age key (~/.config/sops/age/keys.txt on Missandei)
   - &missandei age1r3sfcyrhuh56fxl05e6ln83gc7v543jm02hw4s7deezw0g9s2cwsjgl337
+  # missandei — SSH host key (ssh-to-age of /etc/ssh/ssh_host_ed25519_key.pub)
+  - &missandei-host age1k5zfxu8penq9afscmyxhfxacw0ez5gs8mdpaxnxdxnjud5cc8gcsz33a4d
 
 creation_rules:
   - path_regex: secrets/missandei\.yaml$
     key_groups:
       - age:
           - *missandei
+          - *missandei-host

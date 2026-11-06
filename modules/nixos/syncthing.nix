@@ -32,6 +32,10 @@ _:
           configDir = "/home/${username}/.config/syncthing";
           # Opens 22000/tcp+udp (sync) and 21027/udp (local discovery); GUI stays loopback.
           openDefaultPorts = true;
+          # Devices/folders are paired in the web UI, not declared here. The module's defaults
+          # (override = true) deleted UI-paired devices on every restart ("Deleting stale device").
+          overrideDevices = false;
+          overrideFolders = false;
           settings.gui.address = "127.0.0.1:8384";
         }
       ];

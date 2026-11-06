@@ -4,91 +4,96 @@
 _:
 
 {
-  flake.modules.homeManager.git = _: {
-    # delta pager — programs.delta (not raw git settings) so catppuccin.delta applies.
-    # enableGitIntegration sets core.pager + interactive.diffFilter.
-    programs.delta = {
-      enable = true;
-      enableGitIntegration = true;
-      options = {
-        navigate = true;
-        side-by-side = true;
-        line-numbers = true;
-      };
-    };
-
-    programs.git = {
-      enable = true;
-
-      settings = {
-        user.name = "j-v-a";
-        user.email = "jvanameijden@gmail.com";
-
-        pull.rebase = true;
-        fetch.prune = true;
-        init.defaultBranch = "main";
-        push.autoSetupRemote = true;
-
-        rerere.enabled = true;
-
-        alias = {
-          s = "status";
-          l = "log --oneline --graph --decorate";
-          aa = "add --all";
-          ca = "commit --amend --no-edit";
-          pb = "push --force-with-lease origin HEAD";
-          d = "diff";
-          ds = "diff --staged";
-          rc = "rebase --continue";
-        };
-
-        gpg = {
-          format = "ssh";
-          ssh.allowedSignersFile = "~/.ssh/allowed_signers";
-        };
-        user.signingkey = "~/.ssh/id_ed25519_personalgh";
-        commit.gpgsign = true;
-        tag.gpgsign = true;
-
-        core.autocrlf = "input";
-        merge.conflictstyle = "zdiff3";
-        diff.colormoved = "zebra";
-
-        # GitHub credential helper: set per-device in device-specific config.
-        # - macOS (work-mac): uses 1Password — set in dotfiles-private/modules/home/work-git.nix
-        # - Linux (workstation): uses gh auth git-credential — set in linux-toolchains.nix
-        # Leaving blank here avoids running op on Linux where op is not installed.
-
-        # Rewrite git:// (unauthenticated, deprecated) to https:// everywhere.
-        # git interprets [url "https://"] { insteadOf = "git://"; } as:
-        # any URL beginning with git:// is rewritten to begin with https://
-        "url \"https://\""."insteadOf" = "git://";
-
-        # git-lfs
-        filter.lfs = {
-          clean = "git-lfs clean -- %f";
-          smudge = "git-lfs smudge -- %f";
-          process = "git-lfs filter-process";
-          required = true;
+  flake.modules.homeManager.git =
+    { pkgs, ... }:
+    {
+      # delta pager — programs.delta (not raw git settings) so catppuccin.delta applies.
+      # enableGitIntegration sets core.pager + interactive.diffFilter.
+      programs.delta = {
+        enable = true;
+        enableGitIntegration = true;
+        options = {
+          navigate = true;
+          side-by-side = true;
+          line-numbers = true;
         };
       };
 
-      ignores = [
-        # macOS
-        ".DS_Store"
-        # JetBrains IDEs
-        ".idea/"
-        # Node
-        "npm-debug.log"
-        "*.log"
-        # Nix / direnv
-        ".direnv"
-        # Secrets
-        ".env"
-        ".env.*"
-        "!.env.example"
-        "*.local"
-      ];
+      programs.git = {
+        enable = true;
+
+        settings = {
+          user.name = "j-v-a";
+          user.email = "jvanameijden@gmail.com";
+
+          pull.rebase = true;
+          fetch.prune = true;
+          init.defaultBranch = "main";
+          push.autoSetupRemote = true;
+
+          rerere.enabled = true;
+
+          alias = {
+            s = "status";
+            l = "log --oneline --graph --decorate";
+            aa = "add --all";
+            ca = "commit --amend --no-edit";
+            pb = "push --force-with-lease origin HEAD";
+            d = "diff";
+            ds = "diff --staged";
+            rc = "rebase --continue";
+          };
+
+          gpg = {
+            format = "ssh";
+            ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+          };
+          # Mac: dedicated personal key. Linux: the host's own key (Missandei has no
+          # id_ed25519_personalgh). Add each pubkey on GitHub as a *Signing* key for "Verified".
+          user.signingkey =
+            if pkgs.stdenv.isDarwin then "~/.ssh/id_ed25519_personalgh" else "~/.ssh/id_ed25519";
+          commit.gpgsign = true;
+          tag.gpgsign = true;
+
+          core.autocrlf = "input";
+          merge.conflictstyle = "zdiff3";
+          diff.colormoved = "zebra";
+
+          # GitHub credential helper: set per-device in device-specific config.
+          # - macOS (work-mac): uses 1Password — set in dotfiles-private/modules/home/work-git.nix
+          # - Linux (workstation): uses gh auth git-credential — set in linux-toolchains.nix
+          # Leaving blank here avoids running op on Linux where op is not installed.
+
+          # Rewrite git:// (unauthenticated, deprecated) to https:// everywhere.
+          # git interprets [url "https://"] { insteadOf = "git://"; } as:
+          # any URL beginning with git:// is rewritten to begin with https://
+          "url \"https://\""."insteadOf" = "git://";
+
+          # git-lfs
+          filter.lfs = {
+            clean = "git-lfs clean -- %f";
+            smudge = "git-lfs smudge -- %f";
+            process = "git-lfs filter-process";
+            required = true;
+          };
+        };
+
+        ignores = [
+          # macOS
+          ".DS_Store"
+          # JetBrains IDEs
+          ".idea/"
+          # Node
+          "npm-debug.log"
+          "*.log"
+          # Nix / direnv
+          ".direnv"
+          # Secrets
+          ".env"
+          ".env.*"
+          "!.env.example"
+          "*.local"
+        ];
+      };
     };
-  };
 }

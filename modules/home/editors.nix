@@ -31,6 +31,12 @@
       # Pin Neovim version via Nix. LazyVim manages plugins independently.
       home.packages = [ pkgs.neovim ];
 
+      # System default is nano (NixOS/nix-darwin), which isn't installed — sops, git etc. use $EDITOR.
+      home.sessionVariables = {
+        EDITOR = "nvim";
+        VISUAL = "nvim";
+      };
+
       xdg.configFile."nvim".source =
         config.lib.file.mkOutOfStoreSymlink "${homeDirectory}/dotfiles/config/nvim";
 

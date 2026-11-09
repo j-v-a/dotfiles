@@ -31,6 +31,7 @@
 
       # Dev tooling
       asdf-vm
+      openspec # spec-driven development for AI coding assistants (Fission-AI)
 
       # Git
       gh

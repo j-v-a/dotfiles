@@ -51,6 +51,7 @@ _:
         komikku # manga reader (GNOME)
         alpaca # local LLM frontend (Ollama GUI)
         qalculate-gtk # powerful calculator (GUI + qalc CLI)
+        dbeaver-bin # universal SQL / database client (macOS: dbeaver-community cask)
 
         # ── File Management / System ───────────────────────────────────────────────
         kdePackages.dolphin # file manager (KDE)

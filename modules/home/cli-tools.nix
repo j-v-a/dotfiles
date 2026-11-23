@@ -14,6 +14,11 @@
     # NH_FLAKE is set per host (dotfiles-private on the Mac).
     programs.nh.enable = lib.mkDefault pkgs.stdenv.isDarwin;
 
+    # gh-stack (GitHub's official stacked-PR extension): `gh stack ...`.
+    # Exposed as a gh extension by linking the binary where gh discovers extensions,
+    # without enabling programs.gh (which would take over ~/.config/gh/config.yml).
+    xdg.dataFile."gh/extensions/gh-stack/gh-stack".source = "${pkgs.gh-stack}/bin/gh-stack";
+
     home.packages = with pkgs; [
       # Search / navigation
       fd
